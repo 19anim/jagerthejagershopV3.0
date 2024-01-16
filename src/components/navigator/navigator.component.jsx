@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Link, Outlet } from "react-router-dom";
-import CartDropdown from "./cart-dropdown/cart-dropdown.component";
+import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 
 const Navigator = () => {
   const navigatorItems = [
@@ -32,7 +32,7 @@ const Navigator = () => {
     <Fragment>
       <div className="flex justify-between items-center pb-[80px]">
         <img src="../src/assets/logo.png" alt="logo" className="max-w-20" />
-        <div className="text-white flex gap-8">
+        <div className="flex gap-8">
           {navigatorItems.map((navigatorItem) => {
             const { iconClassName, title } = navigatorItem;
 
@@ -47,11 +47,11 @@ const Navigator = () => {
             );
           })}
         </div>
-        <div className="text-white flex gap-4">
+        <div className="flex gap-4">
           <div onClick={toggleCart}>
             <ion-icon
               name="cart-outline"
-              class="relative peer text-2xl"
+              class="relative peer text-2xl cursor-pointer"
             ></ion-icon>
           </div>
           <CartDropdown />
