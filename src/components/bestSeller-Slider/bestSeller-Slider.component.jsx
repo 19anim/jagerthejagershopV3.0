@@ -76,7 +76,7 @@ const BestSellerSlider = () => {
                   <div className="content--price text-[20px] mt-[10px] mb-[20px]">
                     Chỉ với {bestSellerItem.Price} VNĐ
                   </div>
-                  <button className="content--button px-[20px] py-[10px] border-none cursor-pointer bg-mainOrgane text-black">
+                  <button className="content--button px-[20px] py-[10px] border-none cursor-pointer bg-mainOrange text-black">
                     See more
                   </button>
                 </div>
@@ -88,7 +88,7 @@ const BestSellerSlider = () => {
         <div className="animation-buttons absolute bottom-5 w-full text-center">
           <button
             onClick={prevActionButtonHandler}
-            className="animation--prevButton w-10 h-10 rounded-[50%] bg-mainOrgane mx-[5px] relative duration-500 hover:bg-[#e18300]"
+            className="animation--prevButton w-10 h-10 rounded-[50%] bg-mainOrange mx-[5px] relative duration-500 hover:bg-[#e18300]"
           >
             <ion-icon
               name="chevron-back-outline"
@@ -97,7 +97,7 @@ const BestSellerSlider = () => {
           </button>
           <button
             onClick={nextActionButtonHandler}
-            className="animation--nextButton w-10 h-10 rounded-[50%] bg-mainOrgane mx-[5px] relative duration-500 hover:bg-[#e18300]"
+            className="animation--nextButton w-10 h-10 rounded-[50%] bg-mainOrange mx-[5px] relative duration-500 hover:bg-[#e18300]"
           >
             <ion-icon
               name="chevron-forward-outline"

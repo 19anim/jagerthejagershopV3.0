@@ -27,13 +27,14 @@ const CartDropdown = () => {
   return (
     <div
       id="cart-dropdown"
-      className="w-[400px] text-black p-5 rounded-[10px] bg-white absolute top-[95px] right-[30px] flex gap-4 flex-col z-10 border border-black hidden"
+      className="w-[280px] h-[380px] p-5 text-black rounded-[10px] bg-white absolute top-[150px] right-[60px] flex gap-4 flex-col z-10 border border-black"
     >
-      <CartDropdownHeader Items={pickedItems} />
+      {/* <CartDropdownHeader Items={pickedItems} />
       <hr></hr>
       <CartDropdownItems Items={pickedItems} />
-      <hr></hr>
-      <button className=" border border-black py-2 px-6 text-sm">
+      <hr></hr> */}
+      <div className="h-[280px] overflow-scroll"></div>
+      <button className=" border border-black py-2 px-6 text-sm mt-auto">
         CheckOut
       </button>
     </div>

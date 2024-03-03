@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        mainOrgane: "#ffa827",
+        'mainOrange': "#ffa827",
+        'mainOrange-50': "#ffd9a2"
       },
     },
   },
