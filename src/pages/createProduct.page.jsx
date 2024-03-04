@@ -15,7 +15,7 @@ const defaultProductInfor = {
   isBestSeller: false,
   soldAmount: 0,
   stock: 0,
-  categories: "",
+  category: "",
   slug: "",
 };
 
@@ -30,7 +30,7 @@ const CreateProductPage = () => {
     priceInInteger,
     isBestSeller,
     stock,
-    categories,
+    category,
     slug,
   } = productInfor;
 
@@ -56,7 +56,7 @@ const CreateProductPage = () => {
     event.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/products",
+        "http://localhost:3000/api/products/create",
         productInfor
       );
       if (res.status === 200) {
@@ -132,9 +132,9 @@ const CreateProductPage = () => {
             label="Phân loại sản phẩm"
             options={categoriesContextValue.categories}
             inputOption={{
-              name: "categories",
+              name: "category",
               onChange: handleOnChange,
-              value: categories,
+              value: category,
             }}
           />
           <CheckBoxField

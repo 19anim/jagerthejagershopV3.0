@@ -6,7 +6,7 @@ export const CategoriesContext = createContext({
 });
 
 export const CategoriesProvider = ({ children }) => {
-  const API_GET_CATEGORIES = "http://localhost:3000/api/categories";
+  const API_GET_CATEGORIES = "http://localhost:3000/api/categories/getAllCategories";
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {

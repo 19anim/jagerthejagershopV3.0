@@ -1,10 +1,16 @@
-import axios from "axios";
-import { useEffect, useState, useContext } from "react";
-import { CategoriesContext } from "../context/categories.context";
-import Categories from "../components/categories/categories.component";
+import { Routes, Route } from "react-router-dom";
+import CategoriesPage from "./categories.page";
+import CreateProductPage from "./createProduct.page";
+import ProductPerCategory from "./productPerCategory.page";
 
 const ProductsPage = () => {
-  return <Categories></Categories>
+  return (
+    <Routes>
+      <Route index element={<CategoriesPage />} />
+      <Route path="/create" element={<CreateProductPage />} />
+      <Route path=":slug" element={<ProductPerCategory />} />
+    </Routes>
+  );
 };
 
 export default ProductsPage;
