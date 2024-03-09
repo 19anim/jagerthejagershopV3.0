@@ -5,7 +5,9 @@ export default {
     extend: {
       colors: {
         'mainOrange': "#ffa827",
-        'mainOrange-50': "#ffd9a2"
+        'mainOrange-50': "#ffd9a2",
+        'mainGreen': "#293124",
+        'wheat': "#f5deb3"
       },
     },
   },

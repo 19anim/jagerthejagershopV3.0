@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect } from "react";
+import { Fragment, useContext, useEffect, useState, useRef } from "react";
 import { Link, Outlet } from "react-router-dom";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 import { CartContext } from "../../context/cart.context";
@@ -24,6 +24,7 @@ const Navigator = () => {
   ];
 
   const { isCartOpen } = useContext(CartContext);
+  const cartDropdownRef = useRef(null);
   return (
     <Fragment>
       <div className="flex justify-between items-center pb-[20px]">
@@ -49,10 +50,10 @@ const Navigator = () => {
           })}
         </div>
         <div className="flex gap-4">
-          <CartIcon/>
+          <CartIcon cartDropdownRef={cartDropdownRef}/>
           <ion-icon name="person-circle-outline" class="text-2xl"></ion-icon>
         </div>
-        {isCartOpen && <CartDropdown />}
+        <CartDropdown ref={cartDropdownRef}/>
       </div>
       <Outlet />
     </Fragment>

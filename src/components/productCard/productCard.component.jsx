@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { CartContext } from "../../context/cart.context";
 
 const ProductCard = ({ product }) => {
+  const { addItemToCart } = useContext(CartContext);
   const { name, image, price } = product;
   const [quantity, setQuantity] = useState(0);
   const handlePlusButton = () => {
@@ -13,6 +15,9 @@ const ProductCard = ({ product }) => {
     const { value } = e.target;
     setQuantity(value);
   };
+  const addProductToCart = () => {
+    addItemToCart(product, quantity);
+  }
   return (
     <>
       <div className="w-[315px] h-[525px] bg-[#fefcfb] rounded-[50px_50px_20px_20px] mx-4 mb-3">
@@ -38,7 +43,7 @@ const ProductCard = ({ product }) => {
                 <ion-icon name="add-circle-outline"></ion-icon>
               </button>
             </div>
-            <button className="py-2 px-4 border rounded-3xl bg-mainOrange">
+            <button className="py-2 px-4 border rounded-3xl bg-mainOrange" onClick={addProductToCart}>
               ADD TO CART
             </button>
           </div>

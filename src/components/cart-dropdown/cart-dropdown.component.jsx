@@ -1,44 +1,42 @@
-import CartDropdownHeader from "./cart-dropdown-header.component";
-import CartDropdownItems from "./cart-dropdown-items.component";
+import { CartContext } from "../../context/cart.context";
+import { useContext, forwardRef, useState, useEffect } from "react";
+import CartItem from "./cart-item.component";
 
-const CartDropdown = () => {
-  const pickedItems = [
-    {
-      Name: "Jagermeister Original 700ml",
-      Quantity: 4,
-      PricePerOne: 400000,
-    },
-    {
-      Name: "Jagermeister Original 1000ml",
-      Quantity: 10,
-      PricePerOne: 500000,
-    },
-    {
-      Name: "Jagermeister Original 20ml",
-      Quantity: 4,
-      PricePerOne: 60000,
-    },
-    {
-      Name: "Jagermeister Manifest 1000ml",
-      Quantity: 2,
-      PricePerOne: 2700000,
-    },
-  ];
+const CartDropdown = forwardRef(function CartDropdown(props, ref) {
+  const { cartItems, toggleIsCartOpen } = useContext(CartContext);
+  const [ total, setTotal ] = useState(0);
+  const handleCartOnClick = () => {
+    toggleIsCartOpen(ref);
+  };
+  const tempItem = {
+    name: "Jagermeister Original 1000ml",
+    image:
+      "https://i.pinimg.com/564x/fc/e8/b8/fce8b83ae9866f04933103b9fa8be106.jpg",
+    priceInInteger: "500.000 VNĐ",
+    quantity: 1,
+  };
+  const calculateTotal = () => {
+    let result = cartItems.reduce((acc, cartItem) => {
+      return acc + cartItem.priceInInteger * cartItem.quantity;
+    }, 0);
+    setTotal(result);
+  };
+  useEffect(calculateTotal, [cartItems])
   return (
     <div
+      ref={ref}
       id="cart-dropdown"
-      className="w-[280px] h-[380px] p-5 text-black rounded-[10px] bg-white absolute top-[150px] right-[60px] flex gap-4 flex-col z-10 border border-black"
+      className="w-[415px] duration-1000 bg-mainGreen text-wheat fixed inset-[0_-415px_0_auto] z-10 grid grid-rows-[70px_1fr_70px_70px]"
     >
-      {/* <CartDropdownHeader Items={pickedItems} />
-      <hr></hr>
-      <CartDropdownItems Items={pickedItems} />
-      <hr></hr> */}
-      <div className="h-[280px] overflow-scroll"></div>
-      <button className=" border border-black py-2 px-6 text-sm mt-auto">
-        CheckOut
-      </button>
+      <h2 className="font-semibold text-3xl m-auto">SHOPPING CART</h2>
+      <div className="p-5">
+        {cartItems.map((cartItem) => {
+          return <CartItem key={cartItem._id} cartItem={cartItem}></CartItem>;
+        })}
+      </div>
+      <div className="text-xl m-auto">Total: {total.toLocaleString()} VNĐ</div>
+      <button onClick={handleCartOnClick}>CLOSE</button>
     </div>
   );
-};
-
+});
 export default CartDropdown;

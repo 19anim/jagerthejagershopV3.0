@@ -14,13 +14,6 @@ const ProductPerCategory = () => {
     }
     fetchCategory();
   },[]);
-  // const product = {
-  //   name: "Jagermeister Original 700ml",
-  //   vol: "700ml",
-  //   image:
-  //     "https://i.pinimg.com/564x/b2/52/22/b252225be142762aa82d06a8be2bdd4f.jpg",
-  //   price: "400.000 VNĐ",
-  // };
   return (
     <div className="grid grid-cols-[repeat(5,1fr)]">
       {products.map((product) => {
