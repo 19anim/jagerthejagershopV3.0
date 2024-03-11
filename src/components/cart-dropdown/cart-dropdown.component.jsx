@@ -3,7 +3,7 @@ import { useContext, forwardRef, useState, useEffect } from "react";
 import CartItem from "./cart-item.component";
 
 const CartDropdown = forwardRef(function CartDropdown(props, ref) {
-  const { cartItems, toggleIsCartOpen } = useContext(CartContext);
+  const { cartItems, toggleIsCartOpen,  } = useContext(CartContext);
   const [ total, setTotal ] = useState(0);
   const handleCartOnClick = () => {
     toggleIsCartOpen(ref);

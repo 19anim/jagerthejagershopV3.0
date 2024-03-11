@@ -2,14 +2,16 @@ import { useState, useContext } from "react";
 import { CartContext } from "../../context/cart.context";
 
 const ProductCard = ({ product }) => {
-  const { addItemToCart } = useContext(CartContext);
+  const { addItemToCart, modifyCartItemInCartDropdown } = useContext(CartContext);
   const { name, image, price } = product;
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const handlePlusButton = () => {
     setQuantity(parseInt(quantity) + 1);
   };
   const handleMinusButton = () => {
-    setQuantity(parseInt(quantity) - 1);
+    if (quantity > 1) {
+      setQuantity(parseInt(quantity) - 1);
+    }
   };
   const handleQuantityOnChange = (e) => {
     const { value } = e.target;
@@ -17,7 +19,7 @@ const ProductCard = ({ product }) => {
   };
   const addProductToCart = () => {
     addItemToCart(product, quantity);
-  }
+  };
   return (
     <>
       <div className="w-[315px] h-[525px] bg-[#fefcfb] rounded-[50px_50px_20px_20px] mx-4 mb-3">
@@ -43,7 +45,10 @@ const ProductCard = ({ product }) => {
                 <ion-icon name="add-circle-outline"></ion-icon>
               </button>
             </div>
-            <button className="py-2 px-4 border rounded-3xl bg-mainOrange" onClick={addProductToCart}>
+            <button
+              className="py-2 px-4 border rounded-3xl bg-mainOrange"
+              onClick={addProductToCart}
+            >
               ADD TO CART
             </button>
           </div>

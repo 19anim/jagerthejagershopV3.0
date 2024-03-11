@@ -3,6 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 import { CartContext } from "../../context/cart.context";
 import CartIcon from "../cart-icon/cart-icon.component";
+import SignInIcon from "../signin-icon/signin-icon.component";
 
 const Navigator = () => {
   const navigatorItems = [
@@ -50,8 +51,8 @@ const Navigator = () => {
           })}
         </div>
         <div className="flex gap-4">
+          <SignInIcon />
           <CartIcon cartDropdownRef={cartDropdownRef}/>
-          <ion-icon name="person-circle-outline" class="text-2xl"></ion-icon>
         </div>
         <CartDropdown ref={cartDropdownRef}/>
       </div>
