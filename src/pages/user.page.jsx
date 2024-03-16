@@ -4,11 +4,6 @@ import SignUpForm from "../components/user-related/signup-form.component";
 import ForgotPasswordForm from "../components/user-related/forgot-password-form.component";
 
 const UserPage = () => {
-  // return (
-  //   <Routes>
-  //     <Route path="/sign-in" element={<SignInPage />} />
-  //   </Routes>
-  // );
   const DEFINED_PATH = {
     LOGIN: "/user/sign-in",
     REGISTER: "/user/sign-up",
@@ -17,6 +12,7 @@ const UserPage = () => {
   const BACKGROUND_IMAGE =
     "https://images.ctfassets.net/86v07ri6w8tx/2MwCifMF5eEmkiUGYUI4S2/079f5123b150a37c839c62d2208176fd/teaser_history.jpg?&w=1366&q=66&fl=progressive";
   const { pathname } = useLocation();
+
   return (
     <div className="grid grid-cols-[40%_60%] gap-3 bg-mainGreen rounded-3xl p-3">
       <div className=" drop-shadow-[0_0_10px_black]">
