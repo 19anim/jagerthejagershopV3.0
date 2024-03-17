@@ -1,6 +1,7 @@
 import FloattingInput from "../floatting-input/floatting-input.component";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 const defaultFormField = {
   userName: "",
@@ -14,12 +15,30 @@ const SignInForm = () => {
     const { name, value } = event.target;
     setFormField({ ...formField, [name]: value });
   };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const result = await axios.post(
+      "http://localhost:3000/api/users/login",
+      formField
+    );
+    window.localStorage.setItem("accessToken", result.data.accessToken);
+  };
+  const handleSubmit2 = async (event) => {
+    event.preventDefault();
+    const result = await axios.post(
+      "http://localhost:3000/api/users/verifyToken",
+      { accessToken: window.localStorage.getItem("accessToken") }
+    );
+  };
   return (
     <div className="mt-5 w-full flex flex-col gap-3 items-center">
       <h2 className="text-2xl">
         <strong>Login</strong>
       </h2>
-      <form action="" className="w-full flex flex-col gap-3 items-center">
+      <form
+        onSubmit={handleSubmit2}
+        className="w-full flex flex-col gap-3 items-center"
+      >
         <FloattingInput
           labelName="Username"
           inputOption={{
