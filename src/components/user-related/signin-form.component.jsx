@@ -19,9 +19,12 @@ const SignInForm = () => {
     event.preventDefault();
     const result = await axios.post(
       "http://localhost:3000/api/users/login",
-      formField
+      formField,
+      {
+        withCredentials: true,
+      }
     );
-    window.localStorage.setItem("accessToken", result.data.accessToken);
+    // window.localStorage.setItem("accessToken", result.data.accessToken);
   };
   const handleSubmit2 = async (event) => {
     event.preventDefault();
@@ -36,7 +39,7 @@ const SignInForm = () => {
         <strong>Login</strong>
       </h2>
       <form
-        onSubmit={handleSubmit2}
+        onSubmit={handleSubmit}
         className="w-full flex flex-col gap-3 items-center"
       >
         <FloattingInput
