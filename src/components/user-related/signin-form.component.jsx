@@ -8,6 +8,8 @@ const defaultFormField = {
   password: "",
 };
 
+const baseAPIURL = import.meta.env.VITE_BASE_API_URL;
+
 const SignInForm = () => {
   const [formField, setFormField] = useState(defaultFormField);
   const { userName, password } = formField;
@@ -17,21 +19,9 @@ const SignInForm = () => {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const result = await axios.post(
-      "http://localhost:3000/api/users/login",
-      formField,
-      {
-        withCredentials: true,
-      }
-    );
-    // window.localStorage.setItem("accessToken", result.data.accessToken);
-  };
-  const handleSubmit2 = async (event) => {
-    event.preventDefault();
-    const result = await axios.post(
-      "http://localhost:3000/api/users/verifyToken",
-      { accessToken: window.localStorage.getItem("accessToken") }
-    );
+    const result = await axios.post(`${baseAPIURL}/users/login`, formField, {
+      withCredentials: true,
+    });
   };
   return (
     <div className="mt-5 w-full flex flex-col gap-3 items-center">
