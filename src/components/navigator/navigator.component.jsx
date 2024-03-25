@@ -1,9 +1,10 @@
-import { Fragment, useContext, useEffect, useState, useRef } from "react";
+import { Fragment, useContext, useRef } from "react";
 import { Link, Outlet } from "react-router-dom";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
-import { CartContext } from "../../context/cart.context";
+import { UserContext } from "../../context/user.context";
 import CartIcon from "../cart-icon/cart-icon.component";
 import SignInIcon from "../signin-icon/signin-icon.component";
+import UserIcon from "../user-icon/user-icon.component";
 
 const Navigator = () => {
   const navigatorItems = [
@@ -24,7 +25,7 @@ const Navigator = () => {
     },
   ];
 
-  const { isCartOpen } = useContext(CartContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
   const cartDropdownRef = useRef(null);
   return (
     <Fragment>
@@ -51,7 +52,7 @@ const Navigator = () => {
           })}
         </div>
         <div className="flex gap-4">
-          <SignInIcon />
+          {isLoggedIn ? <UserIcon/> : <SignInIcon />}
           <CartIcon cartDropdownRef={cartDropdownRef}/>
         </div>
         <CartDropdown ref={cartDropdownRef}/>

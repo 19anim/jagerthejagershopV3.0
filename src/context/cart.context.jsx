@@ -34,6 +34,10 @@ const modifyCartItem = (cartItems, productToModify, typeOfModify) => {
           return cartItem;
         }
       });
+    } else {
+      return cartItems.filter((cartItem) => {
+        if (cartItem._id !== productToModify._id) return cartItem;
+      });
     }
   }
 };
@@ -44,11 +48,13 @@ export const CartContext = createContext({
   cartItems: [],
   addItemToCart: () => {},
   modifyCartItemInCartDropdown: () => {},
+  deliveryPrice: 0,
 });
 
 export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [deliveryPrice, setDeliveryPrice] = useState(0);
 
   const toggleIsCartOpen = (cartDropdownRef) => {
     if (cartDropdownRef.current !== null) {
@@ -65,12 +71,28 @@ export const CartProvider = ({ children }) => {
   const modifyCartItemInCartDropdown = (productToModify, typeOfModify) => {
     setCartItems(modifyCartItem(cartItems, productToModify, typeOfModify));
   };
+
+  useEffect(() => {
+    const cartData = JSON.parse(localStorage.getItem("cart_items"));
+    if (cartData) {
+      setCartItems(cartData);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cartItems.length) {
+      localStorage.setItem("cart_items", JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
+
   const value = {
     isCartOpen,
     toggleIsCartOpen,
     cartItems,
     addItemToCart,
-    modifyCartItemInCartDropdown
+    modifyCartItemInCartDropdown,
+    deliveryPrice,
+    setDeliveryPrice
   };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

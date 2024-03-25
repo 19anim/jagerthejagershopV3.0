@@ -9,7 +9,7 @@ const ForgotPasswordForm = () => {
     setEmail(value);
   };
   return (
-    <div className="mt-5 w-full flex flex-col gap-3 items-center">
+    <div className="mt-5 w-[40%] flex flex-col gap-3 items-center">
       <h2 className="text-2xl">
         <strong>Login</strong>
       </h2>
@@ -25,7 +25,7 @@ const ForgotPasswordForm = () => {
           }}
         />
         <div className="w-full flex justify-between text-mainOrange">
-          <Link to="/user/sign-in">
+          <Link to="/authentication/sign-in">
             <p>Remember account already? Here to login</p>
           </Link>
         </div>
