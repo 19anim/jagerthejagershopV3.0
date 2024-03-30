@@ -2,14 +2,6 @@ import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const defaultUserInfor = {
-  userName: "",
-  email: "",
-  receipentName: "",
-  address: "",
-  phoneNumber: "",
-};
-
 export const UserContext = createContext({
   isLoggedIn: false,
   setIsLoggedIn: () => {},
@@ -19,9 +11,20 @@ export const UserContext = createContext({
   setEmail: () => {},
   userInfor: {},
   setUserInfor: () => {},
+  defaultUserInfor: {},
 });
 
 export const UserProvider = ({ children }) => {
+  const defaultUserInfor = {
+    userName: "",
+    email: "",
+    receipentName: "",
+    address: "",
+    ward: "",
+    district: "",
+    city: "",
+    phoneNumber: "",
+  };
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [userName, setUserName] = useState("");
@@ -47,6 +50,10 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    setUserName(userInfor.userName)
+  }, [userInfor.userName]);
+
+  useEffect(() => {
     const getUserInfor = async () => {
       try {
         const result = await axios.post(
@@ -68,7 +75,7 @@ export const UserProvider = ({ children }) => {
     };
   }, [isLoggedIn, isUpdate]);
 
-  const updateUserInfor = async (newUserInfor) => {
+  const updateUserInfor = async (newUserInfor, isNavigated = true) => {
     try {
       const result = await axios.put(
         `${
@@ -77,7 +84,7 @@ export const UserProvider = ({ children }) => {
         newUserInfor
         //{ withCredentials: true }
       );
-      if (result.status == 200) {
+      if (result.status == 200 && isNavigated) {
         navigate("/user/userInformation");
       }
     } catch (error) {
@@ -97,6 +104,7 @@ export const UserProvider = ({ children }) => {
     userInfor,
     setUserInfor,
     updateUserInfor,
+    defaultUserInfor,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

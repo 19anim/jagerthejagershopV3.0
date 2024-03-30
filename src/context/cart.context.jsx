@@ -47,14 +47,25 @@ export const CartContext = createContext({
   toggleIsCartOpen: () => {},
   cartItems: [],
   addItemToCart: () => {},
+  setCartItems: () => {},
   modifyCartItemInCartDropdown: () => {},
   deliveryPrice: 0,
+  subtotal: 0,
 });
 
 export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [deliveryPrice, setDeliveryPrice] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+
+  useEffect(() => {
+    setSubtotal(
+      cartItems.reduce((acc, cartItem) => {
+        return acc + cartItem.quantity * cartItem.priceInInteger;
+      }, 0)
+    );
+  }, [cartItems]);
 
   const toggleIsCartOpen = (cartDropdownRef) => {
     if (cartDropdownRef.current !== null) {
@@ -89,10 +100,12 @@ export const CartProvider = ({ children }) => {
     isCartOpen,
     toggleIsCartOpen,
     cartItems,
+    setCartItems,
     addItemToCart,
     modifyCartItemInCartDropdown,
     deliveryPrice,
-    setDeliveryPrice
+    setDeliveryPrice,
+    subtotal,
   };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

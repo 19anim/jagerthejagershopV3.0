@@ -1,26 +1,21 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import FloattingInput from "../floatting-input/floatting-input.component";
 import Button from "../button/button.component";
 import { CartContext } from "../../context/cart.context";
-
-const defaultDeliveryAddress = {
-  address: "",
-  ward: "",
-  district: "",
-};
+import { UserContext } from "../../context/user.context";
 
 const EstimatedTransferFee = () => {
-  const [deliveryAddress, setDeliveryAddress] = useState(
-    defaultDeliveryAddress
-  );
   const { deliveryPrice, setDeliveryPrice } = useContext(CartContext);
+  const { userInfor, setUserInfor, isLoggedIn, updateUserInfor } =
+    useContext(UserContext);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setDeliveryAddress({ ...deliveryAddress, [name]: value });
+    setUserInfor({ ...userInfor, [name]: value });
   };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+
+  const calculateEstimatedTransferFee = async () => {
     const addressPayload = {
       method_id: "GPQB",
       method_type: "cash",
@@ -62,7 +57,7 @@ const EstimatedTransferFee = () => {
       ],
       token: "",
     };
-    addressPayload.path[1].address = `${deliveryAddress.address}, ${deliveryAddress.ward}, ${deliveryAddress.district}, Hồ Chí Minh, Việt Nam`;
+    addressPayload.path[1].address = `${userInfor.address}, ${userInfor.ward}, ${userInfor.district}, Hồ Chí Minh, Việt Nam`;
     addressPayload.token = import.meta.env.VITE_DELIVERY_ACCESS_TOKEN;
     try {
       const result = await axios.post(
@@ -73,9 +68,18 @@ const EstimatedTransferFee = () => {
         setDeliveryPrice(result.data[0].total_pay);
       }
     } catch (error) {
-      setDeliveryAddress(-1);
+      setDeliveryPrice(-1);
     }
   };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    calculateEstimatedTransferFee();
+    if (isLoggedIn) {
+      updateUserInfor(userInfor, false);
+    }
+  };
+
   return (
     <div className="bg-mainGreen rounded-lg p-5">
       <p className="mb-5">
@@ -84,13 +88,33 @@ const EstimatedTransferFee = () => {
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <FloattingInput
+          labelName="Receipent Name"
+          inputOption={{
+            type: "text",
+            name: "receipentName",
+            required: true,
+            onChange: handleChange,
+            value: userInfor.receipentName,
+          }}
+        />
+        <FloattingInput
+          labelName="Phone Number"
+          inputOption={{
+            type: "text",
+            name: "phoneNumber",
+            required: true,
+            onChange: handleChange,
+            value: userInfor.phoneNumber,
+          }}
+        />
+        <FloattingInput
           labelName="Address"
           inputOption={{
             type: "text",
             name: "address",
             required: true,
             onChange: handleChange,
-            value: deliveryAddress.address,
+            value: userInfor.address,
           }}
         />
         <FloattingInput
@@ -100,7 +124,7 @@ const EstimatedTransferFee = () => {
             name: "ward",
             required: true,
             onChange: handleChange,
-            value: deliveryAddress.ward,
+            value: userInfor.ward,
           }}
         />
         <FloattingInput
@@ -110,12 +134,14 @@ const EstimatedTransferFee = () => {
             name: "district",
             required: true,
             onChange: handleChange,
-            value: deliveryAddress.district,
+            value: userInfor.district,
           }}
         />
         <h3>
           Estimated Fee:{" "}
-          {deliveryPrice == -1 ? "We ran into a problem, please try again later or contact the admin" : `${deliveryPrice.toLocaleString()} VNĐ`}
+          {deliveryPrice == -1
+            ? "We ran into a problem, please try again later or contact the admin"
+            : `${deliveryPrice.toLocaleString()} VNĐ`}
         </h3>
         <Button>Lookup</Button>
       </form>

@@ -34,7 +34,7 @@ const UserInfor = () => {
         </div>
         <div>
           <p>Address</p>
-          <p>{!userInfor.address ? "Not Filled yet" : userInfor.address}</p>
+          <p>{!userInfor.address ? "Not Filled yet" : `${userInfor.address}, ${userInfor.ward}, ${userInfor.district}, ${userInfor.city}`}</p>
         </div>
         <Link to="/user/updateInformation" className="self-center w-full">
           <Button>

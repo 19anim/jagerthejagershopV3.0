@@ -1,41 +1,68 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import FitButton from "../button/fitButton.component";
+import { CartContext } from "../../context/cart.context";
+import axios from "axios";
+import { UserContext } from "../../context/user.context";
+
+const paymentOptions = [
+  {
+    method: "CASH",
+    radioLabel: "Made payment by cash when receive the parcel",
+    imageSrc: null,
+    defaultChecked: true,
+  },
+  {
+    method: "TRANSFER_TECHCOMBANK",
+    radioLabel: "Made payment by bank transfer through Techcombank",
+    imageSrc: "../src/assets/techcombank.jpg",
+    defaultChecked: false,
+  },
+  {
+    method: "TRANSFER_MOMO",
+    radioLabel: "Made payment by bank transfer through Momo",
+    imageSrc: "../src/assets/momo.jpg",
+    defaultChecked: false,
+  },
+];
 
 const PlaceOrder = () => {
-  const [paymentMethodValue, setPaymentMethodValue] = useState({});
-  const paymentOptions = [
-    {
-      method: "cash",
-      radioLabel: "Made payment by cash when receive the parcel",
-      imageSrc: null,
-      note: "Test CASH",
-      defaultChecked: true,
-    },
-    {
-      method: "techcombank",
-      radioLabel: "Made payment by bank transfer through Techcombank",
-      imageSrc: "../src/assets/techcombank.jpg",
-      note: "",
-      defaultChecked: false,
-    },
-    {
-      method: "momo",
-      radioLabel: "Made payment by bank transfer through Momo",
-      imageSrc: "../src/assets/momo.jpg",
-      note: "",
-      defaultChecked: false,
-    },
-  ];
+  const navigate = useNavigate();
+  const [paymentMethodValue, setPaymentMethodValue] = useState(
+    paymentOptions[0]
+  );
+  const { deliveryPrice, subtotal, cartItems, setCartItems, setDeliveryPrice } =
+    useContext(CartContext);
+  const { userName, userInfor } = useContext(UserContext);
+
   const handleOnChange = (event) => {
-    const testOption = paymentOptions.find((paymentOption) => {
+    const chosenOption = paymentOptions.find((paymentOption) => {
       return paymentOption.method == event.target.value;
     });
-    setPaymentMethodValue(testOption);
+    setPaymentMethodValue(chosenOption);
   };
-  const handleOnSubmit = (event) => {
+
+  const handleOnSubmit = async (event) => {
     event.preventDefault();
-    console.log("submitted");
+    try {
+      const result = await axios.post(import.meta.env.VITE_API_URL_PLACEORDER, {
+        order: {
+          userName: userName !== "" ? userName : "Guess",
+          userInfor: userInfor,
+          items: cartItems,
+          total: (subtotal + deliveryPrice).toLocaleString(),
+          paymentMethod: paymentMethodValue.method,
+        },
+      });
+      if (result.status === 200) {
+        localStorage.removeItem("cart_items");
+        setCartItems([]);
+        setDeliveryPrice(0);
+        navigate(`/user/orders/orderDetail/${result.data._id}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="grid grid-cols-[1fr_400px] gap-8">
@@ -49,6 +76,9 @@ const PlaceOrder = () => {
             <ion-icon name="arrow-back-outline"></ion-icon>
             <p className="ml-2">Continue Shopping</p>
           </Link>
+        </div>
+        <div className="text-xl font-medium text-mainOrange-50 mb-3">
+          Total price: {(subtotal + deliveryPrice).toLocaleString()} VNĐ
         </div>
         <form onSubmit={handleOnSubmit} className="flex flex-col gap-3">
           {paymentOptions.map((paymentOption) => {

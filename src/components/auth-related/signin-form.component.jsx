@@ -4,6 +4,7 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import ErrorMessage from "../errorMessage/errorMessage.component";
 import { UserContext } from "../../context/user.context";
+import { CartContext } from "../../context/cart.context";
 
 const defaultFormField = {
   userName: "",
@@ -19,6 +20,7 @@ const SignInForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { setIsLoggedIn, setUserName, setEmail } = useContext(UserContext);
+  const { setDeliveryPrice } = useContext(CartContext);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -35,6 +37,7 @@ const SignInForm = () => {
         setIsLoggedIn(true);
         setUserName(result.data.userName);
         setEmail(result.data.email);
+        setDeliveryPrice(0);
         navigate("/user/userInformation");
       }
     } catch (error) {

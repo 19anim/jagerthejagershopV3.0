@@ -6,16 +6,7 @@ import EstimatedTransferFee from "./estimatedTransferFee.component";
 import OrderSummary from "./orderSummary.component";
 
 const CartCheckout = () => {
-  const { cartItems, deliveryPrice } = useContext(CartContext);
-  const [subtotal, setSubtotal] = useState(0);
-
-  useEffect(() => {
-    setSubtotal(
-      cartItems.reduce((acc, cartItem) => {
-        return acc + cartItem.quantity * cartItem.priceInInteger;
-      }, 0)
-    );
-  }, [cartItems]);
+  const { cartItems } = useContext(CartContext);
   return (
     <div className="grid grid-cols-[1fr_500px] gap-8">
       <div className="bg-mainGreen rounded-lg p-10">
@@ -42,7 +33,7 @@ const CartCheckout = () => {
       </div>
       <div className="flex flex-col gap-2">
         <EstimatedTransferFee />
-        <OrderSummary cartItems={cartItems}/>
+        <OrderSummary cartItems={cartItems} />
       </div>
     </div>
   );

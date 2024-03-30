@@ -1,19 +1,10 @@
 import { CartContext } from "../../context/cart.context";
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import Button from "../button/button.component";
 import { Link } from "react-router-dom";
 
-const OrderSummary = ({ cartItems }) => {
-  const { deliveryPrice } = useContext(CartContext);
-  const [subtotal, setSubtotal] = useState(0);
-
-  useEffect(() => {
-    setSubtotal(
-      cartItems.reduce((acc, cartItem) => {
-        return acc + cartItem.quantity * cartItem.priceInInteger;
-      }, 0)
-    );
-  }, [cartItems]);
+const OrderSummary = () => {
+  const { deliveryPrice, subtotal } = useContext(CartContext);
 
   return (
     <div className="bg-mainGreen rounded-lg p-5">

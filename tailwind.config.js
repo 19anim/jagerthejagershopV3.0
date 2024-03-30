@@ -17,6 +17,9 @@ export default {
         ".scrollbar-black": {
           scrollbarColor: "black transparent" 
         },
+        ".scrollbar-gray": {
+          scrollbarColor: "#6d6d6d transparent" 
+        },
         ".scrollbar-webkit": {
           "&::-webkit-scrollbar": {
             width: "15px"
