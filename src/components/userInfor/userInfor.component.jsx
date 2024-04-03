@@ -2,12 +2,13 @@ import { UserContext } from "../../context/user.context";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import Button from "../button/button.component";
+import Avatar from "../../assets/avatar.png";
 
 const UserInfor = () => {
   const { isLoggedIn, userInfor } = useContext(UserContext);
   return (
     <div className="mt-5 w-[80%] grid grid-cols-[30%_70%]">
-      <img src="../src/assets/avatar.png" className="w-[150px]" alt="Avatar" />
+      <img src={Avatar} className="w-[150px]" alt="Avatar" />
       <div className="flex flex-col gap-5">
         <div className="flex justify-between">
           <div>
@@ -30,16 +31,22 @@ const UserInfor = () => {
         <hr></hr>
         <div>
           <p>Receipent name</p>
-          <p>{!userInfor.receipentName ? "Not Filled yet" : userInfor.receipentName}</p>
+          <p>
+            {!userInfor.receipentName
+              ? "Not Filled yet"
+              : userInfor.receipentName}
+          </p>
         </div>
         <div>
           <p>Address</p>
-          <p>{!userInfor.address ? "Not Filled yet" : `${userInfor.address}, ${userInfor.ward}, ${userInfor.district}, ${userInfor.city}`}</p>
+          <p>
+            {!userInfor.address
+              ? "Not Filled yet"
+              : `${userInfor.address}, ${userInfor.ward}, ${userInfor.district}, ${userInfor.city}`}
+          </p>
         </div>
         <Link to="/user/updateInformation" className="self-center w-full">
-          <Button>
-            Update User Information
-          </Button>
+          <Button>Update User Information</Button>
         </Link>
       </div>
     </div>

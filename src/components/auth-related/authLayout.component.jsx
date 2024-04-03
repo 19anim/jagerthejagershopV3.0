@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import Logo from "../../assets/logo.png";
 
 const AuthLayout = () => {
   const BACKGROUND_IMAGE =
@@ -15,11 +16,7 @@ const AuthLayout = () => {
       </div>
       <div className="flex flex-col justify-center items-center">
         <div className="flex flex-col justify-center items-center w-full">
-          <img
-            className="w-[50px] h-[50px]"
-            src="../src/assets/logo.png"
-            alt=""
-          />
+          <img className="w-[50px] h-[50px]" src={Logo} alt="" />
           <h2 className="text-xl">
             Welcome to <strong>JAGERTHEJAGER SHOP</strong>
           </h2>

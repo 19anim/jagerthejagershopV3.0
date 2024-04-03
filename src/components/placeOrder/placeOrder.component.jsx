@@ -4,6 +4,8 @@ import FitButton from "../button/fitButton.component";
 import { CartContext } from "../../context/cart.context";
 import axios from "axios";
 import { UserContext } from "../../context/user.context";
+import Momo from "../../assets/momo.jpg";
+import Techcombank from "../../assets/techcombank.jpg";
 
 const paymentOptions = [
   {
@@ -15,13 +17,13 @@ const paymentOptions = [
   {
     method: "TRANSFER_TECHCOMBANK",
     radioLabel: "Made payment by bank transfer through Techcombank",
-    imageSrc: "../src/assets/techcombank.jpg",
+    imageSrc: Techcombank,
     defaultChecked: false,
   },
   {
     method: "TRANSFER_MOMO",
     radioLabel: "Made payment by bank transfer through Momo",
-    imageSrc: "../src/assets/momo.jpg",
+    imageSrc: Momo,
     defaultChecked: false,
   },
 ];
@@ -64,11 +66,6 @@ const PlaceOrder = () => {
         setDeliveryPrice(0);
         handleModalTemp();
         setOrderDetailId(result.data._id);
-        // if (isLoggedIn) {
-        //   navigate(`/user/orders/orderDetail/${result.data._id}`);
-        // } else {
-        //   navigate(`/`);
-        // }
       }
     } catch (error) {
       console.log(error);

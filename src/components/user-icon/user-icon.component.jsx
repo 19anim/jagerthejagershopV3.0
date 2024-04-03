@@ -3,14 +3,17 @@ import { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../context/cart.context";
+import Logo from "../../assets/logo.png";
 
 const UserIcon = () => {
+  const LOGOUT_API_URL =
+    import.meta.env.VITE_API_URL_LOGOUT || VITE_API_URL_LOGOUT;
   const { setIsLoggedIn, userName, email, setUserInfor, defaultUserInfor } =
     useContext(UserContext);
   const { setDeliveryPrice } = useContext(CartContext);
   const navigate = useNavigate();
   const handleLogOut = () => {
-    axios.get("http://localhost:3000/api/users/logout", {
+    axios.get(VITE_API_URL_LOGOUT, {
       withCredentials: true,
     });
     navigate("/");
@@ -25,7 +28,7 @@ const UserIcon = () => {
       </p>
       <div className="absolute right-0 top-6 hidden min-w-[250px] group-hover:block transition-all duration-200 z-50">
         <div className="bg-[#c1c7c6] px-2 rounded-[10px_10px_0px_0px] flex flex-col items-center text-black">
-          <img src="../src/assets/logo.png" alt="" className="w-[80px]" />
+          <img src={Logo} alt="" className="w-[80px]" />
           <div className="mb-[10px] text-center">
             <p>Username: {userName}</p>
             <p>Email: {email}</p>

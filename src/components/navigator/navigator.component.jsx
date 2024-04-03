@@ -5,6 +5,7 @@ import { UserContext } from "../../context/user.context";
 import CartIcon from "../cart-icon/cart-icon.component";
 import SignInIcon from "../signin-icon/signin-icon.component";
 import UserIcon from "../user-icon/user-icon.component";
+import Logo from "../../assets/logo.png";
 
 const Navigator = () => {
   const navigatorItems = [
@@ -30,11 +31,7 @@ const Navigator = () => {
   return (
     <Fragment>
       <div className="flex justify-between items-center pb-[20px]">
-        <img
-          src="../src/assets/logo.png"
-          alt="logo"
-          className="w-[180px] h-[180px]"
-        />
+        <img src={Logo} alt="logo" className="w-[180px] h-[180px]" />
         <div className="flex gap-8">
           {navigatorItems.map((navigatorItem) => {
             const { iconClassName, title, href } = navigatorItem;
@@ -52,10 +49,10 @@ const Navigator = () => {
           })}
         </div>
         <div className="flex gap-4">
-          {isLoggedIn ? <UserIcon/> : <SignInIcon />}
-          <CartIcon cartDropdownRef={cartDropdownRef}/>
+          {isLoggedIn ? <UserIcon /> : <SignInIcon />}
+          <CartIcon cartDropdownRef={cartDropdownRef} />
         </div>
-        <CartDropdown ref={cartDropdownRef}/>
+        <CartDropdown ref={cartDropdownRef} />
       </div>
       <Outlet />
     </Fragment>
