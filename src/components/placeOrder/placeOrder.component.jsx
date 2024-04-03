@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FitButton from "../button/fitButton.component";
 import { CartContext } from "../../context/cart.context";
@@ -27,13 +27,15 @@ const paymentOptions = [
 ];
 
 const PlaceOrder = () => {
+  const modalRef = useRef();
   const navigate = useNavigate();
   const [paymentMethodValue, setPaymentMethodValue] = useState(
     paymentOptions[0]
   );
   const { deliveryPrice, subtotal, cartItems, setCartItems, setDeliveryPrice } =
     useContext(CartContext);
-  const { userName, userInfor } = useContext(UserContext);
+  const { userName, userInfor, isLoggedIn } = useContext(UserContext);
+  const [ orderDetailId, setOrderDetailId ] = useState("");
 
   const handleOnChange = (event) => {
     const chosenOption = paymentOptions.find((paymentOption) => {
@@ -58,15 +60,49 @@ const PlaceOrder = () => {
         localStorage.removeItem("cart_items");
         setCartItems([]);
         setDeliveryPrice(0);
-        navigate(`/user/orders/orderDetail/${result.data._id}`);
+        handleModalTemp();
+        setOrderDetailId(result.data._id);
+        // if (isLoggedIn) {
+        //   navigate(`/user/orders/orderDetail/${result.data._id}`);
+        // } else {
+        //   navigate(`/`);
+        // }
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleModal = () => {
+    const classList = modalRef.current.classList;
+    classList.toggle("flex");
+    classList.toggle("hidden");
+    if (isLoggedIn) {
+      navigate(`/user/orders/orderDetail/${orderDetailId}`);
+    } else {
+      navigate(`/`);
+    }
+  };
+  const handleModalTemp = () => {
+    const classList = modalRef.current.classList;
+    classList.toggle("flex");
+    classList.toggle("hidden");
+  };
   return (
     <div className="grid grid-cols-[1fr_400px] gap-8">
       <div className="bg-mainGreen rounded-xl p-10">
+        {/* This is to do the modal */}
+        <div
+          ref={modalRef}
+          className="justify-center items-center w-dvw h-dvh absolute top-0 left-0 bg-[rgba(0,0,0,0.5)] z-10 hidden"
+        >
+          <div className="w-[500px] h-[200px] bg-[#363636] rounded-xl flex flex-col justify-center items-center gap-2">
+            <p className="text-mainOrange text-3xl">Order Successfully</p>
+            <p className="text-wheat text-lg text-center">Thank you for purchasing at JAGERTHEJAGERSHOP</p>
+            <p className="text-wheat text-lg text-center">Ở đây iem bán thuốc ho con hươu</p>
+            <FitButton onClick={handleModal}>Close</FitButton>
+          </div>
+        </div>
         <div className="flex justify-between mb-10">
           <p className="text-3xl">Select payment method</p>
           <Link
