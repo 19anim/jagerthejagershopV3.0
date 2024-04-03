@@ -1,9 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
-  const BACKGROUND_IMAGE = import.meta.env.VITE_AUTH_BACKGROUND_IMAGE
-    ? import.meta.env.VITE_AUTH_BACKGROUND_IMAGE
-    : VITE_AUTH_BACKGROUND_IMAGE;
+  const BACKGROUND_IMAGE = import.meta.env.VITE_AUTH_BACKGROUND_IMAGE;
 
   return (
     <div className="grid grid-cols-[40%_60%] gap-3 bg-mainGreen rounded-3xl p-3">
