@@ -14,9 +14,10 @@ export const UserContext = createContext({
   defaultUserInfor: {},
 });
 
+const GETUSER_API_URL =
+  import.meta.env.VITE_API_URL_GETUSER || VITE_API_URL_GETUSER;
+
 export const UserProvider = ({ children }) => {
-  const GETUSER_API_URL =
-    import.meta.env.VITE_API_URL_GETUSER || VITE_API_URL_GETUSER;
   const defaultUserInfor = {
     userName: "",
     email: "",
