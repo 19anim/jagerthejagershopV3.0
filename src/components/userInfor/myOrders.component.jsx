@@ -4,13 +4,13 @@ import { UserContext } from "../../context/user.context";
 import OrderItem from "../orderHistory/orderItem.component";
 
 const Orders = () => {
+  const GETORDERBYUSER_API_URL =
+    import.meta.env.VITE_API_URL_GETORDERBYUSER || VITE_API_URL_GETORDERBYUSER;
   const { userName } = useContext(UserContext);
   const [orderItems, setOrderItems] = useState([]);
   useEffect(() => {
     const getOrders = async () => {
-      const result = await axios.get(
-        `http://localhost:3000/api/orders/getOrderByUser/${userName}`
-      );
+      const result = await axios.get(`${GETORDERBYUSER_API_URL}/${userName}`);
       if (result.status === 200) {
         setOrderItems(result.data);
       }

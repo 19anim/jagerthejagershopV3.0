@@ -27,6 +27,8 @@ const paymentOptions = [
 ];
 
 const PlaceOrder = () => {
+  const PLACEORDER_API_URL =
+    import.meta.env.VITE_API_URL_PLACEORDER || VITE_API_URL_PLACEORDER;
   const modalRef = useRef();
   const navigate = useNavigate();
   const [paymentMethodValue, setPaymentMethodValue] = useState(
@@ -35,7 +37,7 @@ const PlaceOrder = () => {
   const { deliveryPrice, subtotal, cartItems, setCartItems, setDeliveryPrice } =
     useContext(CartContext);
   const { userName, userInfor, isLoggedIn } = useContext(UserContext);
-  const [ orderDetailId, setOrderDetailId ] = useState("");
+  const [orderDetailId, setOrderDetailId] = useState("");
 
   const handleOnChange = (event) => {
     const chosenOption = paymentOptions.find((paymentOption) => {
@@ -47,7 +49,7 @@ const PlaceOrder = () => {
   const handleOnSubmit = async (event) => {
     event.preventDefault();
     try {
-      const result = await axios.post(import.meta.env.VITE_API_URL_PLACEORDER, {
+      const result = await axios.post(PLACEORDER_API_URL, {
         order: {
           userName: userName !== "" ? userName : "Guess",
           userInfor: userInfor,
@@ -98,8 +100,12 @@ const PlaceOrder = () => {
         >
           <div className="w-[500px] h-[200px] bg-[#363636] rounded-xl flex flex-col justify-center items-center gap-2">
             <p className="text-mainOrange text-3xl">Order Successfully</p>
-            <p className="text-wheat text-lg text-center">Thank you for purchasing at JAGERTHEJAGERSHOP</p>
-            <p className="text-wheat text-lg text-center">Ở đây iem bán thuốc ho con hươu</p>
+            <p className="text-wheat text-lg text-center">
+              Thank you for purchasing at JAGERTHEJAGERSHOP
+            </p>
+            <p className="text-wheat text-lg text-center">
+              Ở đây iem bán thuốc ho con hươu
+            </p>
             <FitButton onClick={handleModal}>Close</FitButton>
           </div>
         </div>

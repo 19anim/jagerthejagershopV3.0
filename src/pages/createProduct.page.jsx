@@ -20,6 +20,8 @@ const defaultProductInfor = {
 };
 
 const CreateProductPage = () => {
+  const CREATEPRODUCT_API_URL =
+    import.meta.env.VITE_API_URL_CREATEPRODUCT || VITE_API_URL_CREATEPRODUCT;
   const [productInfor, setProductInfor] = useState(defaultProductInfor);
   const {
     name,
@@ -55,10 +57,7 @@ const CreateProductPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:3000/api/products/create",
-        productInfor
-      );
+      const res = await axios.post(CREATEPRODUCT_API_URL, productInfor);
       if (res.status === 200) {
         setProductInfor(defaultProductInfor);
         alert("Product added");

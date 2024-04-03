@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import OrderDetailItem from "./orderDetailItem.component";
 
 const OrderDetail = () => {
+  const GETORDERBYORDERID_API_URL =
+    import.meta.env.VITE_API_URL_GETORDERBYORDERID ||
+    VITE_API_URL_GETORDERBYORDERID;
   const { orderId } = useParams();
   const [orderItem, setOrderItem] = useState({});
   useEffect(() => {
     const getOrder = async () => {
-      const result = await axios.get(
-        `http://localhost:3000/api/orders/getOrderByOrderId/${orderId}`
-      );
+      const result = await axios.get(`${GETORDERBYORDERID_API_URL}/${orderId}`);
       setOrderItem(result.data);
     };
     if (orderId) getOrder();

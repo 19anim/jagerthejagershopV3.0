@@ -11,7 +11,7 @@ const defaultFormField = {
   password: "",
 };
 
-const baseAPIURL = import.meta.env.VITE_BASE_API_URL;
+const LOGIN_API_URL = import.meta.env.VITE_API_URL_LOGIN || VITE_API_URL_LOGIN;
 
 const SignInForm = () => {
   const [formField, setFormField] = useState(defaultFormField);
@@ -30,7 +30,7 @@ const SignInForm = () => {
     event.preventDefault();
 
     try {
-      const result = await axios.post(`${baseAPIURL}/users/login`, formField, {
+      const result = await axios.post(LOGIN_API_URL, formField, {
         withCredentials: true,
       });
       if (result.status == 200) {

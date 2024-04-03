@@ -6,6 +6,7 @@ import { CartContext } from "../../context/cart.context";
 import { UserContext } from "../../context/user.context";
 
 const EstimatedTransferFee = () => {
+  const AHAMOVE_API_URL = import.meta.env.VITE_API_AHAMOVE || VITE_API_AHAMOVE;
   const { deliveryPrice, setDeliveryPrice } = useContext(CartContext);
   const { userInfor, setUserInfor, isLoggedIn, updateUserInfor } =
     useContext(UserContext);
@@ -60,10 +61,7 @@ const EstimatedTransferFee = () => {
     addressPayload.path[1].address = `${userInfor.address}, ${userInfor.ward}, ${userInfor.district}, Hồ Chí Minh, Việt Nam`;
     addressPayload.token = import.meta.env.VITE_DELIVERY_ACCESS_TOKEN;
     try {
-      const result = await axios.post(
-        "https://api.ahamove.com/v2/order/estimated_fee",
-        addressPayload
-      );
+      const result = await axios.post(AHAMOVE_API_URL, addressPayload);
       if (result.status == 200) {
         setDeliveryPrice(result.data[0].total_pay);
       }

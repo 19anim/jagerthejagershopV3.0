@@ -2,7 +2,7 @@ import FloattingInput from "../floatting-input/floatting-input.component";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import errorMessage from "../errorMessage/errorMessage.component"
+import errorMessage from "../errorMessage/errorMessage.component";
 
 const defaultFormField = {
   email: "",
@@ -12,6 +12,8 @@ const defaultFormField = {
 };
 
 const SignUpForm = () => {
+  const REGISTER_API_URL =
+    import.meta.env.VITE_API_URL_REGISTER || VITE_API_URL_REGISTER;
   const [formField, setFormField] = useState(defaultFormField);
   const { email, userName, password, confirmPassword } = formField;
   const navigate = useNavigate();
@@ -27,8 +29,8 @@ const SignUpForm = () => {
     }
 
     try {
-      const result = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/users/addNewUser`, formField);
-      if(result.status == 200){
+      const result = await axios.post(REGISTER_API_URL, formField);
+      if (result.status == 200) {
         navigate("/authentication/sign-in");
       }
     } catch (error) {

@@ -6,7 +6,8 @@ export const CategoriesContext = createContext({
 });
 
 export const CategoriesProvider = ({ children }) => {
-  const API_GET_CATEGORIES = "http://localhost:3000/api/categories/getAllCategories";
+  const API_GET_CATEGORIES =
+    import.meta.env.VITE_API_URL_GETCATEGORIES || VITE_API_URL_GETCATEGORIES;
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export const CategoriesProvider = ({ children }) => {
     fetchCategories();
   }, []);
 
-  const value = {categories};
+  const value = { categories };
   return (
     <CategoriesContext.Provider value={value}>
       {children}
