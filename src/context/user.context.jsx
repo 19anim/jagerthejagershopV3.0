@@ -13,9 +13,10 @@ export const UserContext = createContext({
   setUserInfor: () => {},
   defaultUserInfor: {},
 });
-
-const GETUSER_API_URL =
-  import.meta.env.VITE_API_URL_GETUSER || VITE_API_URL_GETUSER;
+const OAUTH_API_URL = import.meta.env.VITE_API_URL_OAuth || VITE_API_URL_OAuth;
+const GETUSERINFORMATION_API_URL =
+  import.meta.env.VITE_API_URL_GETUSERINFORMATION ||
+  VITE_API_URL_GETUSERINFORMATION;
 
 export const UserProvider = ({ children }) => {
   const defaultUserInfor = {
@@ -37,7 +38,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const isUserLoggedIn = async () => {
-      const result = await axios(GETUSER_API_URL, {
+      const result = await axios(OAUTH_API_URL, {
         withCredentials: true,
       });
       setIsLoggedIn(result.data.isLoggedIn);
@@ -57,7 +58,7 @@ export const UserProvider = ({ children }) => {
     const getUserInfor = async () => {
       try {
         const result = await axios.post(
-          `${import.meta.env.VITE_BASE_API_URL}/users/getUserInformation`,
+          GETUSERINFORMATION_API_URL,
           { userName: userName },
           { withCredentials: true }
         );
