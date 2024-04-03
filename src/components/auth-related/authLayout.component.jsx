@@ -1,12 +1,18 @@
 import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
-  const BACKGROUND_IMAGE = import.meta.env.VITE_AUTH_BACKGROUND_IMAGE;
+  const BACKGROUND_IMAGE = import.meta.env.VITE_AUTH_BACKGROUND_IMAGE
+    ? import.meta.env.VITE_AUTH_BACKGROUND_IMAGE
+    : VITE_AUTH_BACKGROUND_IMAGE;
 
   return (
     <div className="grid grid-cols-[40%_60%] gap-3 bg-mainGreen rounded-3xl p-3">
       <div className=" drop-shadow-[0_0_10px_black]">
-        <img className="rounded-3xl min-h-[275px]" src={BACKGROUND_IMAGE} alt="a" />
+        <img
+          className="rounded-3xl min-h-[275px]"
+          src={BACKGROUND_IMAGE}
+          alt="a"
+        />
       </div>
       <div className="flex flex-col justify-center items-center">
         <div className="flex flex-col justify-center items-center w-full">
