@@ -15,6 +15,8 @@ export const UserContext = createContext({
 });
 
 export const UserProvider = ({ children }) => {
+  const GETUSER_API_URL =
+    import.meta.env.VITE_API_URL_GETUSER || VITE_API_URL_GETUSER;
   const defaultUserInfor = {
     userName: "",
     email: "",
@@ -34,12 +36,9 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const isUserLoggedIn = async () => {
-      const result = await axios(
-        `${import.meta.env.VITE_BASE_API_URL}/users/oAuth`,
-        {
-          withCredentials: true,
-        }
-      );
+      const result = await axios(GETUSER_API_URL, {
+        withCredentials: true,
+      });
       setIsLoggedIn(result.data.isLoggedIn);
       if (result.status == 200) {
         setUserName(result.data.userInfor.userName);
@@ -50,7 +49,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    setUserName(userInfor.userName)
+    setUserName(userInfor.userName);
   }, [userInfor.userName]);
 
   useEffect(() => {

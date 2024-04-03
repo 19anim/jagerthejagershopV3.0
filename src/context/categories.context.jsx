@@ -8,6 +8,7 @@ export const CategoriesContext = createContext({
 export const CategoriesProvider = ({ children }) => {
   const API_GET_CATEGORIES =
     import.meta.env.VITE_API_URL_GETCATEGORIES || VITE_API_URL_GETCATEGORIES;
+  console.log(API_GET_CATEGORIES);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
