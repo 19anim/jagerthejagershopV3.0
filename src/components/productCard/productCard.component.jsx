@@ -28,10 +28,10 @@ const ProductCard = ({ product }) => {
           style={{ backgroundImage: `url(${image})` }}
         ></div>
         <div className="md:h-[150px] h-[40%] text-black font-[Montserrat] px-5">
-          <p className="font-bold text-lg md:h-[56px] md:text-[18px] text-[12px] md:leading-7 leading-4">{name}</p>
-          <p className=" font-medium text-sm md:text-[14px] text-[10px]">Price: {price}</p>
+          <p className="font-bold  md:h-[56px] text-[12px] md:text-lg md:leading-7 leading-4">{name}</p>
+          <p className=" font-medium md:text-sm text-[10px]">Price: {price}</p>
           <div className="flex flex-col md:grid md:grid-cols-[30%_70%]">
-            <div className="flex items-center md:text-[16px] text-[12px]">
+            <div className="flex items-center text-[12px] md:text-[16px]">
               <button className="flex items-center md" onClick={handleMinusButton}>
                 <ion-icon name="remove-circle-outline"></ion-icon>
               </button>
