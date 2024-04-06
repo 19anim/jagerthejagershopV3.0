@@ -3,16 +3,14 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <div className="pt-10">
-      <div className="flex justify-center gap-10 items-center pb-5">
+      <div className="flex justify-center gap-3 md:gap-10 items-center pb-5">
         <div>Products</div>
         <div>Videos</div>
-        <div className="max-w-[60px]">
-          <img src="../src/assets/logo.png" alt="" />
-        </div>
+        <img className="w-[60px] md:w-[80px]" src="../src/assets/logo.png" alt="" />
         <div>Contact Us</div>
         <div>About Us</div>
       </div>
-      <div className="px-[200px]">
+      <div className="px-[10vw]">
         <hr></hr>
       </div>
       <div className="flex justify-center gap-10 items-center pt-5 text-2xl">

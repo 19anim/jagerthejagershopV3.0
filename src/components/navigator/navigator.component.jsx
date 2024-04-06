@@ -31,8 +31,8 @@ const Navigator = () => {
   return (
     <Fragment>
       <div className="flex justify-between items-center pb-[20px]">
-        <img src={Logo} alt="logo" className="w-[180px] h-[180px]" />
-        <div className="flex gap-8">
+        <img src={Logo} alt="logo" className="w-[90px] md:w-[180px]" />
+        <div className="flex gap-1 md:gap-8">
           {navigatorItems.map((navigatorItem) => {
             const { iconClassName, title, href } = navigatorItem;
 
@@ -43,12 +43,12 @@ const Navigator = () => {
                 className="group flex items-center gap-x-1 hover:cursor-pointer hover:px-5 hover:py-[5px] hover:text-black hover:rounded-[30px] hover:bg-mainOrange transition-all"
               >
                 <ion-icon name={iconClassName} class="text-2xl"></ion-icon>
-                <span className="group-hover:block hidden">{title}</span>
+                <span className="md:group-hover:block hidden">{title}</span>
               </Link>
             );
           })}
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-1 md:gap-4">
           {isLoggedIn ? <UserIcon /> : <SignInIcon />}
           <CartIcon cartDropdownRef={cartDropdownRef} />
         </div>

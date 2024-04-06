@@ -23,7 +23,7 @@ const ProductPerCategory = () => {
     fetchCategory();
   }, []);
   return (
-    <div className="grid grid-cols-[repeat(5,1fr)]">
+    <div className="grid md:grid-cols-[repeat(5,1fr)] grid-cols-[repeat(2,1fr)]">
       {products.map((product) => {
         return <ProductCard key={product._id} product={product}></ProductCard>;
       })}

@@ -22,21 +22,21 @@ const ProductCard = ({ product }) => {
   };
   return (
     <>
-      <div className="w-[315px] h-[525px] bg-[#fefcfb] rounded-[50px_50px_20px_20px] mx-4 mb-3">
+      <div className="md:w-[315px] md:h-[525px] h-[250px] bg-[#fefcfb] rounded-[50px_50px_20px_20px] mx-4 mb-3">
         <div
-          className="w-[100%] h-[375px] bg-center bg-cover rounded-[20px_20px_0_0] mb-[17.5px]"
+          className="md:w-[100%] md:h-[375px] w-full h-[60%] bg-center bg-cover rounded-[20px_20px_0_0] mb-2 md:mb-[17.5px]"
           style={{ backgroundImage: `url(${image})` }}
         ></div>
-        <div className="h-[150px] text-black font-[Montserrat] px-5">
-          <p className="font-bold text-lg h-[56px]">{name}</p>
-          <p className=" font-medium text-sm">Price: {price}</p>
-          <div className="grid grid-cols-[30%_70%]">
-            <div className="flex items-center">
-              <button className="flex items-center" onClick={handleMinusButton}>
+        <div className="md:h-[150px] h-[40%] text-black font-[Montserrat] px-5">
+          <p className="font-bold text-lg md:h-[56px] md:text-[18px] text-[12px] md:leading-7 leading-4">{name}</p>
+          <p className=" font-medium text-sm md:text-[14px] text-[10px]">Price: {price}</p>
+          <div className="flex flex-col md:grid md:grid-cols-[30%_70%]">
+            <div className="flex items-center md:text-[16px] text-[12px]">
+              <button className="flex items-center md" onClick={handleMinusButton}>
                 <ion-icon name="remove-circle-outline"></ion-icon>
               </button>
               <input
-                className="w-[30px] text-center"
+                className="md:w-[30px] w-[20px] text-center"
                 type="number"
                 value={quantity}
                 onChange={handleQuantityOnChange}
@@ -46,7 +46,7 @@ const ProductCard = ({ product }) => {
               </button>
             </div>
             <button
-              className="py-2 px-4 border rounded-3xl bg-mainOrange"
+              className="md:py-2 md:px-4 px-2 w-fit md:text-[16px] text-[8px] border rounded-3xl bg-mainOrange"
               onClick={addProductToCart}
             >
               ADD TO CART

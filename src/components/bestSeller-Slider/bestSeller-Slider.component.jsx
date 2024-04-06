@@ -69,14 +69,14 @@ const BestSellerSlider = () => {
                 style={{ backgroundImage: `url(${bestSellerItem.Image})` }}
                 className="slide-item w-[200px] h-[300px] absolute top-[50%] left- translate-y-[-50%] rounded-[20px] shadow-[0_30px_50px_#505050] bg-[50%_50%] bg-cover inline-block duration-500"
               >
-                <div className="slide-item--content absolute top-[50%] left-[100px] text-left translate-y-[-50%] hidden">
-                  <div className="content--name text-[40px]">
+                <div className="slide-item--content absolute top-[25%] left-[30px] md:top-[50%] md:left-[100px] text-left translate-y-[-50%] hidden">
+                  <div className="content--name text-[30px] md:text-[40px]">
                     {bestSellerItem.Name}
                   </div>
-                  <div className="content--price text-[20px] mt-[10px] mb-[20px]">
+                  <div className="content--price text-[15px] md:text-[20px] md:mt-[10px] md:mb-[20px] mt-[7.5px] mb-[15px]">
                     Chỉ với {bestSellerItem.Price} VNĐ
                   </div>
-                  <button className="content--button px-[20px] py-[10px] border-none cursor-pointer bg-mainOrange text-black">
+                  <button className="content--button px-[15px] py-[7.5px] md:px-[20px] md:py-[10px] border-none cursor-pointer bg-mainOrange text-black">
                     See more
                   </button>
                 </div>
