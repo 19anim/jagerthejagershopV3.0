@@ -13,7 +13,7 @@ const UserIcon = () => {
   const { setDeliveryPrice } = useContext(CartContext);
   const navigate = useNavigate();
   const handleLogOut = () => {
-    axios.get(VITE_API_URL_LOGOUT, {
+    axios.get(LOGOUT_API_URL, {
       withCredentials: true,
     });
     navigate("/");

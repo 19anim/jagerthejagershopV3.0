@@ -38,9 +38,9 @@ const SignUpForm = () => {
     }
   };
   return (
-    <div className="w-[40%] flex flex-col gap-3 items-center">
+    <div className="lg:w-[60%] 2xl:w-[40%] w-[80%] mt-5 flex flex-col gap-3 items-center">
       <h2 className="text-2xl">
-        <strong>Login</strong>
+        <strong>Register</strong>
       </h2>
       <form
         onSubmit={handleSubmit}

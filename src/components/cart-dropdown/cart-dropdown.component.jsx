@@ -28,7 +28,7 @@ const CartDropdown = forwardRef(function CartDropdown(props, ref) {
     <div
       ref={ref}
       id="cart-dropdown"
-      className="w-[415px] duration-1000 bg-mainGreen text-wheat fixed inset-[0_-415px_0_auto] z-10 grid grid-rows-[70px_1fr_70px_200px]"
+      className="sm:w-[415px] w-full duration-1000 bg-mainGreen text-wheat fixed inset-[0_-641px_0_auto] z-10 grid grid-rows-[70px_1fr_70px_200px]"
     >
       <h2 className="font-semibold text-3xl m-auto">SHOPPING CART</h2>
       <div className="p-5 overflow-y-scroll scrollbar-black scrollbar-webkit">

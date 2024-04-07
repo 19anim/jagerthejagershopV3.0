@@ -46,7 +46,7 @@ const SignInForm = () => {
     }
   };
   return (
-    <div className="mt-5 w-[40%] flex flex-col gap-3 items-center">
+    <div className="lg:w-[60%] 2xl:w-[40%] w-[80%] mt-5 flex flex-col gap-3 items-center">
       <h2 className="text-2xl">
         <strong>Login</strong>
       </h2>

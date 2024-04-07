@@ -71,7 +71,7 @@ export const CartProvider = ({ children }) => {
     if (cartDropdownRef.current !== null) {
       const classList = cartDropdownRef.current.classList;
       classList.toggle("inset-[0_0_0_auto]");
-      classList.toggle("inset-[0_-415px_0_auto]");
+      classList.toggle("inset-[0_-641px_0_auto]");
     }
   };
 

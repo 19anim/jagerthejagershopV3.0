@@ -28,6 +28,7 @@ export const UserProvider = ({ children }) => {
     district: "",
     city: "",
     phoneNumber: "",
+    role: [],
   };
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
