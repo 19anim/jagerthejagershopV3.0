@@ -1,2 +1,2 @@
-/api/* https://jagerthejagershopv3-0-be.onrender.com/api/:splat 200
+/api/users/login https://jagerthejagershopv3-0-be.onrender.com/api/users/login 200
 /* /index.html 200
