@@ -8,7 +8,7 @@ import Logo from "../../assets/logo.png";
 const UserIcon = () => {
   const LOGOUT_API_URL =
     import.meta.env.VITE_API_URL_LOGOUT || VITE_API_URL_LOGOUT;
-  const { setIsLoggedIn, userName, email, setUserInfor, defaultUserInfor } =
+  const { setIsLoggedIn, userName, setUserName, email, setUserInfor, defaultUserInfor } =
     useContext(UserContext);
   const { setDeliveryPrice } = useContext(CartContext);
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ const UserIcon = () => {
     navigate("/");
     setIsLoggedIn(false);
     setUserInfor(defaultUserInfor);
+    setUserName("");
     setDeliveryPrice(0);
   };
   return (
