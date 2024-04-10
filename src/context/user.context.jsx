@@ -44,6 +44,7 @@ export const UserProvider = ({ children }) => {
       setIsLoggedIn(result.data.isLoggedIn);
       if (result.status == 200) {
         //setUserName(result.data.userInfor.userName);
+        setUserInfor(result.data.userInfor);
         setEmail(result.data.userInfor.email);
       }
     };
