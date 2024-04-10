@@ -6,7 +6,8 @@ import OrderItem from "../orderHistory/orderItem.component";
 const Orders = () => {
   const GETORDERBYUSER_API_URL =
     import.meta.env.VITE_API_URL_GETORDERBYUSER || VITE_API_URL_GETORDERBYUSER;
-  const { userName } = useContext(UserContext);
+  const { userInfor } = useContext(UserContext);
+  const { userName } = userInfor;
   const [orderItems, setOrderItems] = useState([]);
   useEffect(() => {
     const getOrders = async () => {

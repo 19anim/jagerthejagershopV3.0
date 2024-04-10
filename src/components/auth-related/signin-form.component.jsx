@@ -19,7 +19,8 @@ const SignInForm = () => {
   const [isNotValidUser, setIsNotValidUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const { setIsLoggedIn, setUserName, setEmail } = useContext(UserContext);
+  const { setIsLoggedIn, setUserInfor, userInfor, setEmail } =
+    useContext(UserContext);
   const { setDeliveryPrice } = useContext(CartContext);
 
   const handleChange = (event) => {
@@ -35,7 +36,7 @@ const SignInForm = () => {
       });
       if (result.status == 200) {
         setIsLoggedIn(true);
-        setUserName(result.data.userName);
+        setUserInfor({ ...userInfor, userName: result.data.userName });
         setEmail(result.data.email);
         setDeliveryPrice(0);
         navigate("/user/userInformation");

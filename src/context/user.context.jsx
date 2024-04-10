@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 export const UserContext = createContext({
   isLoggedIn: false,
   setIsLoggedIn: () => {},
-  userName: "",
-  setUserName: () => {},
   email: "",
   setEmail: () => {},
   userInfor: {},
@@ -14,6 +12,7 @@ export const UserContext = createContext({
   defaultUserInfor: {},
 });
 const OAUTH_API_URL = import.meta.env.VITE_API_URL_OAuth || VITE_API_URL_OAuth;
+const UPDATEUSERINFORMATION_API_URL = import.meta.env.VITE_API_URL_UPDATEUSERINFORMATION || VITE_API_URL_UPDATEUSERINFORMATION;
 const GETUSERINFORMATION_API_URL =
   import.meta.env.VITE_API_URL_GETUSERINFORMATION ||
   VITE_API_URL_GETUSERINFORMATION;
@@ -32,7 +31,7 @@ export const UserProvider = ({ children }) => {
   };
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [userName, setUserName] = useState("");
+  //const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [userInfor, setUserInfor] = useState(defaultUserInfor);
   const navigate = useNavigate();
@@ -51,16 +50,18 @@ export const UserProvider = ({ children }) => {
     isUserLoggedIn();
   }, []);
 
-  useEffect(() => {
-    setUserName(userInfor.userName);
-  }, [userInfor.userName]);
+  // useEffect(() => {
+  //   console.log(userInfor);
+  //   setUserName(userInfor.userName);
+  // }, [userInfor.userName]);
 
   useEffect(() => {
     const getUserInfor = async () => {
       try {
+        console.log(userInfor)
         const result = await axios.post(
           GETUSERINFORMATION_API_URL,
-          { userName: userName },
+          { userName: userInfor.userName },
           { withCredentials: true }
         );
         if (result.status == 200 && result.data !== null) {
@@ -80,9 +81,7 @@ export const UserProvider = ({ children }) => {
   const updateUserInfor = async (newUserInfor, isNavigated = true) => {
     try {
       const result = await axios.put(
-        `${
-          import.meta.env.VITE_BASE_API_URL
-        }/users/editUserInformation/${userName}`,
+        `${UPDATEUSERINFORMATION_API_URL}/${userInfor.userName}`,
         newUserInfor
         //{ withCredentials: true }
       );
@@ -99,8 +98,6 @@ export const UserProvider = ({ children }) => {
   const value = {
     isLoggedIn,
     setIsLoggedIn,
-    userName,
-    setUserName,
     email,
     setEmail,
     userInfor,

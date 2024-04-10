@@ -38,7 +38,8 @@ const PlaceOrder = () => {
   );
   const { deliveryPrice, subtotal, cartItems, setCartItems, setDeliveryPrice } =
     useContext(CartContext);
-  const { userName, userInfor, isLoggedIn } = useContext(UserContext);
+  const { userInfor, isLoggedIn } = useContext(UserContext);
+  const { userName } = userInfor;
   const [orderDetailId, setOrderDetailId] = useState("");
 
   const handleOnChange = (event) => {

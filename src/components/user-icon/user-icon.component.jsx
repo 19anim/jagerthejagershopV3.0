@@ -8,8 +8,9 @@ import Logo from "../../assets/logo.png";
 const UserIcon = () => {
   const LOGOUT_API_URL =
     import.meta.env.VITE_API_URL_LOGOUT || VITE_API_URL_LOGOUT;
-  const { setIsLoggedIn, userName, setUserName, email, setUserInfor, defaultUserInfor } =
+  const { setIsLoggedIn, email, userInfor, setUserInfor, defaultUserInfor } =
     useContext(UserContext);
+  const { userName } = userInfor;
   const { setDeliveryPrice } = useContext(CartContext);
   const navigate = useNavigate();
   const handleLogOut = () => {
@@ -19,7 +20,6 @@ const UserIcon = () => {
     navigate("/");
     setIsLoggedIn(false);
     setUserInfor(defaultUserInfor);
-    setUserName("");
     setDeliveryPrice(0);
   };
   return (

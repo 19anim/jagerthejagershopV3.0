@@ -10,13 +10,6 @@ const CartDropdown = forwardRef(function CartDropdown(props, ref) {
   const handleCartOnClick = () => {
     toggleIsCartOpen(ref);
   };
-  const tempItem = {
-    name: "Jagermeister Original 1000ml",
-    image:
-      "https://i.pinimg.com/564x/fc/e8/b8/fce8b83ae9866f04933103b9fa8be106.jpg",
-    priceInInteger: "500.000 VNĐ",
-    quantity: 1,
-  };
   const calculateTotal = () => {
     let result = cartItems.reduce((acc, cartItem) => {
       return acc + cartItem.priceInInteger * cartItem.quantity;
