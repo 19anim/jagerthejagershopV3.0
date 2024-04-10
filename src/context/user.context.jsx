@@ -39,7 +39,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const isUserLoggedIn = async () => {
-      const result = await axios(OAUTH_API_URL, null, {
+      const result = await axios(OAUTH_API_URL, {
         withCredentials: true,
       });
       setIsLoggedIn(result.data.isLoggedIn);
