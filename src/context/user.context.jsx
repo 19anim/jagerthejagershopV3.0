@@ -43,7 +43,7 @@ export const UserProvider = ({ children }) => {
       });
       setIsLoggedIn(result.data.isLoggedIn);
       if (result.status == 200) {
-        setUserName(result.data.userInfor.userName);
+        //setUserName(result.data.userInfor.userName);
         setEmail(result.data.userInfor.email);
       }
     };
@@ -58,7 +58,6 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const getUserInfor = async () => {
       try {
-        console.log(userInfor)
         const result = await axios.post(
           GETUSERINFORMATION_API_URL,
           { userName: userInfor.userName },
