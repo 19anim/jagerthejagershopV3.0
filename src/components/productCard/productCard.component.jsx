@@ -28,10 +28,10 @@ const ProductCard = ({ product }) => {
           style={{ backgroundImage: `url(${image})` }}
         ></div>
         <div className="md:h-[150px] h-[40%] text-black font-[Montserrat] md:px-5 px-2">
-          <p className="font-bold  md:h-[56px] sm:h-[32px] text-[11px] sm:text-[15px] md:text-lg md:leading-7 leading-4">{name}</p>
-          <p className=" font-medium md:text-sm sm:text-[12px] text-[10px]">Price: {price}</p>
+          <p className="font-bold  md:h-[56px] sm:h-[32px] text-[2.5vw] sm:text-[15px] md:text-lg md:leading-7 leading-4">{name}</p>
+          <p className=" font-medium md:text-sm sm:text-[12px] text-[2.1vw]">Price: {price}</p>
           <div className="flex flex-col sm:grid sm:grid-cols-[30%_70%]">
-            <div className="flex items-center text-[12px] sm:text-[16px]">
+            <div className="flex items-center text-[2.1vw] sm:text-[16px]">
               <button className="flex items-center md" onClick={handleMinusButton}>
                 <ion-icon name="remove-circle-outline"></ion-icon>
               </button>
@@ -46,7 +46,7 @@ const ProductCard = ({ product }) => {
               </button>
             </div>
             <button
-              className="md:py-2 md:px-4 px-2 w-fit md:text-[16px] sm:text-[12px] text-[8px] border rounded-3xl bg-mainOrange"
+              className="md:py-2 md:px-4 px-2 w-fit md:text-[16px] sm:text-[12px] text-[1.8vw] border rounded-3xl bg-mainOrange"
               onClick={addProductToCart}
             >
               ADD TO CART
