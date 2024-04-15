@@ -1,0 +1,15 @@
+.loading-spinner--text {
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 2vw;
+  width: 100%;
+  letter-spacing: 5px;
+  padding: 0px 10px;
+  animation: typing 3s steps(30) infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}
