@@ -3,21 +3,25 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/user.context";
 import OrderItem from "../orderHistory/orderItem.component";
 
-const Orders = () => {
-  const GETORDERBYUSER_API_URL =
-    import.meta.env.VITE_API_URL_GETORDERBYUSER || VITE_API_URL_GETORDERBYUSER;
+const AdminOrdersList = () => {
+  const GETALLORDERS_API_URL =
+    import.meta.env.VITE_API_URL_GETALLORDERS || VITE_API_URL_GETALLORDERS;
   const { userInfor } = useContext(UserContext);
   const { userName } = userInfor;
   const [orderItems, setOrderItems] = useState([]);
+  
   useEffect(() => {
     const getOrders = async () => {
-      const result = await axios.get(`${GETORDERBYUSER_API_URL}/${userName}`);
+      const result = await axios.post(GETALLORDERS_API_URL, {
+        userName: userName,
+      });
       if (result.status === 200) {
         setOrderItems(result.data);
       }
-    }
-    getOrders()
-  }, []);
+    };
+    getOrders();
+  }, [userName]);
+
   return (
     <div className="bg-mainGreen rounded-3xl p-8">
       <h3 className="text-3xl font-bold text-mainOrange">ORDER LIST</h3>
@@ -38,4 +42,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default AdminOrdersList;

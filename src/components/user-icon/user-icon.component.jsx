@@ -21,6 +21,7 @@ const UserIcon = () => {
     setIsLoggedIn(false);
     setUserInfor(defaultUserInfor);
     setDeliveryPrice(0);
+    localStorage.removeItem("isAdmin");
   };
   return (
     <div className="group relative">

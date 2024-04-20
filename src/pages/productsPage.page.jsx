@@ -7,7 +7,6 @@ const ProductsPage = () => {
   return (
     <Routes>
       <Route index element={<CategoriesPage />} />
-      <Route path="/create" element={<CreateProductPage />} />
       <Route path=":slug" element={<ProductPerCategory />} />
     </Routes>
   );

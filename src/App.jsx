@@ -4,9 +4,9 @@ import ProductsPage from "./pages/productsPage.page";
 import AuthPage from "./pages/auth.page";
 import UserPage from "./pages/user.page";
 import CartCheckoutPage from "./pages/cartCheckout.page";
+import AdminProtectedRoutes from "./components/adminProtectedRoutes/adminProtectedRoutes.component";
 import { UserContext } from "./context/user.context";
 import { useContext, useEffect } from "react";
-import axios from "axios";
 
 const App = () => {
   const { isLoggedIn, setIsLoggedIn, setUserName, setEmail } =
@@ -21,6 +21,7 @@ const App = () => {
       />
       <Route path="/user/*" element={<UserPage />} />
       <Route path="/cartCheckout/*" element={<CartCheckoutPage />} />
+      <Route path="/admin/*" element={<AdminProtectedRoutes />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

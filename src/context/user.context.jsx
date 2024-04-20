@@ -4,15 +4,20 @@ import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext({
   isLoggedIn: false,
+  isAdmin: false,
   setIsLoggedIn: () => {},
   email: "",
   setEmail: () => {},
   userInfor: {},
   setUserInfor: () => {},
+  updateUserInfor: () => {},
   defaultUserInfor: {},
 });
+
 const OAUTH_API_URL = import.meta.env.VITE_API_URL_OAuth || VITE_API_URL_OAuth;
-const UPDATEUSERINFORMATION_API_URL = import.meta.env.VITE_API_URL_UPDATEUSERINFORMATION || VITE_API_URL_UPDATEUSERINFORMATION;
+const UPDATEUSERINFORMATION_API_URL =
+  import.meta.env.VITE_API_URL_UPDATEUSERINFORMATION ||
+  VITE_API_URL_UPDATEUSERINFORMATION;
 const GETUSERINFORMATION_API_URL =
   import.meta.env.VITE_API_URL_GETUSERINFORMATION ||
   VITE_API_URL_GETUSERINFORMATION;
@@ -29,12 +34,15 @@ export const UserProvider = ({ children }) => {
     phoneNumber: "",
     role: [],
   };
+  const ADMIN_ROLE = "ADMIN";
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-  //const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [userInfor, setUserInfor] = useState(defaultUserInfor);
   const navigate = useNavigate();
+  
+  const isAdminData = localStorage.getItem("isAdmin");
+  const [isAdmin, setIsAdmin] = useState(isAdminData ? isAdminData : false);
 
   useEffect(() => {
     const isUserLoggedIn = async () => {
@@ -43,18 +51,13 @@ export const UserProvider = ({ children }) => {
       });
       setIsLoggedIn(result.data.isLoggedIn);
       if (result.status == 200) {
-        //setUserName(result.data.userInfor.userName);
         setUserInfor(result.data.userInfor);
         setEmail(result.data.userInfor.email);
       }
     };
+
     isUserLoggedIn();
   }, []);
-
-  // useEffect(() => {
-  //   console.log(userInfor);
-  //   setUserName(userInfor.userName);
-  // }, [userInfor.userName]);
 
   useEffect(() => {
     const getUserInfor = async () => {
@@ -66,7 +69,12 @@ export const UserProvider = ({ children }) => {
         );
         if (result.status == 200 && result.data !== null) {
           const { data } = result;
+          const userRolesName = data.roles.map((role) => role.role);
+          const haveAdminRole =
+            userRolesName.indexOf(ADMIN_ROLE) !== -1 ? true : false;
           setUserInfor(data);
+          setIsAdmin(haveAdminRole);
+          localStorage.setItem("isAdmin", haveAdminRole);
         }
       } catch (error) {
         console.log(error);
@@ -97,6 +105,7 @@ export const UserProvider = ({ children }) => {
 
   const value = {
     isLoggedIn,
+    isAdmin,
     setIsLoggedIn,
     email,
     setEmail,

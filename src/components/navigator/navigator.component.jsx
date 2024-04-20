@@ -23,8 +23,14 @@ const Navigator = () => {
     },
     {
       iconClassName: "add-circle-outline",
-      title: "Add new products - admin",
-      href: "/products/create",
+      title: "Add new products",
+      href: "/admin/createProduct",
+      adminItem: true,
+    },
+    {
+      iconClassName: "documents-outline",
+      title: "Orders to handle",
+      href: "/admin/orders",
       adminItem: true,
     },
   ];

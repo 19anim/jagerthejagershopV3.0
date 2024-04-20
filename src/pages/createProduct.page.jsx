@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import DropdownList from "../components/dropdown-list/dropdown-list.component";
 import InputField from "../components/inputField/inputField.component";
 import CheckBoxField from "../components/checkbox/checkbox.component";
 import { CategoriesContext } from "../context/categories.context";
+import { UserContext } from "../context/user.context";
 
 const defaultProductInfor = {
   name: "",
@@ -22,6 +23,8 @@ const defaultProductInfor = {
 const CreateProductPage = () => {
   const CREATEPRODUCT_API_URL =
     import.meta.env.VITE_API_URL_CREATEPRODUCT || VITE_API_URL_CREATEPRODUCT;
+  const { userInfor } = useContext(UserContext);
+  const { userName } = userInfor;
   const [productInfor, setProductInfor] = useState(defaultProductInfor);
   const {
     name,
@@ -37,6 +40,13 @@ const CreateProductPage = () => {
   } = productInfor;
 
   const categoriesContextValue = useContext(CategoriesContext);
+
+  useEffect(() => {
+    const getOrders = async () => {
+      const result = await axios.post("http://localhost:3000/api/orders/getAllOrders", {userName: userName});
+    };
+    getOrders();
+  }, [])
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
