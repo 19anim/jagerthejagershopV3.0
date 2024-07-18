@@ -2,7 +2,7 @@ const FloattingInput = ({ inputOption, labelName }) => {
   return (
     <div className="relative flex flex-col w-full">
       <input
-        className="peer/input focus:border-mainOrange transition-all bg-mainGreen outline-none p-[10px] rounded-md border border-[#ffffff40]"
+        className="focus:border-mainOrange transition-all bg-mainGreen outline-none p-[10px] rounded-md border border-[#ffffff40]"
         {...inputOption}
       />
       <span
