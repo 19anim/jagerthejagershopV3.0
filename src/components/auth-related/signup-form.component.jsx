@@ -2,7 +2,9 @@ import FloattingInput from "../floatting-input/floatting-input.component";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import errorMessage from "../errorMessage/errorMessage.component";
+import { apiUrl } from "../../utils/api.utils";
+import { useLocale } from "../../context/locale.context";
+import ErrorMessage from "../errorMessage/errorMessage.component";
 
 const defaultFormField = {
   email: "",
@@ -12,36 +14,44 @@ const defaultFormField = {
 };
 
 const SignUpForm = () => {
-  const REGISTER_API_URL =
-    import.meta.env.VITE_API_URL_REGISTER || VITE_API_URL_REGISTER;
+  const REGISTER_API_URL = apiUrl("/api/users/addNewUser");
   const [formField, setFormField] = useState(defaultFormField);
   const { email, userName, password, confirmPassword } = formField;
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState({
+    password: false,
+    confirmPassword: false,
+  });
   const navigate = useNavigate();
+  const { localize, t } = useLocale();
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormField({ ...formField, [name]: value });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessage("");
     if (password !== confirmPassword) {
-      alert("Confirm password must be the same!");
+      setErrorMessage(t("passwordMismatch"));
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const result = await axios.post(REGISTER_API_URL, formField);
       if (result.status == 200) {
-        navigate("/authentication/sign-in");
+        navigate(localize("/authentication/sign-in"));
       }
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error.response?.data?.errorMessage || error.response?.data || t("registerFailed"));
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
-    <div className="lg:w-[60%] 2xl:w-[40%] w-[80%] mt-5 flex flex-col gap-3 items-center">
-      <h2 className="text-2xl">
-        <strong>Register</strong>
-      </h2>
+    <div className="mt-7 flex w-full flex-col items-center gap-4">
+      <h2 className="font-heading text-2xl font-bold uppercase text-mainOrange">{t("register")}</h2>
       <form
         onSubmit={handleSubmit}
         className="w-full flex flex-col gap-3 items-center"
@@ -57,7 +67,7 @@ const SignUpForm = () => {
           }}
         />
         <FloattingInput
-          labelName="Username"
+          labelName={t("userName")}
           inputOption={{
             type: "text",
             name: "userName",
@@ -67,35 +77,58 @@ const SignUpForm = () => {
           }}
         />
         <FloattingInput
-          labelName="Password"
+          labelName={t("password")}
           inputOption={{
-            type: "password",
+            type: visiblePasswords.password ? "text" : "password",
             name: "password",
             required: true,
             onChange: handleChange,
             value: password,
           }}
+          rightAction={
+            <button
+              aria-label={visiblePasswords.password ? t("hidePassword") : t("showPassword")}
+              className="grid size-7 place-items-center text-cream/55 transition hover:text-mainOrange"
+              onClick={() => setVisiblePasswords((current) => ({ ...current, password: !current.password }))}
+              type="button"
+            >
+              <ion-icon name={visiblePasswords.password ? "eye-off-outline" : "eye-outline"}></ion-icon>
+            </button>
+          }
         />
         <FloattingInput
-          labelName="Confirm Password"
+          labelName={t("confirmPassword")}
           inputOption={{
-            type: "password",
+            type: visiblePasswords.confirmPassword ? "text" : "password",
             name: "confirmPassword",
             required: true,
             onChange: handleChange,
             value: confirmPassword,
           }}
+          rightAction={
+            <button
+              aria-label={visiblePasswords.confirmPassword ? t("hidePassword") : t("showPassword")}
+              className="grid size-7 place-items-center text-cream/55 transition hover:text-mainOrange"
+              onClick={() => setVisiblePasswords((current) => ({ ...current, confirmPassword: !current.confirmPassword }))}
+              type="button"
+            >
+              <ion-icon name={visiblePasswords.confirmPassword ? "eye-off-outline" : "eye-outline"}></ion-icon>
+            </button>
+          }
         />
+        <p className="w-full text-xs leading-5 text-cream/55">{t("ageRegisterNote")}</p>
+        {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
         <div className="w-full flex justify-between text-mainOrange">
-          <Link to="/authentication/sign-in">
-            <p>Already a Meister? Here to login</p>
+          <Link to={localize("/authentication/sign-in")}>
+            <p>{t("existingAccount")}</p>
           </Link>
         </div>
         <button
-          className="bg-[#769170] text-black w-full py-2 rounded-lg transition-all active:scale-95 hover:shadow-[0_0_10px_#6e9f65]"
+          className="brand-button w-full"
+          disabled={isSubmitting}
           type="submit"
         >
-          Register
+          {isSubmitting ? t("registering") : t("register")}
         </button>
       </form>
     </div>

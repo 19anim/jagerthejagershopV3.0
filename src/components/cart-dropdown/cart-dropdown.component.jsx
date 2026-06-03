@@ -1,44 +1,31 @@
 import { CartContext } from "../../context/cart.context";
-import { useContext, forwardRef, useState, useEffect } from "react";
+import { useContext } from "react";
 import CartItem from "./cart-item.component";
-import DropdownButton from "../button/dropdownButton.component";
 import { Link } from "react-router-dom";
+import { useLocale } from "../../context/locale.context";
 
-const CartDropdown = forwardRef(function CartDropdown(props, ref) {
-  const { cartItems, toggleIsCartOpen } = useContext(CartContext);
-  const [total, setTotal] = useState(0);
-  const handleCartOnClick = () => {
-    toggleIsCartOpen(ref);
-  };
-  const calculateTotal = () => {
-    let result = cartItems.reduce((acc, cartItem) => {
-      return acc + cartItem.priceInInteger * cartItem.quantity;
-    }, 0);
-    setTotal(result);
-  };
-  useEffect(calculateTotal, [cartItems]);
+const CartDropdown = () => {
+  const { cartItems, isCartOpen, subtotal, toggleIsCartOpen } = useContext(CartContext);
+  const { localize, t } = useLocale();
+
   return (
-    <div
-      ref={ref}
-      id="cart-dropdown"
-      className="sm:w-[415px] w-full duration-1000 bg-mainGreen text-wheat fixed inset-[0_-641px_0_auto] z-10 grid grid-rows-[70px_1fr_70px_200px]"
-    >
-      <h2 className="font-semibold text-3xl m-auto">SHOPPING CART</h2>
-      <div className="p-5 overflow-y-scroll scrollbar-black scrollbar-webkit">
-        {cartItems.map((cartItem) => {
-          return <CartItem key={cartItem._id} cartItem={cartItem}></CartItem>;
-        })}
-      </div>
-      <div className="text-xl m-auto">Total: {total.toLocaleString()} VNĐ</div>
-      <div className="flex flex-col gap-3 w-full justify-center items-center">
-        <Link to="/cartCheckout" className="w-full flex justify-center items-center">
-          <DropdownButton onClick={handleCartOnClick}>
-            GO TO CHECKOUT
-          </DropdownButton>
-        </Link>
-        <DropdownButton onClick={handleCartOnClick}>CLOSE</DropdownButton>
-      </div>
-    </div>
+    <>
+      {isCartOpen && <button aria-label={t("close")} className="fixed inset-0 z-40 bg-black/45" onClick={toggleIsCartOpen} />}
+      <aside className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-mainGreen text-cream shadow-2xl transition-transform duration-300 ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}>
+        <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
+          <h2 className="font-heading text-xl font-bold uppercase tracking-wider">{t("cart")}</h2>
+          <button onClick={toggleIsCartOpen} aria-label={t("close")}><ion-icon name="close-outline" class="text-3xl"></ion-icon></button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5">
+          {cartItems.length === 0 ? <p className="text-cream/70">{t("emptyCart")}</p> : cartItems.map((item) => <CartItem key={item._id} cartItem={item} />)}
+        </div>
+        <div className="border-t border-white/10 p-5">
+          <div className="mb-4 flex justify-between font-bold"><span>{t("total")}</span><span>{subtotal.toLocaleString()} VNĐ</span></div>
+          <Link to={localize("/cartCheckout")} onClick={toggleIsCartOpen} className="brand-button w-full">{t("checkout")}</Link>
+        </div>
+      </aside>
+    </>
   );
-});
+};
+
 export default CartDropdown;

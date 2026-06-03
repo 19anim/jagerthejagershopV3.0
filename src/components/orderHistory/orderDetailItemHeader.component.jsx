@@ -1,8 +1,8 @@
 const OrderDetailItemHeader = ({ label, value }) => {
   return (
     <div>
-      <p className="text-2xl text-mainOrange">{label}</p>
-      <p className="text-xl">{value}</p>
+      <p className="text-xs font-bold uppercase tracking-widest text-mainOrange">{label}</p>
+      <p className="mt-1 text-sm leading-6 text-cream/85">{value}</p>
     </div>
   );
 };

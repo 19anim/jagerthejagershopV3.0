@@ -1,8 +1,72 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap");
 
 body {
-  font-family: "Montserrat", "Poppins", sans-serif;
+  background: #14231d;
+  color: #f3efe3;
+  font-family: "Noto Sans", Arial, sans-serif;
+}
+
+.brand-kicker {
+  color: #dd5a12;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.brand-button,
+.brand-button-outline {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dd5a12;
+  padding: 0.7rem 1.2rem;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: 180ms ease;
+}
+
+.brand-button {
+  background: #dd5a12;
+  color: #fff;
+}
+
+.brand-button-outline {
+  color: #dd5a12;
+}
+
+.brand-button:hover,
+.brand-button-outline:hover {
+  background: #b8470d;
+  border-color: #b8470d;
+  color: #fff;
+}
+
+.brand-panel {
+  background: #1e3027;
+  color: #f3efe3;
+  border: 1px solid rgba(184, 146, 46, 0.28);
+}
+
+.account-nav-link {
+  border-left: 2px solid transparent;
+  padding: 0.75rem 0.85rem;
+  color: rgba(243, 239, 227, 0.72);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: 180ms ease;
+}
+
+.account-nav-link:hover {
+  border-left-color: #dd5a12;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f3efe3;
 }
 
 input[type="number"] {

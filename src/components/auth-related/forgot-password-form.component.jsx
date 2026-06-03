@@ -1,18 +1,17 @@
 import FloattingInput from "../floatting-input/floatting-input.component";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useLocale } from "../../context/locale.context";
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState("");
+  const { localize, t } = useLocale();
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setEmail(value);
+    setEmail(event.target.value);
   };
   return (
-    <div className="lg:w-[60%] 2xl:w-[40%] w-[80%] mt-5 flex flex-col gap-3 items-center">
-      <h2 className="text-2xl">
-        <strong>Login</strong>
-      </h2>
+    <div className="mt-7 flex w-full flex-col items-center gap-4">
+      <h2 className="font-heading text-2xl font-bold uppercase text-mainOrange">{t("recoverPassword")}</h2>
       <form action="" className="w-full flex flex-col gap-3 items-center">
         <FloattingInput
           labelName="Email"
@@ -25,15 +24,15 @@ const ForgotPasswordForm = () => {
           }}
         />
         <div className="w-full flex justify-between text-mainOrange">
-          <Link to="/authentication/sign-in">
-            <p>Remember account already? Here to login</p>
+          <Link to={localize("/authentication/sign-in")}>
+            <p>{t("rememberAccount")}</p>
           </Link>
         </div>
         <button
-          className="bg-[#769170] text-black w-full py-2 rounded-lg transition-all active:scale-95 hover:shadow-[0_0_10px_#6e9f65]"
+          className="brand-button w-full"
           type="submit"
         >
-          Get password recovery mail
+          {t("recoveryEmail")}
         </button>
       </form>
     </div>

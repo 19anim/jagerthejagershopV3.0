@@ -4,21 +4,24 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../context/cart.context";
 import Logo from "../../assets/logo.png";
+import { useLocale } from "../../context/locale.context";
+import { apiUrl } from "../../utils/api.utils";
 
 const UserIcon = () => {
-  const LOGOUT_API_URL =
-    import.meta.env.VITE_API_URL_LOGOUT || VITE_API_URL_LOGOUT;
-  const { setIsLoggedIn, email, userInfor, setUserInfor, defaultUserInfor } =
+  const LOGOUT_API_URL = apiUrl("/api/users/logout");
+  const { setIsLoggedIn, setIsAdmin, email, userInfor, setUserInfor, defaultUserInfor } =
     useContext(UserContext);
   const { userName } = userInfor;
   const { setDeliveryPrice } = useContext(CartContext);
   const navigate = useNavigate();
+  const { localize, t } = useLocale();
   const handleLogOut = () => {
     axios.get(LOGOUT_API_URL, {
       withCredentials: true,
     });
-    navigate("/");
+    navigate(localize("/"));
     setIsLoggedIn(false);
+    setIsAdmin(false);
     setUserInfor(defaultUserInfor);
     setDeliveryPrice(0);
     localStorage.removeItem("isAdmin");
@@ -26,27 +29,27 @@ const UserIcon = () => {
   return (
     <div className="group relative">
       <p className="cursor-pointer">
-        Hi Meister <span className="text-mainOrange">{userName}</span>
+        {t("greeting")} <span className="text-mainOrange">{userName}</span>
       </p>
       <div className="absolute right-0 top-6 hidden min-w-[250px] group-hover:block transition-all duration-200 z-50">
-        <div className="bg-[#c1c7c6] px-2 rounded-[10px_10px_0px_0px] flex flex-col items-center text-black">
+        <div className="flex flex-col items-center border border-warmGold/30 bg-mainGreen px-3 pt-2 text-cream shadow-2xl">
           <img src={Logo} alt="" className="w-[80px]" />
           <div className="mb-[10px] text-center">
-            <p>Username: {userName}</p>
+            <p>{t("userName")}: {userName}</p>
             <p>Email: {email}</p>
           </div>
         </div>
-        <div className="bg-white px-2 rounded-[0px_0px_10px_10px] text-black flex flex-col items-center gap-2">
-          <Link to="/user/userInformation">
-            <div className="mt-[10px] cursor-pointer">Manage account</div>
+        <div className="flex flex-col items-center gap-2 border-x border-b border-warmGold/30 bg-[#14231d] px-3 text-cream">
+          <Link to={localize("/user/userInformation")}>
+            <div className="mt-[10px] cursor-pointer">{t("manageAccount")}</div>
           </Link>
           <hr className="w-full" />
-          <Link to="/user/orders">
-            <div className="cursor-pointer">My Orders</div>
+          <Link to={localize("/user/orders")}>
+            <div className="cursor-pointer">{t("myOrders")}</div>
           </Link>
           <hr className="w-full" />
           <div className="mb-[10px] cursor-pointer" onClick={handleLogOut}>
-            Log out
+            {t("logout")}
           </div>
         </div>
       </div>

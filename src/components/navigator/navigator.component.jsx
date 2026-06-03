@@ -1,86 +1,48 @@
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 import { UserContext } from "../../context/user.context";
-import CartIcon from "../cart-icon/cart-icon.component";
-import SignInIcon from "../signin-icon/signin-icon.component";
+import { CartContext } from "../../context/cart.context";
 import UserIcon from "../user-icon/user-icon.component";
 import Logo from "../../assets/logo.png";
+import { useLocale } from "../../context/locale.context";
 
 const Navigator = () => {
-  const navigatorItems = [
-    {
-      iconClassName: "home-outline",
-      title: "Home",
-      href: "/",
-      adminItem: false,
-    },
-    {
-      iconClassName: "wine-outline",
-      title: "Products",
-      href: "/products",
-      adminItem: false,
-    },
-    {
-      iconClassName: "add-circle-outline",
-      title: "Add new products",
-      href: "/admin/createProduct",
-      adminItem: true,
-    },
-    {
-      iconClassName: "documents-outline",
-      title: "Orders to handle",
-      href: "/admin/orders",
-      adminItem: true,
-    },
-  ];
-  const ADMIN_ROLE = "ADMIN";
-  const { isLoggedIn, userInfor } = useContext(UserContext);
-  const { roles } = userInfor;
-  const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-    if (roles) {
-      roles.forEach((role) => {
-        if (role.role === ADMIN_ROLE) {
-          setIsAdmin(true);
-        }
-      });
-    } else {
-      setIsAdmin(false);
-    }
-  }, [isLoggedIn, userInfor]);
-  const cartDropdownRef = useRef(null);
+  const { isLoggedIn, isAdmin } = useContext(UserContext);
+  const { cartItems, toggleIsCartOpen } = useContext(CartContext);
+  const { locale, localize, setLocale, t } = useLocale();
+
   return (
-    <Fragment>
-      <div className="flex justify-between items-center pb-[20px]">
-        <Link to="/">
-          <img src={Logo} alt="logo" className="w-[90px] md:w-[180px]" />
-        </Link>
-        <div className="flex gap-1 md:gap-8">
-          {navigatorItems.map((navigatorItem) => {
-            const { iconClassName, title, href, adminItem } = navigatorItem;
-            if (!adminItem || (adminItem && isAdmin)) {
-              return (
-                <Link
-                  to={href}
-                  key={iconClassName}
-                  className="group flex items-center gap-x-1 hover:cursor-pointer hover:px-5 hover:py-[5px] hover:text-black hover:rounded-[30px] hover:bg-mainOrange transition-all"
-                >
-                  <ion-icon name={iconClassName} class="text-2xl"></ion-icon>
-                  <span className="md:group-hover:block hidden">{title}</span>
-                </Link>
-              );
-            }
-          })}
+    <>
+      <div className="bg-mainOrange px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.18em] text-white">{t("shipping")}</div>
+      <header className="sticky top-0 z-40 border-b border-warmGold/20 bg-mainGreen text-cream shadow-lg">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-3 md:px-8">
+          <Link to={localize("/")} className="shrink-0"><img src={Logo} alt="JagerTheJager Shop" className="w-28 md:w-40" /></Link>
+          <nav className="hidden items-center gap-7 font-heading text-xs font-bold uppercase tracking-[0.12em] md:flex">
+            <Link className="transition hover:text-mainOrange" to={localize("/")}>{t("home")}</Link>
+            <Link className="transition hover:text-mainOrange" to={localize("/products")}>{t("products")}</Link>
+            {isAdmin && <Link className="transition hover:text-mainOrange" to="/admin/products">{t("adminCatalog")}</Link>}
+            {isAdmin && <Link className="transition hover:text-mainOrange" to="/admin/product-details">{t("adminProductDetails")}</Link>}
+            {isAdmin && <Link className="transition hover:text-mainOrange" to="/admin/orders">{t("adminOrders")}</Link>}
+          </nav>
+          <div className="flex items-center gap-3 md:gap-5">
+            <button className="text-xs font-bold tracking-widest text-cream/80 transition hover:text-mainOrange" onClick={() => setLocale(locale === "vi" ? "en" : "vi")}>{locale === "vi" ? "EN" : "VI"}</button>
+            {isLoggedIn ? <UserIcon /> : <Link aria-label={t("signIn")} to={localize("/authentication/sign-in")}><ion-icon name="person-circle-outline" class="text-2xl"></ion-icon></Link>}
+            <button className="relative flex items-center" onClick={toggleIsCartOpen} aria-label={t("cart")}>
+              <ion-icon name="bag-outline" class="text-2xl"></ion-icon>
+              {cartItems.length > 0 && <span className="absolute -right-2 -top-2 flex size-4 items-center justify-center rounded-full bg-mainOrange text-[10px] font-bold text-white">{cartItems.length}</span>}
+            </button>
+          </div>
         </div>
-        <div className="flex gap-1 md:gap-4">
-          {isLoggedIn ? <UserIcon /> : <SignInIcon />}
-          <CartIcon cartDropdownRef={cartDropdownRef} />
+        <div className="flex justify-center gap-6 border-t border-white/10 px-4 py-2 font-heading text-[11px] font-bold uppercase tracking-widest md:hidden">
+          <Link to={localize("/")}>{t("home")}</Link>
+          <Link to={localize("/products")}>{t("products")}</Link>
+          {isAdmin && <Link to="/admin/products">{t("adminCatalog")}</Link>}
+          {isAdmin && <Link to="/admin/product-details">{t("adminProductDetails")}</Link>}
         </div>
-        <CartDropdown ref={cartDropdownRef} />
-      </div>
-      <Outlet />
-    </Fragment>
+      </header>
+      <CartDropdown />
+    </>
   );
 };
 

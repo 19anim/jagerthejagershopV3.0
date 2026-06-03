@@ -1,6 +1,8 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../utils/api.utils";
+import { useLocale } from "./locale.context";
 
 export const UserContext = createContext({
   isLoggedIn: false,
@@ -10,17 +12,14 @@ export const UserContext = createContext({
   setEmail: () => {},
   userInfor: {},
   setUserInfor: () => {},
+  setIsAdmin: () => {},
   updateUserInfor: () => {},
   defaultUserInfor: {},
 });
 
-const OAUTH_API_URL = import.meta.env.VITE_API_URL_OAuth || VITE_API_URL_OAuth;
-const UPDATEUSERINFORMATION_API_URL =
-  import.meta.env.VITE_API_URL_UPDATEUSERINFORMATION ||
-  VITE_API_URL_UPDATEUSERINFORMATION;
-const GETUSERINFORMATION_API_URL =
-  import.meta.env.VITE_API_URL_GETUSERINFORMATION ||
-  VITE_API_URL_GETUSERINFORMATION;
+const OAUTH_API_URL = apiUrl("/api/users/oAuth");
+const UPDATEUSERINFORMATION_API_URL = apiUrl("/api/users/editUserInformation");
+const GETUSERINFORMATION_API_URL = apiUrl("/api/users/getUserInformation");
 
 export const UserProvider = ({ children }) => {
   const defaultUserInfor = {
@@ -32,7 +31,7 @@ export const UserProvider = ({ children }) => {
     district: "",
     city: "",
     phoneNumber: "",
-    role: [],
+    roles: [],
   };
   const ADMIN_ROLE = "ADMIN";
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -40,19 +39,24 @@ export const UserProvider = ({ children }) => {
   const [email, setEmail] = useState("");
   const [userInfor, setUserInfor] = useState(defaultUserInfor);
   const navigate = useNavigate();
+  const { localize } = useLocale();
   
   const isAdminData = localStorage.getItem("isAdmin");
-  const [isAdmin, setIsAdmin] = useState(isAdminData ? isAdminData : false);
+  const [isAdmin, setIsAdmin] = useState(isAdminData === "true");
 
   useEffect(() => {
     const isUserLoggedIn = async () => {
-      const result = await axios(OAUTH_API_URL, {
-        withCredentials: true,
-      });
-      setIsLoggedIn(result.data.isLoggedIn);
-      if (result.status == 200) {
-        setUserInfor(result.data.userInfor);
-        setEmail(result.data.userInfor.email);
+      try {
+        const result = await axios(OAUTH_API_URL, { withCredentials: true });
+        setIsLoggedIn(result.data.isLoggedIn);
+        if (result.status == 200) {
+          setUserInfor(result.data.userInfor);
+          setEmail(result.data.userInfor.email);
+        }
+      } catch (_error) {
+        setIsLoggedIn(false);
+        setIsAdmin(false);
+        localStorage.removeItem("isAdmin");
       }
     };
 
@@ -61,6 +65,11 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const getUserInfor = async () => {
+      if (!isLoggedIn || !userInfor.userName) {
+        setIsAdmin(false);
+        localStorage.removeItem("isAdmin");
+        return;
+      }
       try {
         const result = await axios.post(
           GETUSERINFORMATION_API_URL,
@@ -78,6 +87,11 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         console.log(error);
+        if (error.response?.status === 401) {
+          setIsLoggedIn(false);
+          setIsAdmin(false);
+          localStorage.removeItem("isAdmin");
+        }
       }
     };
     getUserInfor();
@@ -90,11 +104,11 @@ export const UserProvider = ({ children }) => {
     try {
       const result = await axios.put(
         `${UPDATEUSERINFORMATION_API_URL}/${userInfor.userName}`,
-        newUserInfor
-        //{ withCredentials: true }
+        newUserInfor,
+        { withCredentials: true }
       );
       if (result.status == 200 && isNavigated) {
-        navigate("/user/userInformation");
+        navigate(localize("/user/userInformation"));
       }
     } catch (error) {
       console.log(error);
@@ -111,6 +125,7 @@ export const UserProvider = ({ children }) => {
     setEmail,
     userInfor,
     setUserInfor,
+    setIsAdmin,
     updateUserInfor,
     defaultUserInfor,
   };

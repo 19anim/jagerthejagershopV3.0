@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 import OrderDetailItemHeader from "./orderDetailItemHeader.component";
-import { Link } from "react-router-dom";
 import ItemDetail from "./itemDetail.component";
+import { useLocale } from "../../context/locale.context";
 
 const OrderDetailItem = ({ orderItem }) => {
   const {
@@ -9,19 +8,19 @@ const OrderDetailItem = ({ orderItem }) => {
     total,
     paymentMethod,
     status,
-    _id,
     items,
     address,
     ward,
     district,
     city,
   } = orderItem;
+  const { t } = useLocale();
   const buyAt = new Date(createdAt);
   const orderDate = `${buyAt.getDate()}/${
     buyAt.getMonth() + 1
   }/${buyAt.getFullYear()}`;
   return (
-    <div className="grid grid-cols-[auto_auto]">
+    <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
       <div className="gap-5 flex flex-col">
         {items &&
           items.map((item) => {
@@ -29,16 +28,16 @@ const OrderDetailItem = ({ orderItem }) => {
           })}
       </div>
       <div className="flex flex-col gap-5 mb-3">
-        <OrderDetailItemHeader label={"Order date"} value={orderDate} />
-        <OrderDetailItemHeader label={"Total"} value={`${total} VNĐ`} />
-        <OrderDetailItemHeader label={"Payment Method"} value={paymentMethod} />
+        <OrderDetailItemHeader label={t("orderDate")} value={orderDate} />
+        <OrderDetailItemHeader label={t("total")} value={`${total?.toLocaleString?.() || total || 0} VNĐ`} />
+        <OrderDetailItemHeader label={t("paymentMethod")} value={paymentMethod} />
         <OrderDetailItemHeader
-          label={"Delivery Address"}
+          label={t("deliveryAddress")}
           value={`${address}, ${ward}, ${district}, ${city}`}
         />
-        {status && (
+        {status?.[0] && (
           <OrderDetailItemHeader
-            label={"Status"}
+            label={t("status")}
             value={status[0].statusName}
           />
         )}

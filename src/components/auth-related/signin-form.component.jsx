@@ -5,23 +5,28 @@ import axios from "axios";
 import ErrorMessage from "../errorMessage/errorMessage.component";
 import { UserContext } from "../../context/user.context";
 import { CartContext } from "../../context/cart.context";
+import { apiUrl } from "../../utils/api.utils";
+import { useLocale } from "../../context/locale.context";
 
 const defaultFormField = {
   userName: "",
   password: "",
 };
 
-const LOGIN_API_URL = import.meta.env.VITE_API_URL_LOGIN || VITE_API_URL_LOGIN;
+const LOGIN_API_URL = apiUrl("/api/users/login");
 
 const SignInForm = () => {
   const [formField, setFormField] = useState(defaultFormField);
   const { userName, password } = formField;
   const [isNotValidUser, setIsNotValidUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { setIsLoggedIn, setUserInfor, userInfor, setEmail } =
     useContext(UserContext);
   const { setDeliveryPrice } = useContext(CartContext);
+  const { localize, t } = useLocale();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -29,6 +34,9 @@ const SignInForm = () => {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
+    setIsNotValidUser(false);
+    setErrorMessage("");
 
     try {
       const result = await axios.post(LOGIN_API_URL, formField, {
@@ -39,24 +47,24 @@ const SignInForm = () => {
         setUserInfor({ ...userInfor, userName: result.data.userName });
         setEmail(result.data.email);
         setDeliveryPrice(0);
-        navigate("/user/userInformation");
+        navigate(localize("/user/userInformation"));
       }
     } catch (error) {
-      setErrorMessage(error.response.data);
+      setErrorMessage(error.response?.data || t("unauthorized"));
       setIsNotValidUser(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
-    <div className="lg:w-[60%] 2xl:w-[40%] w-[80%] mt-5 flex flex-col gap-3 items-center">
-      <h2 className="text-2xl">
-        <strong>Login</strong>
-      </h2>
+    <div className="mt-7 flex w-full flex-col items-center gap-4">
+      <h2 className="font-heading text-2xl font-bold uppercase text-mainOrange">{t("login")}</h2>
       <form
         onSubmit={handleSubmit}
         className="w-full flex flex-col gap-3 items-center"
       >
         <FloattingInput
-          labelName="Username"
+          labelName={t("userName")}
           inputOption={{
             type: "text",
             name: "userName",
@@ -66,29 +74,40 @@ const SignInForm = () => {
           }}
         />
         <FloattingInput
-          labelName="Password"
+          labelName={t("password")}
           inputOption={{
-            type: "password",
+            type: showPassword ? "text" : "password",
             name: "password",
             required: true,
             onChange: handleChange,
             value: password,
           }}
+          rightAction={
+            <button
+              aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+              className="grid size-7 place-items-center text-cream/55 transition hover:text-mainOrange"
+              onClick={() => setShowPassword((current) => !current)}
+              type="button"
+            >
+              <ion-icon name={showPassword ? "eye-off-outline" : "eye-outline"}></ion-icon>
+            </button>
+          }
         />
         {isNotValidUser && <ErrorMessage errorMessage={errorMessage} />}
-        <div className="w-full flex justify-between text-mainOrange">
-          <Link to="/authentication/forgot-password">
-            <p>Forgot your password?</p>
+        <div className="flex w-full flex-wrap justify-between gap-2 text-xs text-mainOrange">
+          <Link to={localize("/authentication/forgot-password")}>
+            <p>{t("forgotPassword")}</p>
           </Link>
-          <Link to="/authentication/sign-up">
-            <p>New Meister?</p>
+          <Link to={localize("/authentication/sign-up")}>
+            <p>{t("newAccount")}</p>
           </Link>
         </div>
         <button
-          className="bg-[#769170] text-black w-full py-2 rounded-lg transition-all active:scale-95 hover:shadow-[0_0_10px_#6e9f65]"
+          className="brand-button w-full"
+          disabled={isSubmitting}
           type="submit"
         >
-          Login
+          {isSubmitting ? t("loggingIn") : t("login")}
         </button>
       </form>
     </div>

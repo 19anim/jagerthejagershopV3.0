@@ -1,24 +1,29 @@
 import { UserContext } from "../context/user.context";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import UserInfor from "../components/userInfor/userInfor.component";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ErrorMessage from "../components/errorMessage/errorMessage.component";
 import AuthLayout from "../components/auth-related/authLayout.component";
 import UpdateUserInfor from "../components/userInfor/updateUserInfor.component";
-import OrderPage from "./orders.page";
+import Orders from "../components/userInfor/myOrders.component";
+import OrderDetail from "../components/orderHistory/orderDetail.component";
+import { useLocale } from "../context/locale.context";
+import AccountLayout from "../components/userInfor/accountLayout.component";
 
 const UserPage = () => {
   const { isLoggedIn, userInfor } = useContext(UserContext);
+  const { localize, t } = useLocale();
   return (
     <Routes>
       {isLoggedIn && userInfor && (
         <>
-          <Route path="/" element={<AuthLayout />}>
+          <Route path="/" element={<AccountLayout />}>
             <Route path="userInformation" element={<UserInfor />} />
             <Route path="updateInformation" element={<UpdateUserInfor />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/orderDetail/:orderId" element={<OrderDetail embedded />} />
+            <Route path="*" element={<Navigate to={localize("/user/userInformation")} replace />} />
           </Route>
-          <Route path="orders/*" element={<OrderPage />} />
         </>
       )}
       {(!isLoggedIn || !userInfor) && (
@@ -26,7 +31,7 @@ const UserPage = () => {
           <Route
             path="*"
             element={
-              <ErrorMessage errorMessage="Not Authorized, please login" />
+              <ErrorMessage errorMessage={t("unauthorized")} />
             }
           />
         </Route>

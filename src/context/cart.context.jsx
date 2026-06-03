@@ -1,26 +1,32 @@
-import { createContext, useEffect, useState, useRef } from "react";
+import { createContext, useEffect, useState } from "react";
+import { clampQuantityToStock, getProductStock } from "../utils/product.utils";
 
 const addCartItem = (cartItems, productToAdd, quantity) => {
+  const stock = getProductStock(productToAdd);
+  const safeQuantity = clampQuantityToStock(quantity, stock);
+  if (safeQuantity === 0) return cartItems;
   const isProductExist = cartItems.find((cartItem) => {
     return cartItem._id === productToAdd._id;
   });
   if (isProductExist) {
     return cartItems.map((cartItem) => {
       if (cartItem._id === productToAdd._id) {
-        return { ...cartItem, quantity: cartItem.quantity + quantity };
+        return { ...cartItem, ...productToAdd, quantity: clampQuantityToStock(cartItem.quantity + safeQuantity, stock) };
       } else {
         return cartItem;
       }
     });
   }
-  return [...cartItems, { ...productToAdd, quantity }];
+  return [...cartItems, { ...productToAdd, quantity: safeQuantity }];
 };
 
 const modifyCartItem = (cartItems, productToModify, typeOfModify) => {
+  const stock = getProductStock(productToModify);
   if (typeOfModify === "INCREASE_BUTTON") {
+    if (stock <= 0 || productToModify.quantity >= stock) return cartItems;
     return cartItems.map((cartItem) => {
       if (cartItem._id === productToModify._id) {
-        return { ...cartItem, quantity: cartItem.quantity + 1 };
+        return { ...cartItem, quantity: clampQuantityToStock(cartItem.quantity + 1, stock) };
       } else {
         return cartItem;
       }
@@ -42,6 +48,11 @@ const modifyCartItem = (cartItems, productToModify, typeOfModify) => {
   }
 };
 
+const normalizeCartItemsWithStock = (cartItems) =>
+  cartItems
+    .map((cartItem) => ({ ...cartItem, quantity: clampQuantityToStock(cartItem.quantity, cartItem.stock) }))
+    .filter((cartItem) => cartItem.quantity > 0);
+
 export const CartContext = createContext({
   isCartOpen: false,
   toggleIsCartOpen: () => {},
@@ -51,6 +62,8 @@ export const CartContext = createContext({
   modifyCartItemInCartDropdown: () => {},
   deliveryPrice: 0,
   subtotal: 0,
+  cartValidationMessage: "",
+  refreshCartItemsWithProducts: () => {},
 });
 
 export const CartProvider = ({ children }) => {
@@ -67,13 +80,7 @@ export const CartProvider = ({ children }) => {
     );
   }, [cartItems]);
 
-  const toggleIsCartOpen = (cartDropdownRef) => {
-    if (cartDropdownRef.current !== null) {
-      const classList = cartDropdownRef.current.classList;
-      classList.toggle("inset-[0_0_0_auto]");
-      classList.toggle("inset-[0_-641px_0_auto]");
-    }
-  };
+  const toggleIsCartOpen = () => setIsCartOpen((currentValue) => !currentValue);
 
   const addItemToCart = (productToAdd, quantity) => {
     setCartItems(addCartItem(cartItems, productToAdd, quantity));
@@ -86,14 +93,33 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     const cartData = JSON.parse(localStorage.getItem("cart_items"));
     if (cartData) {
-      setCartItems(cartData);
+      setCartItems(normalizeCartItemsWithStock(cartData));
     }
   }, []);
 
+  const refreshCartItemsWithProducts = (products) => {
+    const productsById = new Map(products.map((product) => [product._id, product]));
+    let changedItemsCount = 0;
+    setCartItems((currentItems) =>
+      currentItems
+        .map((cartItem) => {
+          const freshProduct = productsById.get(cartItem._id);
+          if (!freshProduct) {
+            changedItemsCount += 1;
+            return null;
+          }
+          const nextQuantity = clampQuantityToStock(cartItem.quantity, freshProduct.stock);
+          if (nextQuantity !== cartItem.quantity) changedItemsCount += 1;
+          if (nextQuantity === 0) return null;
+          return { ...cartItem, ...freshProduct, quantity: nextQuantity };
+        })
+        .filter(Boolean)
+    );
+    return changedItemsCount;
+  };
+
   useEffect(() => {
-    if (cartItems.length) {
-      localStorage.setItem("cart_items", JSON.stringify(cartItems));
-    }
+    localStorage.setItem("cart_items", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const value = {
@@ -106,6 +132,7 @@ export const CartProvider = ({ children }) => {
     deliveryPrice,
     setDeliveryPrice,
     subtotal,
+    refreshCartItemsWithProducts,
   };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

@@ -1,27 +1,32 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { apiUrl } from "../utils/api.utils";
 
 export const CategoriesContext = createContext({
   categories: [],
   isCategoriesLoaded: false,
+  refreshCategories: () => {},
 });
 
 export const CategoriesProvider = ({ children }) => {
-  const API_GET_CATEGORIES =
-    import.meta.env.VITE_API_URL_GETCATEGORIES || VITE_API_URL_GETCATEGORIES;
+  const API_GET_CATEGORIES = apiUrl("/api/categories/getAllCategories");
   const [categories, setCategories] = useState([]);
   const [isCategoriesLoaded, setIsCategoriesLoaded] = useState(false);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const respone = await axios.get(API_GET_CATEGORIES);
-      setCategories(respone.data);
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await axios.get(API_GET_CATEGORIES);
+      setCategories(response.data);
+    } finally {
       setIsCategoriesLoaded(true);
-    };
-    fetchCategories();
-  }, []);
+    }
+  }, [API_GET_CATEGORIES]);
 
-  const value = { categories, isCategoriesLoaded };
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const value = { categories, isCategoriesLoaded, refreshCategories: fetchCategories };
   return (
     <CategoriesContext.Provider value={value}>
       {children}

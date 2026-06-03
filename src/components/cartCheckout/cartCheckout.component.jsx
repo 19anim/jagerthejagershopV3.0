@@ -1,41 +1,25 @@
 import { CartContext } from "../../context/cart.context";
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import CartCheckoutItem from "./cartCheckoutItem.component";
 import EstimatedTransferFee from "./estimatedTransferFee.component";
 import OrderSummary from "./orderSummary.component";
+import { useLocale } from "../../context/locale.context";
 
 const CartCheckout = () => {
   const { cartItems } = useContext(CartContext);
+  const { localize, t } = useLocale();
   return (
-    <div className="grid grid-cols-[1fr_500px] gap-8">
-      <div className="bg-mainGreen rounded-lg p-10">
-        <div className="flex justify-between text-xl mb-5">
-          <p className="text-3xl">Shopping Cart</p>
-          <Link
-            to="/products"
-            className="flex justify-center items-center text-3xl text-mainOrange"
-          >
-            <ion-icon name="arrow-back-outline"></ion-icon>
-            <p className="ml-2">Continue Shopping</p>
-          </Link>
+    <section className="mx-auto grid max-w-[1440px] gap-6 px-4 py-10 md:px-8 lg:grid-cols-[1fr_380px]">
+      <div className="brand-panel p-5 md:p-8">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="font-heading text-2xl font-bold uppercase">{t("cart")}</h1>
+          <Link to={localize("/products")} className="text-sm font-bold uppercase tracking-wider text-mainOrange">← {t("products")}</Link>
         </div>
-        <div className="flex flex-col gap-5">
-          {cartItems.map((cartItem) => {
-            return (
-              <div key={cartItem.name}>
-                <CartCheckoutItem cartItem={cartItem} />
-                <hr className="mt-5 border-gray-500" />
-              </div>
-            );
-          })}
-        </div>
+        {cartItems.length === 0 ? <p className="text-cream/70">{t("emptyCart")}</p> : <div className="flex flex-col gap-5">{cartItems.map((item) => <CartCheckoutItem key={item._id} cartItem={item} />)}</div>}
       </div>
-      <div className="flex flex-col gap-2">
-        <EstimatedTransferFee />
-        <OrderSummary cartItems={cartItems} />
-      </div>
-    </div>
+      <div className="flex flex-col gap-4"><EstimatedTransferFee /><OrderSummary /></div>
+    </section>
   );
 };
 

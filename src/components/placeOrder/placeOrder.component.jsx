@@ -6,41 +6,49 @@ import axios from "axios";
 import { UserContext } from "../../context/user.context";
 import Momo from "../../assets/momo.jpg";
 import Techcombank from "../../assets/techcombank.jpg";
+import { useLocale } from "../../context/locale.context";
+import { apiUrl } from "../../utils/api.utils";
 
 const paymentOptions = [
   {
     method: "CASH",
-    radioLabel: "Made payment by cash when receive the parcel",
+    labelKey: "cashPayment",
     imageSrc: null,
     defaultChecked: true,
   },
   {
     method: "TRANSFER_TECHCOMBANK",
-    radioLabel: "Made payment by bank transfer through Techcombank",
+    labelKey: "techcombankPayment",
     imageSrc: Techcombank,
     defaultChecked: false,
   },
   {
     method: "TRANSFER_MOMO",
-    radioLabel: "Made payment by bank transfer through Momo",
+    labelKey: "momoPayment",
     imageSrc: Momo,
     defaultChecked: false,
   },
 ];
 
 const PlaceOrder = () => {
-  const PLACEORDER_API_URL =
-    import.meta.env.VITE_API_URL_PLACEORDER || VITE_API_URL_PLACEORDER;
+  const PLACEORDER_API_URL = apiUrl("/api/orders/placeOrder");
   const modalRef = useRef();
   const navigate = useNavigate();
   const [paymentMethodValue, setPaymentMethodValue] = useState(
     paymentOptions[0]
   );
-  const { deliveryPrice, subtotal, cartItems, setCartItems, setDeliveryPrice } =
-    useContext(CartContext);
+  const {
+    deliveryPrice,
+    subtotal,
+    cartItems,
+    setCartItems,
+    setDeliveryPrice,
+    refreshCartItemsWithProducts,
+  } = useContext(CartContext);
   const { userInfor, isLoggedIn } = useContext(UserContext);
-  const { userName } = userInfor;
   const [orderDetailId, setOrderDetailId] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { localize, t } = useLocale();
 
   const handleOnChange = (event) => {
     const chosenOption = paymentOptions.find((paymentOption) => {
@@ -51,16 +59,36 @@ const PlaceOrder = () => {
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessage("");
+    if (cartItems.length === 0) {
+      setErrorMessage(t("emptyCart"));
+      return;
+    }
+    if (deliveryPrice <= 0) {
+      setErrorMessage(t("deliveryRequired"));
+      return;
+    }
     try {
-      const result = await axios.post(PLACEORDER_API_URL, {
-        order: {
-          userName: userName !== "" ? userName : "Guess",
-          userInfor: userInfor,
-          items: cartItems,
-          total: (subtotal + deliveryPrice).toLocaleString(),
-          paymentMethod: paymentMethodValue.method,
+      const productResponses = await Promise.all(
+        cartItems.map((cartItem) => axios.get(apiUrl(`/api/products/getProductById/${cartItem._id}`)))
+      );
+      const changedItemsCount = refreshCartItemsWithProducts(productResponses.map((response) => response.data));
+      if (changedItemsCount > 0) {
+        setErrorMessage(t("cartRevalidated"));
+        return;
+      }
+      const result = await axios.post(
+        PLACEORDER_API_URL,
+        {
+          order: {
+            userInfor: userInfor,
+            items: cartItems,
+            total: (subtotal + deliveryPrice).toLocaleString(),
+            paymentMethod: paymentMethodValue.method,
+          },
         },
-      });
+        { withCredentials: true }
+      );
       if (result.status === 200) {
         localStorage.removeItem("cart_items");
         setCartItems([]);
@@ -69,7 +97,7 @@ const PlaceOrder = () => {
         setOrderDetailId(result.data._id);
       }
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error.response?.data?.errorMessage || t("orderFailed"));
     }
   };
 
@@ -78,9 +106,9 @@ const PlaceOrder = () => {
     classList.toggle("flex");
     classList.toggle("hidden");
     if (isLoggedIn) {
-      navigate(`/user/orders/orderDetail/${orderDetailId}`);
+      navigate(localize(`/user/orders/orderDetail/${orderDetailId}`));
     } else {
-      navigate(`/`);
+      navigate(localize("/"));
     }
   };
   const handleModalTemp = () => {
@@ -89,36 +117,31 @@ const PlaceOrder = () => {
     classList.toggle("hidden");
   };
   return (
-    <div className="grid grid-cols-[1fr_400px] gap-8">
-      <div className="bg-mainGreen rounded-xl p-10">
+    <div className="mx-auto grid max-w-[1440px] gap-6 px-4 py-10 md:px-8 lg:grid-cols-[1fr_400px]">
+      <div className="brand-panel p-5 md:p-8">
         {/* This is to do the modal */}
         <div
           ref={modalRef}
           className="justify-center items-center w-dvw h-dvh absolute top-0 left-0 bg-[rgba(0,0,0,0.5)] z-10 hidden"
         >
-          <div className="w-[500px] h-[200px] bg-[#363636] rounded-xl flex flex-col justify-center items-center gap-2">
-            <p className="text-mainOrange text-3xl">Order Successfully</p>
-            <p className="text-wheat text-lg text-center">
-              Thank you for purchasing at JAGERTHEJAGERSHOP
-            </p>
-            <p className="text-wheat text-lg text-center">
-              Ở đây iem bán thuốc ho con hươu
-            </p>
-            <FitButton onClick={handleModal}>Close</FitButton>
+          <div className="brand-panel flex min-h-[220px] w-[min(500px,calc(100vw-32px))] flex-col items-center justify-center gap-3 p-6 text-center shadow-2xl">
+            <p className="font-heading text-2xl font-extrabold uppercase text-mainOrange md:text-3xl">{t("orderSuccess")}</p>
+            <p className="text-cream/75">{t("orderSuccessBody")}</p>
+            <FitButton onClick={handleModal}>{t("close")}</FitButton>
           </div>
         </div>
-        <div className="flex justify-between mb-10">
-          <p className="text-3xl">Select payment method</p>
+        <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <p className="font-heading text-2xl font-bold uppercase md:text-3xl">{t("selectPayment")}</p>
           <Link
-            to="/products"
-            className="flex justify-center items-center text-mainOrange text-3xl"
+            to={localize("/products")}
+            className="flex items-center text-sm font-bold uppercase tracking-wider text-mainOrange"
           >
             <ion-icon name="arrow-back-outline"></ion-icon>
-            <p className="ml-2">Continue Shopping</p>
+            <p className="ml-2">{t("continueShopping")}</p>
           </Link>
         </div>
         <div className="text-xl font-medium text-mainOrange-50 mb-3">
-          Total price: {(subtotal + deliveryPrice).toLocaleString()} VNĐ
+          {t("total")}: {(subtotal + deliveryPrice).toLocaleString()} VNĐ
         </div>
         <form onSubmit={handleOnSubmit} className="flex flex-col gap-3">
           {paymentOptions.map((paymentOption) => {
@@ -137,15 +160,16 @@ const PlaceOrder = () => {
                   defaultChecked={paymentOption.defaultChecked}
                 />
                 <label className="text-xl" htmlFor={paymentOption.method}>
-                  {paymentOption.radioLabel}
+                  {t(paymentOption.labelKey)}
                 </label>
               </div>
             );
           })}
-          <FitButton type="submit">Place order</FitButton>
+          {errorMessage && <p className="text-sm text-red-300">{errorMessage}</p>}
+          <FitButton type="submit">{t("placeOrder")}</FitButton>
         </form>
       </div>
-      <div className="bg-mainGreen rounded-xl h-[400px] p-5 flex justify-center items-center">
+      <div className="brand-panel flex min-h-[280px] items-center justify-center p-5">
         {paymentMethodValue && paymentMethodValue.imageSrc && (
           <img
             className="w-[360px] h-[360px] rounded-2xl"
@@ -155,8 +179,7 @@ const PlaceOrder = () => {
         )}
         {paymentMethodValue && !paymentMethodValue.imageSrc && (
           <p className="text-xl font-medium">
-            You selected the CASH payment method, please prepare cash when you
-            receive the parcel
+            {t("cashPaymentBody")}
           </p>
         )}
       </div>

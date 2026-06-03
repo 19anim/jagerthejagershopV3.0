@@ -1,12 +1,13 @@
-import LoadingGif from "../../assets/loading-spinner.gif";
 import "./loading-spinner.styles.css";
+import { useLocale } from "../../context/locale.context";
 
 const LoadingSpinner = () => {
+  const { t } = useLocale();
   return (
     <div className="flex flex-col justify-center items-center">
-      <img src={LoadingGif} alt="" />
+      <div className="loading-spinner" aria-hidden="true" />
       <div className=" inline-block">
-        <p className="loading-spinner--text">Loading... Please wait</p>
+        <p className="loading-spinner--text">{t("loading")}</p>
       </div>
     </div>
   );

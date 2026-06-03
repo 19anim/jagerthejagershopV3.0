@@ -1,17 +1,18 @@
 import BestSellerSlider from "../components/bestSeller-Slider/bestSeller-Slider.component";
+
 const HomePage = () => {
   return (
-    <div>
-      <div className="flex flex-col items-center pb-5 md:pb-[80px]">
-        <h1 className="text-[25px] md:text-[80px] font-bold">
+    <>
+      <section className="mx-auto flex min-h-[360px] max-w-[1440px] flex-col items-center justify-center px-5 py-16 text-center text-cream md:min-h-[460px] md:py-24">
+        <h1 className="text-[34px] font-extrabold leading-tight tracking-tight md:text-[80px]">
           JAGERTHEJAGER <span className="text-mainOrange">SHOP</span>.
         </h1>
-        <h5 className="text-[15px] md:text-[22px]">Ở đây iem bán thuốc ho con hươu</h5>
-      </div>
-      <div>
-        <BestSellerSlider />
-      </div>
-    </div>
+        <p className="mt-3 text-[16px] font-medium text-cream/85 md:text-[22px]">
+          Ở đây iem bán thuốc ho con hươu
+        </p>
+      </section>
+      <BestSellerSlider />
+    </>
   );
 };
 

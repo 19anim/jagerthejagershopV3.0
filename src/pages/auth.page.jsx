@@ -3,15 +3,17 @@ import SignInForm from "../components/auth-related/signin-form.component";
 import SignUpForm from "../components/auth-related/signup-form.component";
 import ForgotPasswordForm from "../components/auth-related/forgot-password-form.component";
 import AuthLayout from "../components/auth-related/authLayout.component";
+import { useLocale } from "../context/locale.context";
 
 const AuthPage = () => {
+  const { localize } = useLocale();
   return (
     <Routes>
       <Route path="/" element={<AuthLayout />}>
         <Route path="sign-in" element={<SignInForm />}/>
         <Route path="sign-up" element={<SignUpForm />}/>
         <Route path="forgot-password" element={<ForgotPasswordForm />}/>
-        <Route path="*" element={<Navigate to='/' replace />} />
+        <Route path="*" element={<Navigate to={localize("/authentication/sign-in")} replace />} />
       </Route>
     </Routes>
   )

@@ -4,10 +4,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        'mainOrange': "#ffa827",
-        'mainOrange-50': "#ffd9a2",
-        'mainGreen': "#293124",
+        'mainOrange': "#dd5a12",
+        'mainOrange-50': "#f4b487",
+        'mainGreen': "#1e3027",
+        'midGreen': "#31533e",
+        'cream': "#f3efe3",
+        'warmGold': "#b8922e",
+        'ink': "#182018",
         'wheat': "#f5deb3"
+      },
+      fontFamily: {
+        heading: ["Noto Sans", "sans-serif"],
+        body: ["Noto Sans", "Arial", "sans-serif"],
       },
     },
   },

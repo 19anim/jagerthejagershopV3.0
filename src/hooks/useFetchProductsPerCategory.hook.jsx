@@ -1,14 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { apiUrl } from "../utils/api.utils";
 
 const useFetchProductsPerCategory = () => {
-  const GETCATEGORIESBYSLUG_API_URL =
-    import.meta.env.VITE_API_URL_GETCATEGORIESBYSLUG ||
-    VITE_API_URL_GETCATEGORIESBYSLUG;
-  const GETPRODUCTSBYCATEGORYID =
-    import.meta.env.VITE_API_URL_GETPRODUCTSBYCATEGORYID ||
-    VITE_API_URL_GETPRODUCTSBYCATEGORYID;
+  const GETCATEGORIESBYSLUG_API_URL = apiUrl("/api/categories/getCategoryBySlug");
+  const GETPRODUCTSBYCATEGORYID = apiUrl("/api/products/getProductByCategoryId");
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
@@ -30,7 +27,7 @@ const useFetchProductsPerCategory = () => {
       }
     };
     fetchCategory();
-  }, []);
+  }, [slug]);
   return [isLoading, products];
 };
 
