@@ -9,6 +9,7 @@ import Orders from "../components/userInfor/myOrders.component";
 import OrderDetail from "../components/orderHistory/orderDetail.component";
 import { useLocale } from "../context/locale.context";
 import AccountLayout from "../components/userInfor/accountLayout.component";
+import LinkTelegram from "../components/userInfor/linkTelegram.component";
 
 const UserPage = () => {
   const { isLoggedIn, userInfor } = useContext(UserContext);
@@ -22,6 +23,7 @@ const UserPage = () => {
             <Route path="updateInformation" element={<UpdateUserInfor />} />
             <Route path="orders" element={<Orders />} />
             <Route path="orders/orderDetail/:orderId" element={<OrderDetail embedded />} />
+            <Route path="linkTelegram" element={<LinkTelegram />} />
             <Route path="*" element={<Navigate to={localize("/user/userInformation")} replace />} />
           </Route>
         </>

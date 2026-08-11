@@ -32,6 +32,7 @@ export const UserProvider = ({ children }) => {
     city: "",
     phoneNumber: "",
     roles: [],
+    telegramLinked: false,
   };
   const ADMIN_ROLE = "ADMIN";
   const [isLoggedIn, setIsLoggedIn] = useState(false);

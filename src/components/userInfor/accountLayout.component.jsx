@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useLocale } from "../../context/locale.context";
+import { UserContext } from "../../context/user.context";
 
 const AccountLayout = () => {
   const { localize, t } = useLocale();
+  const { isAdmin } = useContext(UserContext);
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 md:px-8 md:py-14">
@@ -14,6 +17,9 @@ const AccountLayout = () => {
         <aside className="brand-panel flex flex-col gap-2 p-4">
           <Link className="account-nav-link" to={localize("/user/userInformation")}>{t("accountOverview")}</Link>
           <Link className="account-nav-link" to={localize("/user/orders")}>{t("orders")}</Link>
+          {isAdmin && (
+            <Link className="account-nav-link" to={localize("/user/linkTelegram")}>{t("linkTelegram")}</Link>
+          )}
         </aside>
         <div className="brand-panel p-5 md:p-8">
           <Outlet />
