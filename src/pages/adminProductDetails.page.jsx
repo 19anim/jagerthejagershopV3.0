@@ -39,14 +39,14 @@ const AdminProductDetailsPage = () => {
           .filter((description) => description._id !== editingDescriptionId)
           .flatMap((description) => description.products || [])
           .map((product) => product._id)
-          .filter(Boolean)
+          .filter(Boolean),
       ),
-    [descriptions, editingDescriptionId]
+    [descriptions, editingDescriptionId],
   );
 
   const assignableProducts = useMemo(
     () => products.filter((product) => !otherAssignedProductIds.has(product._id)),
-    [otherAssignedProductIds, products]
+    [otherAssignedProductIds, products],
   );
 
   const resetForm = () => {
@@ -79,11 +79,13 @@ const AdminProductDetailsPage = () => {
             descriptionTitle: form.descriptionTitle,
             description: form.description,
           },
-          { withCredentials: true }
+          { withCredentials: true },
         );
         setMessage(t("productDetailUpdated"));
       } else {
-        await axios.post(apiUrl("/api/productsDescription/create"), form, { withCredentials: true });
+        await axios.post(apiUrl("/api/productsDescription/create"), form, {
+          withCredentials: true,
+        });
         setMessage(t("productDetailCreated"));
       }
       resetForm();
@@ -112,7 +114,9 @@ const AdminProductDetailsPage = () => {
     setMessage("");
     setErrorMessage("");
     try {
-      await axios.delete(apiUrl(`/api/productsDescription/${descriptionId}`), { withCredentials: true });
+      await axios.delete(apiUrl(`/api/productsDescription/${descriptionId}`), {
+        withCredentials: true,
+      });
       setMessage(t("productDetailDeleted"));
       if (editingDescriptionId === descriptionId) resetForm();
       await fetchData();
@@ -125,18 +129,26 @@ const AdminProductDetailsPage = () => {
     <section className="mx-auto max-w-[1440px] px-4 py-10 md:px-8">
       <div className="mb-8">
         <p className="brand-kicker mb-2">{t("adminProductDetailsEyebrow")}</p>
-        <h1 className="font-heading text-3xl font-bold uppercase text-cream">{t("adminProductDetails")}</h1>
+        <h1 className="font-heading text-3xl font-bold uppercase text-cream">
+          {t("adminProductDetails")}
+        </h1>
       </div>
 
       {(message || errorMessage) && (
-        <p className={`mb-4 ${errorMessage ? "text-red-300" : "text-green-300"}`}>{errorMessage || message}</p>
+        <p className={`mb-4 ${errorMessage ? "text-red-300" : "text-green-300"}`}>
+          {errorMessage || message}
+        </p>
       )}
 
       <div className="grid gap-8 lg:grid-cols-[420px_1fr]">
         <form className="brand-panel flex flex-col gap-5 p-5 md:p-8" onSubmit={handleSubmit}>
-          <h2 className="font-heading text-xl font-bold uppercase">{editingDescriptionId ? t("editProductDetail") : t("addProductDetail")}</h2>
+          <h2 className="font-heading text-xl font-bold uppercase">
+            {editingDescriptionId ? t("editProductDetail") : t("addProductDetail")}
+          </h2>
           <div className="flex flex-col gap-2 text-sm">
-            <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">{t("assignedProducts")}</span>
+            <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">
+              {t("assignedProducts")}
+            </span>
             <div className="max-h-64 overflow-y-auto border border-white/15 bg-[#14231d] p-3">
               {assignableProducts.map((product) => (
                 <label className="mb-3 flex items-start gap-3 last:mb-0" key={product._id}>
@@ -152,32 +164,53 @@ const AdminProductDetailsPage = () => {
                   </span>
                 </label>
               ))}
-              {assignableProducts.length === 0 && <p className="text-cream/60">{t("noAssignableProducts")}</p>}
+              {assignableProducts.length === 0 && (
+                <p className="text-cream/60">{t("noAssignableProducts")}</p>
+              )}
             </div>
-            <p className="text-xs text-cream/50">{form.productIds.length} {t("selectedProducts")}</p>
+            <p className="text-xs text-cream/50">
+              {form.productIds.length} {t("selectedProducts")}
+            </p>
           </div>
           <label className="flex flex-col gap-2 text-sm">
-            <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">{t("detailTitle")}</span>
+            <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">
+              {t("detailTitle")}
+            </span>
             <input
               className="border border-white/15 bg-[#14231d] px-3 py-2 text-cream outline-none focus:ring-2 focus:ring-mainOrange"
-              onChange={(event) => setForm((current) => ({ ...current, descriptionTitle: event.target.value }))}
+              onChange={(event) =>
+                setForm((current) => ({ ...current, descriptionTitle: event.target.value }))
+              }
               required
               type="text"
               value={form.descriptionTitle}
             />
           </label>
           <label className="flex flex-col gap-2 text-sm">
-            <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">{t("detailText")}</span>
+            <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">
+              {t("detailText")}
+            </span>
             <textarea
               className="min-h-40 border border-white/15 bg-[#14231d] px-3 py-2 text-cream outline-none focus:ring-2 focus:ring-mainOrange"
-              onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
+              onChange={(event) =>
+                setForm((current) => ({ ...current, description: event.target.value }))
+              }
               required
               value={form.description}
             />
           </label>
           <div className="flex flex-wrap gap-3">
-            <button className="brand-button" disabled={isSubmitting || form.productIds.length === 0}>{isSubmitting ? t("saving") : t("saveInformation")}</button>
-            {editingDescriptionId && <button className="brand-button-outline" onClick={resetForm} type="button">{t("close")}</button>}
+            <button
+              className="brand-button"
+              disabled={isSubmitting || form.productIds.length === 0}
+            >
+              {isSubmitting ? t("saving") : t("saveInformation")}
+            </button>
+            {editingDescriptionId && (
+              <button className="brand-button-outline" onClick={resetForm} type="button">
+                {t("close")}
+              </button>
+            )}
           </div>
         </form>
 
@@ -198,19 +231,42 @@ const AdminProductDetailsPage = () => {
               <tbody>
                 {descriptions.map((description) => (
                   <tr className="border-b border-white/10 text-cream/80" key={description._id}>
-                    <td className="p-3 font-bold text-cream">{(description.products || []).map((product) => product.name).join(", ") || "-"}</td>
-                    <td className="p-3">{Array.from(new Set((description.products || []).map((product) => product.category?.name).filter(Boolean))).join(", ") || "-"}</td>
+                    <td className="p-3 font-bold text-cream">
+                      {(description.products || []).map((product) => product.name).join(", ") ||
+                        "-"}
+                    </td>
+                    <td className="p-3">
+                      {Array.from(
+                        new Set(
+                          (description.products || [])
+                            .map((product) => product.category?.name)
+                            .filter(Boolean),
+                        ),
+                      ).join(", ") || "-"}
+                    </td>
                     <td className="p-3">{description.descriptionTitle}</td>
                     <td className="p-3">
-                      <button className="mr-4 font-bold text-mainOrange" onClick={() => handleEdit(description)}>{t("edit")}</button>
-                      <button className="font-bold text-red-300" onClick={() => handleDelete(description._id)}>{t("remove")}</button>
+                      <button
+                        className="mr-4 font-bold text-mainOrange"
+                        onClick={() => handleEdit(description)}
+                      >
+                        {t("edit")}
+                      </button>
+                      <button
+                        className="font-bold text-red-300"
+                        onClick={() => handleDelete(description._id)}
+                      >
+                        {t("remove")}
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {descriptions.length === 0 && <p className="p-5 text-cream/65">{t("emptyProductDetails")}</p>}
+          {descriptions.length === 0 && (
+            <p className="p-5 text-cream/65">{t("emptyProductDetails")}</p>
+          )}
         </div>
       </div>
     </section>

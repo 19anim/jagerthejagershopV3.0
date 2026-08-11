@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy": "https://jagerthejagershopv3-0-be.onrender.com/",
+  "proxy": "https://jagerthejagershopv3-0-be-h2mb.onrender.com/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
