@@ -2,3 +2,5 @@ node_modules
 jagerthejagershopV3.0_BE
 dist
 .env.development
+*.log
+vite.config.js.timestamp-*
