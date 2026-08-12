@@ -7,6 +7,7 @@ import { useLocale } from "./locale.context";
 export const UserContext = createContext({
   isLoggedIn: false,
   isAdmin: false,
+  isAuthLoading: true,
   setIsLoggedIn: () => {},
   email: "",
   setEmail: () => {},
@@ -44,6 +45,7 @@ export const UserProvider = ({ children }) => {
   
   const isAdminData = localStorage.getItem("isAdmin");
   const [isAdmin, setIsAdmin] = useState(isAdminData === "true");
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
     const isUserLoggedIn = async () => {
@@ -58,6 +60,8 @@ export const UserProvider = ({ children }) => {
         setIsLoggedIn(false);
         setIsAdmin(false);
         localStorage.removeItem("isAdmin");
+      } finally {
+        setIsAuthLoading(false);
       }
     };
 
@@ -66,6 +70,9 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const getUserInfor = async () => {
+      if (isAuthLoading) {
+        return;
+      }
       if (!isLoggedIn || !userInfor.userName) {
         setIsAdmin(false);
         localStorage.removeItem("isAdmin");
@@ -99,7 +106,7 @@ export const UserProvider = ({ children }) => {
     return () => {
       setIsUpdate(false);
     };
-  }, [isLoggedIn, isUpdate]);
+  }, [isLoggedIn, isUpdate, isAuthLoading]);
 
   const updateUserInfor = async (newUserInfor, isNavigated = true) => {
     try {
@@ -121,6 +128,7 @@ export const UserProvider = ({ children }) => {
   const value = {
     isLoggedIn,
     isAdmin,
+    isAuthLoading,
     setIsLoggedIn,
     email,
     setEmail,

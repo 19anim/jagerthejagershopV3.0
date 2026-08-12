@@ -11,7 +11,12 @@ import OrderDetail from "../orderHistory/orderDetail.component";
 import AdminProductDetailsPage from "../../pages/adminProductDetails.page";
 
 const AdminProtectedRoutes = () => {
-  const { isAdmin } = useContext(UserContext);
+  const { isAdmin, isAuthLoading } = useContext(UserContext);
+
+  if (isAuthLoading) {
+    return null;
+  }
+
   return isAdmin ? (
     <Routes>
       <Route path="/createProduct" element={<CreateProductPage />} />
