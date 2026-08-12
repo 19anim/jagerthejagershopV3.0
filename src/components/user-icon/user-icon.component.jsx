@@ -9,7 +9,7 @@ import { apiUrl } from "../../utils/api.utils";
 
 const UserIcon = () => {
   const LOGOUT_API_URL = apiUrl("/api/users/logout");
-  const { setIsLoggedIn, setIsAdmin, email, userInfor, setUserInfor, defaultUserInfor } =
+  const { setIsLoggedIn, setIsAdmin, isAdmin, email, userInfor, setUserInfor, defaultUserInfor } =
     useContext(UserContext);
   const { userName } = userInfor;
   const { setDeliveryPrice } = useContext(CartContext);
@@ -43,10 +43,14 @@ const UserIcon = () => {
           <Link to={localize("/user/userInformation")}>
             <div className="mt-[10px] cursor-pointer">{t("manageAccount")}</div>
           </Link>
-          <hr className="w-full" />
-          <Link to={localize("/user/orders")}>
-            <div className="cursor-pointer">{t("myOrders")}</div>
-          </Link>
+          {!isAdmin && (
+            <>
+              <hr className="w-full" />
+              <Link to={localize("/user/orders")}>
+                <div className="cursor-pointer">{t("myOrders")}</div>
+              </Link>
+            </>
+          )}
           <hr className="w-full" />
           <div className="mb-[10px] cursor-pointer" onClick={handleLogOut}>
             {t("logout")}

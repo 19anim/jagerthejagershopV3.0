@@ -21,9 +21,16 @@ const Navigator = () => {
           <nav className="hidden items-center gap-7 font-heading text-xs font-bold uppercase tracking-[0.12em] md:flex">
             <Link className="transition hover:text-mainOrange" to={localize("/")}>{t("home")}</Link>
             <Link className="transition hover:text-mainOrange" to={localize("/products")}>{t("products")}</Link>
-            {isAdmin && <Link className="transition hover:text-mainOrange" to="/admin/products">{t("adminCatalog")}</Link>}
-            {isAdmin && <Link className="transition hover:text-mainOrange" to="/admin/product-details">{t("adminProductDetails")}</Link>}
-            {isAdmin && <Link className="transition hover:text-mainOrange" to="/admin/orders">{t("adminOrders")}</Link>}
+            {isAdmin && (
+              <div className="group relative -my-2 py-2">
+                <span className="cursor-pointer transition hover:text-mainOrange">{t("adminSection")}</span>
+                <div className="absolute left-0 top-full hidden min-w-[220px] flex-col border border-warmGold/30 bg-[#14231d] py-2 text-cream shadow-2xl group-hover:flex z-50">
+                  <Link className="px-4 py-2 hover:text-mainOrange" to="/admin/products">{t("adminCatalog")}</Link>
+                  <Link className="px-4 py-2 hover:text-mainOrange" to="/admin/product-details">{t("adminProductDetails")}</Link>
+                  <Link className="px-4 py-2 hover:text-mainOrange" to="/admin/orders">{t("adminOrders")}</Link>
+                </div>
+              </div>
+            )}
           </nav>
           <div className="flex items-center gap-3 md:gap-5">
             <button className="text-xs font-bold tracking-widest text-cream/80 transition hover:text-mainOrange" onClick={() => setLocale(locale === "vi" ? "en" : "vi")}>{locale === "vi" ? "EN" : "VI"}</button>
@@ -39,6 +46,7 @@ const Navigator = () => {
           <Link to={localize("/products")}>{t("products")}</Link>
           {isAdmin && <Link to="/admin/products">{t("adminCatalog")}</Link>}
           {isAdmin && <Link to="/admin/product-details">{t("adminProductDetails")}</Link>}
+          {isAdmin && <Link to="/admin/orders">{t("adminOrders")}</Link>}
         </div>
       </header>
       <CartDropdown />

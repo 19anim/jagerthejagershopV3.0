@@ -16,7 +16,9 @@ const AccountLayout = () => {
       <div className="grid gap-5 lg:grid-cols-[240px_1fr]">
         <aside className="brand-panel flex flex-col gap-2 p-4">
           <Link className="account-nav-link" to={localize("/user/userInformation")}>{t("accountOverview")}</Link>
-          <Link className="account-nav-link" to={localize("/user/orders")}>{t("orders")}</Link>
+          {!isAdmin && (
+            <Link className="account-nav-link" to={localize("/user/orders")}>{t("orders")}</Link>
+          )}
           {isAdmin && (
             <Link className="account-nav-link" to={localize("/user/linkTelegram")}>{t("linkTelegram")}</Link>
           )}

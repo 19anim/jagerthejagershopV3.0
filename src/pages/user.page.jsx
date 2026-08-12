@@ -12,21 +12,28 @@ import AccountLayout from "../components/userInfor/accountLayout.component";
 import LinkTelegram from "../components/userInfor/linkTelegram.component";
 
 const UserPage = () => {
-  const { isLoggedIn, userInfor } = useContext(UserContext);
+  const { isLoggedIn, userInfor, isAdmin } = useContext(UserContext);
   const { localize, t } = useLocale();
   return (
     <Routes>
       {isLoggedIn && userInfor && (
-        <>
-          <Route path="/" element={<AccountLayout />}>
-            <Route path="userInformation" element={<UserInfor />} />
-            <Route path="updateInformation" element={<UpdateUserInfor />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="orders/orderDetail/:orderId" element={<OrderDetail embedded />} />
-            <Route path="linkTelegram" element={<LinkTelegram />} />
-            <Route path="*" element={<Navigate to={localize("/user/userInformation")} replace />} />
-          </Route>
-        </>
+        <Route path="/" element={<AccountLayout />}>
+          <Route path="userInformation" element={<UserInfor />} />
+          <Route path="updateInformation" element={<UpdateUserInfor />} />
+          {isAdmin ? (
+            <>
+              <Route path="orders" element={<Navigate to="/admin/orders" replace />} />
+              <Route path="orders/orderDetail/:orderId" element={<Navigate to="/admin/orders" replace />} />
+            </>
+          ) : (
+            <>
+              <Route path="orders" element={<Orders />} />
+              <Route path="orders/orderDetail/:orderId" element={<OrderDetail embedded />} />
+            </>
+          )}
+          <Route path="linkTelegram" element={<LinkTelegram />} />
+          <Route path="*" element={<Navigate to={localize("/user/userInformation")} replace />} />
+        </Route>
       )}
       {(!isLoggedIn || !userInfor) && (
         <Route path="*" element={<AuthLayout />}>
