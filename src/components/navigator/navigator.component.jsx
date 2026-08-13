@@ -28,6 +28,7 @@ const Navigator = () => {
                   <Link className="px-4 py-2 hover:text-mainOrange" to="/admin/products">{t("adminCatalog")}</Link>
                   <Link className="px-4 py-2 hover:text-mainOrange" to="/admin/product-details">{t("adminProductDetails")}</Link>
                   <Link className="px-4 py-2 hover:text-mainOrange" to="/admin/orders">{t("adminOrders")}</Link>
+                  <Link className="px-4 py-2 hover:text-mainOrange" to="/admin/assets">{t("adminAssets")}</Link>
                 </div>
               </div>
             )}
@@ -47,6 +48,7 @@ const Navigator = () => {
           {isAdmin && <Link to="/admin/products">{t("adminCatalog")}</Link>}
           {isAdmin && <Link to="/admin/product-details">{t("adminProductDetails")}</Link>}
           {isAdmin && <Link to="/admin/orders">{t("adminOrders")}</Link>}
+          {isAdmin && <Link to="/admin/assets">{t("adminAssets")}</Link>}
         </div>
       </header>
       <CartDropdown />

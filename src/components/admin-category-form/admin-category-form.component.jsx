@@ -3,6 +3,7 @@ import axios from "axios";
 import { apiUrl } from "../../utils/api.utils";
 import { getOptimizedImageUrl } from "../../utils/image.utils";
 import { useLocale } from "../../context/locale.context";
+import AssetPickerModal from "../admin-assets/AssetPickerModal.component";
 
 const emptyCategory = {
   name: "",
@@ -12,6 +13,8 @@ const AdminCategoryForm = ({ initialCategory, endpoint, method, submitLabel, onS
   const [category, setCategory] = useState(emptyCategory);
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [assetId, setAssetId] = useState(null);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useLocale();
@@ -44,7 +47,16 @@ const AdminCategoryForm = ({ initialCategory, endpoint, method, submitLabel, onS
       return;
     }
     setImageFile(file);
+    setAssetId(null);
     setPreviewUrl(URL.createObjectURL(file));
+    setErrorMessage("");
+  };
+
+  const handleAssetSelect = (asset) => {
+    setImageFile(null);
+    setAssetId(asset._id);
+    setPreviewUrl(asset.active?.secureUrl || "");
+    setIsPickerOpen(false);
     setErrorMessage("");
   };
 
@@ -56,6 +68,7 @@ const AdminCategoryForm = ({ initialCategory, endpoint, method, submitLabel, onS
     const data = new FormData();
     data.append("name", category.name);
     if (imageFile) data.append("image", imageFile);
+    else if (assetId) data.append("assetId", assetId);
 
     try {
       await axios.request({
@@ -68,6 +81,7 @@ const AdminCategoryForm = ({ initialCategory, endpoint, method, submitLabel, onS
       if (!initialCategory) {
         setCategory(emptyCategory);
         setImageFile(null);
+        setAssetId(null);
         setPreviewUrl("");
       }
       onSuccess?.();
@@ -93,8 +107,12 @@ const AdminCategoryForm = ({ initialCategory, endpoint, method, submitLabel, onS
       </label>
       <label className="flex flex-col gap-2">
         <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">{t("categoryImage")}</span>
-        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} required={!initialCategory} />
+        <div className="flex flex-wrap items-center gap-3">
+          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} required={!initialCategory && !assetId} />
+          <button type="button" className="brand-button-outline" onClick={() => setIsPickerOpen(true)}>{t("assetPicker")}</button>
+        </div>
       </label>
+      {assetId && <p className="text-xs text-mainOrange">{t("assetPickedLabel")}</p>}
       {previewUrl && (
         <img
           src={previewUrl.startsWith("blob:") ? previewUrl : getOptimizedImageUrl(previewUrl, "thumbnail")}
@@ -104,6 +122,9 @@ const AdminCategoryForm = ({ initialCategory, endpoint, method, submitLabel, onS
       )}
       {errorMessage && <p className="text-sm text-red-300">{errorMessage}</p>}
       <button className="brand-button w-fit" disabled={isSubmitting}>{isSubmitting ? t("saving") : submitLabel}</button>
+      {isPickerOpen && (
+        <AssetPickerModal category="category" onSelect={handleAssetSelect} onClose={() => setIsPickerOpen(false)} />
+      )}
     </form>
   );
 };

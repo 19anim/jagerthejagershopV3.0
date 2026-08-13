@@ -3,6 +3,7 @@ import axios from "axios";
 import { apiUrl } from "../../utils/api.utils";
 import { getOptimizedImageUrl } from "../../utils/image.utils";
 import { useLocale } from "../../context/locale.context";
+import AssetPickerModal from "../admin-assets/AssetPickerModal.component";
 
 const emptyProduct = {
   name: "",
@@ -10,6 +11,7 @@ const emptyProduct = {
   price: "",
   priceInInteger: 0,
   stock: 0,
+  soldAmount: 0,
   category: "",
   isBestSeller: false,
 };
@@ -18,6 +20,8 @@ const AdminProductForm = ({ initialProduct, categories, endpoint, method, submit
   const [product, setProduct] = useState(emptyProduct);
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [assetId, setAssetId] = useState(null);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useLocale();
@@ -67,7 +71,16 @@ const AdminProductForm = ({ initialProduct, categories, endpoint, method, submit
       return;
     }
     setImageFile(file);
+    setAssetId(null);
     setPreviewUrl(URL.createObjectURL(file));
+    setErrorMessage("");
+  };
+
+  const handleAssetSelect = (asset) => {
+    setImageFile(null);
+    setAssetId(asset._id);
+    setPreviewUrl(asset.active?.secureUrl || "");
+    setIsPickerOpen(false);
     setErrorMessage("");
   };
 
@@ -80,6 +93,7 @@ const AdminProductForm = ({ initialProduct, categories, endpoint, method, submit
       if (!["_id", "__v", "createdAt", "updatedAt", "image", "imagePublicId", "slug"].includes(key)) data.append(key, value ?? "");
     });
     if (imageFile) data.append("image", imageFile);
+    else if (assetId) data.append("assetId", assetId);
 
     try {
       await axios.request({
@@ -92,6 +106,7 @@ const AdminProductForm = ({ initialProduct, categories, endpoint, method, submit
       if (!initialProduct) {
         setProduct(emptyProduct);
         setImageFile(null);
+        setAssetId(null);
         setPreviewUrl("");
       }
       onSuccess?.();
@@ -120,11 +135,18 @@ const AdminProductForm = ({ initialProduct, categories, endpoint, method, submit
       <label className="flex items-center gap-3 self-end text-sm"><input type="checkbox" name="isBestSeller" checked={product.isBestSeller} onChange={handleChange} /> {t("bestSeller")}</label>
       <label className="flex flex-col gap-2 md:col-span-2">
         <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">{t("productImage")}</span>
-        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} required={!initialProduct} />
+        <div className="flex flex-wrap items-center gap-3">
+          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} required={!initialProduct && !assetId} />
+          <button type="button" className="brand-button-outline" onClick={() => setIsPickerOpen(true)}>{t("assetPicker")}</button>
+        </div>
       </label>
+      {assetId && <p className="text-xs text-mainOrange md:col-span-2">{t("assetPickedLabel")}</p>}
       {previewUrl && <img src={previewUrl.startsWith("blob:") ? previewUrl : getOptimizedImageUrl(previewUrl, "thumbnail")} alt="Product preview" className="size-40 object-cover" />}
       {errorMessage && <p className="text-sm text-red-300 md:col-span-2">{errorMessage}</p>}
       <button className="brand-button md:col-span-2 md:w-fit" disabled={isSubmitting}>{isSubmitting ? t("saving") : submitLabel}</button>
+      {isPickerOpen && (
+        <AssetPickerModal category="product" onSelect={handleAssetSelect} onClose={() => setIsPickerOpen(false)} />
+      )}
     </form>
   );
 };

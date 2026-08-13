@@ -9,6 +9,7 @@ import CreateCategoryPage from "../../pages/createCategory.page";
 import EditCategoryPage from "../../pages/editCategory.page";
 import OrderDetail from "../orderHistory/orderDetail.component";
 import AdminProductDetailsPage from "../../pages/adminProductDetails.page";
+import AdminAssetsPage from "../../pages/adminAssets.page";
 
 const AdminProtectedRoutes = () => {
   const { isAdmin, isAuthLoading } = useContext(UserContext);
@@ -25,6 +26,7 @@ const AdminProtectedRoutes = () => {
       <Route path="/categories/create" element={<CreateCategoryPage />} />
       <Route path="/categories/:categoryId/edit" element={<EditCategoryPage />} />
       <Route path="/product-details" element={<AdminProductDetailsPage />} />
+      <Route path="/assets" element={<AdminAssetsPage />} />
       <Route path="/orders" element={<AdminOrdersList />}/>
       <Route path="/orders/:orderId" element={<OrderDetail />}/>
     </Routes>
