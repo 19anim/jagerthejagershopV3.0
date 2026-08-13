@@ -76,6 +76,7 @@ const AdminProductsPage = () => {
                   <th className="p-3">{t("image")}</th>
                   <th className="p-3">{t("productName")}</th>
                   <th className="p-3">{t("category")}</th>
+                  <th className="p-3">{t("displayPrice")}</th>
                   <th className="p-3">{t("sold")}</th>
                   <th className="p-3">{t("stock")}</th>
                   <th className="p-3">{t("actions")}</th>
@@ -87,6 +88,7 @@ const AdminProductsPage = () => {
                     <td className="p-3"><img className="size-16 object-cover" src={getOptimizedImageUrl(product.image, "thumbnail")} alt={product.name} /></td>
                     <td className="p-3 font-bold text-cream">{product.name}</td>
                     <td className="p-3">{product.category?.name || "-"}</td>
+                    <td className="p-3">{product.price}</td>
                     <td className="p-3">{product.soldAmount}</td>
                     <td className="p-3">{product.stock}</td>
                     <td className="p-3">
