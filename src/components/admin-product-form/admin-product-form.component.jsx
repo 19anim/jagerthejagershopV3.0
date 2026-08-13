@@ -31,7 +31,12 @@ const AdminProductForm = ({ initialProduct, categories, endpoint, method, submit
 
   useEffect(() => {
     if (initialProduct) {
-      setProduct({ ...emptyProduct, ...initialProduct, category: initialProduct.category?._id || initialProduct.category || "" });
+      setProduct({
+        ...emptyProduct,
+        ...initialProduct,
+        category: initialProduct.category?._id || initialProduct.category || "",
+        description: initialProduct.description?._id || initialProduct.description || "",
+      });
       setPreviewUrl(initialProduct.image || "");
     }
   }, [initialProduct]);
