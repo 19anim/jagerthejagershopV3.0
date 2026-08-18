@@ -22,7 +22,7 @@ const SCENE_GLBS = [
   "shipping-station.glb", "contact-board.glb", "desk-phone.glb",
   "bottle-herbal.glb", "bottle-herbal-mini.glb",
 ];
-SCENE_GLBS.forEach(preloadGlb);
+if (isWebGLAvailable()) SCENE_GLBS.forEach(preloadGlb);
 
 const Shop3DPage = () => {
   const { t, locale } = useLocale();
