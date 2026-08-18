@@ -9,6 +9,20 @@ import { apiUrl } from "../utils/api.utils";
 import { isWebGLAvailable } from "../utils/webgl.utils";
 import { resolveBottleInstances } from "../utils/shop3d.utils";
 import { BOTTLE_PLACEMENTS } from "../utils/shop3d.config";
+import { preloadGlb } from "../components/shop3d/glb-model.component";
+
+const SCENE_GLBS = [
+  "sidewalk-base.glb", "facade.glb", "display-window.glb", "planter.glb",
+  "signboard.glb", "street-lamp.glb", "entrance-door.glb",
+  "room-shell.glb", "liquor-shelf-bay.glb", "specials-podium.glb",
+  "accessory-stand.glb", "ceiling-spotlight.glb",
+  "floor-rug.glb", "framed-art.glb", "neon-sign.glb", "oak-barrel.glb",
+  "potted-plant.glb", "wooden-crate.glb", "inspect-pedestal.glb",
+  "cashier-counter.glb", "pos-terminal.glb", "shopping-basket.glb",
+  "shipping-station.glb", "contact-board.glb", "desk-phone.glb",
+  "bottle-herbal.glb", "bottle-herbal-mini.glb",
+];
+SCENE_GLBS.forEach(preloadGlb);
 
 const Shop3DPage = () => {
   const { t, locale } = useLocale();
