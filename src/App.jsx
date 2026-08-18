@@ -6,7 +6,10 @@ import UserPage from "./pages/user.page";
 import CartCheckoutPage from "./pages/cartCheckout.page";
 import AdminProtectedRoutes from "./components/adminProtectedRoutes/adminProtectedRoutes.component";
 import { UserContext } from "./context/user.context";
-import { useContext } from "react";
+import { useContext, lazy, Suspense } from "react";
+import LoadingSpinner from "./components/loading-spinner/loading-spinner.component";
+
+const Shop3DPage = lazy(() => import("./pages/shop3d.page"));
 
 const LocalizedRoutes = () => {
   const { locale } = useParams();
@@ -21,6 +24,14 @@ const LocalizedRoutes = () => {
       <Route path="authentication/*" element={!isLoggedIn ? <AuthPage /> : <Navigate to={`/${locale}/user`} replace />} />
       <Route path="user/*" element={<UserPage />} />
       <Route path="cartCheckout/*" element={<CartCheckoutPage />} />
+      <Route
+        path="shop3d"
+        element={
+          <Suspense fallback={<LoadingSpinner />}>
+            <Shop3DPage />
+          </Suspense>
+        }
+      />
       <Route path="*" element={<Navigate to={`/${locale}`} replace />} />
     </Routes>
   );
