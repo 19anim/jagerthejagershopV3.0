@@ -6,6 +6,7 @@ import { CartContext } from "../../context/cart.context";
 import UserIcon from "../user-icon/user-icon.component";
 import Logo from "../../assets/logo.png";
 import { useLocale } from "../../context/locale.context";
+import ShopModeToggle from "../shop-mode-toggle/shop-mode-toggle.component";
 
 const Navigator = () => {
   const { isLoggedIn, isAdmin } = useContext(UserContext);
@@ -34,6 +35,7 @@ const Navigator = () => {
             )}
           </nav>
           <div className="flex items-center gap-3 md:gap-5">
+            <ShopModeToggle />
             <button className="text-xs font-bold tracking-widest text-cream/80 transition hover:text-mainOrange" onClick={() => setLocale(locale === "vi" ? "en" : "vi")}>{locale === "vi" ? "EN" : "VI"}</button>
             {isLoggedIn ? <UserIcon /> : <Link aria-label={t("signIn")} to={localize("/authentication/sign-in")}><ion-icon name="person-circle-outline" class="text-2xl"></ion-icon></Link>}
             <button className="relative flex items-center" onClick={toggleIsCartOpen} aria-label={t("cart")}>
