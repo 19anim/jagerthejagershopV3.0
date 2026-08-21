@@ -1,0 +1,101 @@
+{
+  "_readme": "Hand this file to your dev/agent together with the GLB files. It is the whole placement contract — you do NOT need the viewer HTML/CSS pages, those are only for inspecting models in the browser. Units: metres, y-up. Every GLB has its base at y=0 and is centred in x/z unless 'pivot' says otherwise. Shop front faces +z.",
+
+  "world": {
+    "interior_clear": { "w": 9.5, "d": 11.0, "h": 3.6 },
+    "walking_surface_y": 0.06,
+    "note": "floor_interior is 0.06 m thick, so every fixture standing on the floor gets y = 0.06."
+  },
+
+  "envelope": [
+    { "glb": "floor-interior.glb", "node": "floor_interior", "position": [0, 0, 0], "rotationY": 0,
+      "note": "walking surface at y = 0.06" },
+    { "glb": "wall-set.glb", "node": "wall_set", "position": [0, 0.06, 0], "rotationY": 0,
+      "openings": {
+        "door":   { "x_from": 1.63, "x_to": 2.97, "centre_x": 2.3, "width": 1.34, "height": 2.42 },
+        "window": { "x_from": -3.39, "x_to": -1.71, "centre_x": -2.55, "width": 1.68, "height": 2.1, "sill": 0.0 }
+      },
+      "note": "holes are cut to the exact models that fill them — do not re-scale either model" },
+    { "glb": "doorway-frame.glb", "node": "doorway_frame", "position": [2.3, 0.06, 5.6], "rotationY": 0,
+      "clear_opening": { "w": 1.04, "h": 2.24, "depth": 0.24 },
+      "note": "fills the 1.34 x 2.42 door hole; door_stop at local z = -0.06" },
+    { "glb": "roof.glb", "node": "roof", "position": [0, 3.66, 0], "rotationY": 0,
+      "pivot": "ceiling underside — y is the visible ceiling face, NOT the base" },
+    { "glb": "display-window.glb", "node": "display_window", "position": [-2.55, 0.06, 5.6], "rotationY": 0,
+      "size": { "w": 1.6, "h": 2.0 },
+      "note": "STANDS ON THE FLOOR (it has its own 0.35 m plinth) — y = floor 0.06, not a sill height. Fills the 1.68 x 2.10 window hole with a 40 mm reveal each side." },
+    { "glb": "entrance-door.glb", "node": "entrance_door", "position": [1.8, 0.09, 5.6], "rotationY": 0,
+      "size": { "w": 1.0, "h": 2.2 },
+      "pivot": "HINGE AXIS at local x = 0, leaf extends +x — the group origin is NOT the door centre",
+      "note": "= doorway_frame x - 0.50, y + 0.03 (threshold tread top). Animate rotationY 0 -> -1.6 rad to swing inward." },
+    { "glb": "signboard.glb", "node": "signboard", "position": [0, 3.2, 5.82], "rotationY": 0 }
+  ],
+
+  "fixtures": [
+    { "glb": "wine-cabinet.glb", "node": "wine_cabinet", "position": [-3.4, 0.06, -5.27], "rotationY": 0,
+      "shelf_tops": [0.2, 0.64, 1.08, 1.52],
+      "interior_clear": { "w": 1.02, "d": 0.38 },
+      "note": "against the back wall (wall_set inner face z = -5.5, half depth 0.23); add 0.06 (floor) to shelf_tops for world y" },
+    { "glb": "liquor-shelf-bay.glb", "node": "liquor_shelf_bay", "position": [-1.8, 0.06, -5.29], "rotationY": 0,
+      "tile": { "axis": "x", "step": 1.2, "count": 5 },
+      "shelf_tops": [0.175, 0.655, 1.135, 1.615, 2.055] },
+    { "glb": "accessory-shelf.glb", "node": "accessory_shelf", "position": [4.6, 1.11, -0.6], "rotationY": -1.5708,
+      "deck_tops_local": [0.09, 0.44, 0.79],
+      "hang_rails_local": [0.365, 0.715],
+      "note": "mounted on the RIGHT wall of wall_set: x = 4.75 - 0.15 (half depth), rotated -90 deg to face the room. World deck heights = 1.11 + deck_tops_local = 1.20 / 1.55 / 1.90" },
+    { "glb": "specials-podium.glb", "node": "specials_podium", "position": [0.6, 0.06, 2.4], "rotationY": -0.4,
+      "top_surface_local": 1.025,
+      "note": "No image slots. Stand the special/hero bottle model on the top cap: world y = 0.06 + 1.025 = 1.085." },
+    { "glb": "accessory-stand.glb", "node": "accessory_display_stand", "position": [-2.6, 0.06, 1.8], "rotationY": 0,
+      "tier_tops_local": [0.435, 0.875, 1.275] },
+    { "glb": "cashier-counter.glb", "node": "cashier_counter", "position": [3.6, 0.06, 1.0], "rotationY": -1.5708,
+      "top_surface_local": 1.105,
+      "note": "Rotated -90 deg: the counter's local +x runs along world +z (length 2.2 m, z = -0.15..2.15) and local +z faces the room at world -x, so the customer side is x = 3.25 and the staff side x = 3.95. Worktop world y = 0.06 + 1.105 = 1.165. Gold lip is a 22 mm perimeter frame only (top 1.125 local).",
+      "on_top": [
+        { "glb": "pos-terminal.glb", "node": "pos_terminal", "position": [3.55, 1.165, 1.55], "rotationY": -1.5708,
+          "note": "screen faces the customer (-x)" },
+        { "glb": "desk-phone.glb", "node": "desk_phone", "position": [3.72, 1.165, 0.95], "rotationY": 1.35,
+          "note": "staff side, keypad toward +x" },
+        { "glb": "shopping-basket.glb", "node": "shopping_basket", "position": [3.6, 1.165, 0.15], "rotationY": -1.5708,
+          "note": "long axis along the counter; stack a second one at y = 1.365 with rotationY -1.5708" },
+        { "glb": "gift-box.glb", "node": "gift_box", "position": [3.70, 1.165, 1.95], "rotationY": -1.5708,
+          "note": "logo_slot faces the customer (-x)" }
+      ] }
+  ],
+
+  "placement_rule": "world_y_of_an_item = fixture.position[1] + surface_top_local. Bottles/glasses have their base at y = 0, so that value is the item's y directly.",
+
+  "wall_mounting": {
+    "why": "Every fixture is centred in x/z, so putting its origin ON the wall face buries half of it in the wall. Offset the origin by half the fixture's depth.",
+    "rule": "flush_origin = wall_inner_face +/- (fixture_depth / 2), then rotate to face the room.",
+    "inner_wall_faces": {
+      "wall_set  (t = 0.20)":  { "left_x": -4.75, "right_x": 4.75, "back_z": -5.5, "front_wall_inner_z": 5.5, "ceiling_y": 3.66 },
+      "room_shell (t = 0.12, LEGACY 6x7 shell - not enlarged)": { "left_x": -2.88, "right_x": 2.88, "back_z": -3.38 }
+    },
+    "rotationY": { "back_wall": 0, "left_wall": 1.5708, "right_wall": -1.5708, "front_wall": 3.1416 },
+    "worked_examples_room_shell": [
+      { "fixture": "wine_cabinet", "depth": 0.46, "back_wall": { "position": [-2.15, 0.06, -3.15], "rotationY": 0 }, "right_wall": { "position": [2.65, 0.06, -1.2], "rotationY": -1.5708 } },
+      { "fixture": "liquor_shelf_bay", "depth": 0.42, "back_wall": { "position": [-1.2, 0.06, -3.17], "rotationY": 0 } },
+      { "fixture": "accessory_shelf", "depth": 0.3, "right_wall": { "position": [2.73, 1.11, -0.6], "rotationY": -1.5708 }, "back_wall": { "position": [1.6, 1.11, -3.23], "rotationY": 0 } },
+      { "fixture": "framed_art", "depth": 0.02, "back_wall": { "position": [0, 1.75, -3.37], "rotationY": 0 }, "note": "backing runs local z = 0 -> 0.02, so its origin sits ON the wall face" },
+      { "fixture": "neon_sign", "depth": 0.14, "back_wall": { "position": [0, 2.3, -3.31], "rotationY": 0 } }
+    ]
+  },
+
+  "texture_slots": {
+    "how": "Every texturable panel is a named mesh using the shared 'slot_face' material. After loading: obj.getObjectByName('cabinet_header_slot').material = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85 }); — replace the material, don't reuse slot_face (it is shared across all objects).",
+    "batch6": {
+      "wine_cabinet": ["cabinet_header_slot", "shelf_label_slot_1", "shelf_label_slot_2", "shelf_label_slot_3", "shelf_label_slot_4"],
+      "wall_set": ["facade_sign_slot", "interior_sign_slot"],
+      "roof": ["parapet_sign_slot"],
+      "accessory_shelf": ["accessory_label_slot_1", "accessory_label_slot_2", "accessory_label_slot_3"],
+      "doorway_frame": ["transom_slot", "threshold_mat_slot"],
+      "floor_interior": ["floor_medallion_slot"]
+    }
+  },
+
+  "scene_glbs": [
+    "floor-interior.glb", "wall-set.glb", "roof.glb", "doorway-frame.glb",
+    "wine-cabinet.glb", "accessory-shelf.glb"
+  ]
+}

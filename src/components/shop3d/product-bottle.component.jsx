@@ -52,6 +52,7 @@ const ProductBottle = ({ instance }) => {
         event.stopPropagation();
         setOpen((current) => !current);
       }}
+      onPointerMissed={() => setOpen(false)}
     >
       <GlbModel
         fileName={glb}
@@ -61,8 +62,8 @@ const ProductBottle = ({ instance }) => {
         onReady={attachLabel}
       />
       {open && (
-        <Html position={[0, 0.9, 0]} center distanceFactor={7}>
-          <div className="w-44 rounded border border-warmGold/50 bg-cream p-3 text-center text-ink shadow-xl">
+        <Html position={[0, 0.45, 0]} zIndexRange={[100, 0]}>
+          <div className="w-44 -translate-x-1/2 -translate-y-[calc(100%+0.25rem)] rounded border border-warmGold/50 bg-cream p-3 text-center text-ink shadow-xl">
             <p className="font-heading text-sm font-bold leading-tight">{product.name}</p>
             <p className="mt-1 text-sm text-mainOrange">{formatPrice(product.priceInInteger)}₫</p>
             <p className="text-[11px] text-ink/60">{t("stock")}: {product.stock}</p>

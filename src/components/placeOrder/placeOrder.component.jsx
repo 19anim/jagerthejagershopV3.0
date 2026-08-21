@@ -7,6 +7,7 @@ import { UserContext } from "../../context/user.context";
 import Momo from "../../assets/momo.jpg";
 import Techcombank from "../../assets/techcombank.jpg";
 import { useLocale } from "../../context/locale.context";
+import { useShopMode, SHOP_MODE } from "../../hooks/useShopMode.hook";
 import { apiUrl } from "../../utils/api.utils";
 
 const paymentOptions = [
@@ -48,7 +49,9 @@ const PlaceOrder = () => {
   const { userInfor, isLoggedIn } = useContext(UserContext);
   const [orderDetailId, setOrderDetailId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { localize, t } = useLocale();
+  const { localize, t, locale } = useLocale();
+  const { mode } = useShopMode();
+  const is3D = mode === SHOP_MODE.THREE_D;
 
   const handleOnChange = (event) => {
     const chosenOption = paymentOptions.find((paymentOption) => {
@@ -107,6 +110,8 @@ const PlaceOrder = () => {
     classList.toggle("hidden");
     if (isLoggedIn) {
       navigate(localize(`/user/orders/orderDetail/${orderDetailId}`));
+    } else if (is3D) {
+      navigate(`/${locale}/shop3d`);
     } else {
       navigate(localize("/"));
     }
@@ -132,13 +137,23 @@ const PlaceOrder = () => {
         </div>
         <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <p className="font-heading text-2xl font-bold uppercase md:text-3xl">{t("selectPayment")}</p>
-          <Link
-            to={localize("/products")}
-            className="flex items-center text-sm font-bold uppercase tracking-wider text-mainOrange"
-          >
-            <ion-icon name="arrow-back-outline"></ion-icon>
-            <p className="ml-2">{t("continueShopping")}</p>
-          </Link>
+          {is3D ? (
+            <button
+              onClick={() => navigate(`/${locale}/shop3d`)}
+              className="flex items-center text-sm font-bold uppercase tracking-wider text-mainOrange"
+            >
+              <ion-icon name="close-outline"></ion-icon>
+              <p className="ml-2">{t("returnToShop")}</p>
+            </button>
+          ) : (
+            <Link
+              to={localize("/products")}
+              className="flex items-center text-sm font-bold uppercase tracking-wider text-mainOrange"
+            >
+              <ion-icon name="arrow-back-outline"></ion-icon>
+              <p className="ml-2">{t("continueShopping")}</p>
+            </Link>
+          )}
         </div>
         <div className="text-xl font-medium text-mainOrange-50 mb-3">
           {t("total")}: {(subtotal + deliveryPrice).toLocaleString()} VNĐ
