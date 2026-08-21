@@ -14,6 +14,7 @@ const emptyProduct = {
   soldAmount: 0,
   category: "",
   isBestSeller: false,
+  shop3dModel: "",
 };
 
 const AdminProductForm = ({ initialProduct, categories, endpoint, method, submitLabel, onSuccess }) => {
@@ -133,6 +134,10 @@ const AdminProductForm = ({ initialProduct, categories, endpoint, method, submit
         </select>
       </label>
       <label className="flex items-center gap-3 self-end text-sm"><input type="checkbox" name="isBestSeller" checked={product.isBestSeller} onChange={handleChange} /> {t("bestSeller")}</label>
+      <label className="flex flex-col gap-2 text-sm">
+        <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">{t("shop3dModel")}</span>
+        <input className="border border-white/15 bg-[#14231d] px-3 py-2 text-cream outline-none focus:ring-2 focus:ring-mainOrange" name="shop3dModel" value={product.shop3dModel ?? ""} onChange={handleChange} type="text" placeholder="e.g. jager-original-700.glb" />
+      </label>
       <label className="flex flex-col gap-2 md:col-span-2">
         <span className="font-heading text-xs font-bold uppercase tracking-widest text-mainOrange">{t("productImage")}</span>
         <div className="flex flex-wrap items-center gap-3">
