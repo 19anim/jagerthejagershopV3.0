@@ -6,9 +6,9 @@ You have two routes. Both give the same object — pick one.
 
 ## Route A — download the `.glb` and load it (most common)
 
-1. Open a viewer page (e.g. `batch3/bottle-tall.html`).
-2. Click **Download GLB** → you get `jager_bottle_tall.glb`.
-3. Put it in your project, e.g. `public/models/jager_bottle_tall.glb`.
+1. Open a viewer page (e.g. `batch3/bottle-700ml.html`).
+2. Click **Download GLB** → you get `jager_bottle_700ml.glb`.
+3. Put it in your project, e.g. `public/models/jager_bottle_700ml.glb`.
 4. Load it with `GLTFLoader`:
 
 ```js
@@ -16,7 +16,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const loader = new GLTFLoader();
-loader.load('/models/jager_bottle_tall.glb', (gltf) => {
+loader.load('/models/jager_bottle_700ml.glb', (gltf) => {
   const bottle = gltf.scene;
   bottle.position.set(0.4, 1.105, -0.2);   // base sits at y = 0, so y = shelf height
   scene.add(bottle);
@@ -50,7 +50,7 @@ materials are shared across every object automatically.
 
 ```js
 import * as THREE from 'three';
-import { bottleTall, bottleWine } from './models/batch3.js';
+import { bottle700ml } from './models/bottle-sizes.js';
 import { liquorShelf } from './models/batch2.js';
 import { studioEnv } from './jager-brand.js';   // optional: only if you want the same env look
 
@@ -58,7 +58,7 @@ const shelf = liquorShelf(THREE);
 shelf.position.set(-1.2, 0, -3.3);
 scene.add(shelf);
 
-const bottle = bottleTall(THREE);
+const bottle = bottle700ml(THREE);
 bottle.position.set(-1.2, 0.62 + 0.035, -3.25); // shelf board 2 top
 scene.add(bottle);
 ```
@@ -111,8 +111,8 @@ wine bottle (`halfWidth == halfDepth == cornerRadius`) and a flat hip flask. One
 topology, one UV convention, one set of part names — so a new product is a
 preset plus a cap style plus a label size, never new geometry code.
 
-Open **batch3/bottle-kit.html** and turn the knobs: it prints the exact
-`bottle()` call for what you see. Paste that into `models/batch3.js`:
+A new bottle is one `bottle()` call in `models/batch3.js` — the presets and
+knobs are documented at the top of `models/bottle-kit.js`:
 
 ```js
 import { bottle } from './bottle-kit.js';
@@ -154,6 +154,107 @@ sides.
 Non-bottle accessories (trays, coasters, cases) still go in the batch modules
 using the `box`/`span`/`cyl`/`lathe`/`slot` helpers in `jager-brand.js` — same
 rules, same shared materials.
+
+## The size range — six separate models
+
+Six sizes, each **its own model**, not a node inside a combined object. One page, one root
+group, one export:
+
+| Page | Root node / GLB | Height | Body glass | Cap |
+| --- | --- | --- | --- | --- |
+| `batch3/bottle-20ml.html` | `jager_bottle_20ml` | 85 mm | 30 × 20 mm | 18 mm miniature |
+| `batch3/bottle-100ml.html` | `jager_bottle_100ml` | 139 mm | 51 × 35 mm | 25 mm |
+| `batch3/bottle-200ml.html` | `jager_bottle_200ml` | 165 mm | 64 × 44 mm | 25 mm |
+| `batch3/bottle-350ml.html` | `jager_bottle_350ml` | 206 mm | 77 × 53 mm | 31 mm |
+| `batch3/bottle-700ml.html` | `jager_bottle_700ml` | 246 mm | 97 × 66 mm | 31 mm |
+| `batch3/bottle-1000ml.html` | `jager_bottle_1000ml` | 271 mm | 109 × 75 mm | 31 mm |
+
+**They are not one shape scaled six times.** Closures come in three tiers — an 18 mm miniature cap, a 25 mm cap on 100/200 ml, the full
+31 mm ribbed cap from 350 ml up — and within a tier the neck and cap are held at ABSOLUTE
+size while only the body scales by the cube root of the volume ratio.
+That is why the heights are not a straight cube-root ladder, and why a 100 ml reads as a small
+bottle with a full-size cap instead of a shrunken 0.7 L. Each bottle's contents shell is solved
+numerically so the liquid actually equals the nominal capacity.
+
+In code, import the size you want — no files to load:
+
+```js
+import { bottle700ml, bottle20ml, SIZES, sizeOpts } from './models/bottle-sizes.js';
+
+const b = bottle700ml(THREE, { texBase: '/img/' });
+b.position.set(-1.2, 0.655, -3.25);        // base at y = 0, front label faces +z
+scene.add(b);
+```
+
+`texBase` is where `label-ct-front.png`, `label-ct-back.png` and `cap-ct-wrap.png` live
+(default: the module's own folder); pass `{ textures: false }` for plain glass. Base at
+`y = 0`, front label faces `+z`, metres throughout.
+
+**The labels** are two paper panels — `label_slot` on `+z` and `label_slot_back` on `−z` —
+each a band of the glass surface 1 mm out, so the paper follows the flat face and curves around
+the corner radius. Artwork is cropped from the product photographs with the wordmark reset to
+**Thuoc Ho Con Huou**, set in the same blackletter face. To reskin, swap the map:
+
+```js
+bottle.getObjectByName('label_slot').material.map = myFrontLabel;
+bottle.getObjectByName('label_slot_back').material.map = myBackLabel;
+```
+
+Before exporting to GLB, `await labelsReady(THREE)` — the exporter reads `texture.image`
+synchronously and will otherwise report *no valid image data*.
+
+### Cold Brew Coffee edition
+
+`coldBrew20ml` / `coldBrew1000ml` are the Cold Brew Coffee bottles — 20 ml (85.0 mm) and 1 L
+(271.0 mm). Cold Brew is filled in the same mould and the same closure as the Original, so the
+glass and the finish tiers are shared; only the artwork changes: black label
+(`label-cb-front.png` / `label-cb-back.png`), silver cap top and an orange
+"herbal liqueur with coffee" band on the cap wrap (`cap-cb-wrap.png`). The wordmark is the same
+blackletter **Thuoc Ho Con Huou**. Any size can take the artwork:
+
+```js
+import { coldBrew1000ml, sizedBottle, SIZES } from './models/bottle-sizes.js';
+
+const cb = coldBrew1000ml(THREE);
+const cb350 = sizedBottle(THREE, SIZES.find((s) => s.ml === 350), { variant: 'coldbrew' });
+await labelsReady(THREE, undefined, 'coldbrew');   // before GLB export
+```
+
+Label plates are regenerated from the product photographs by `tools/coldbrew-labels.html`.
+
+### Manifest edition — a different mould
+
+`models/manifest.js` is its own bottle: the flat rectangular Manifest glass, sold here in
+**40 ml** and **1 L**. Not a variant of the Original — a separate mould, so a separate module.
+
+| Page | Root node / GLB | Height | Body glass | Cap |
+| --- | --- | --- | --- | --- |
+| `batch3/manifest-40ml.html` | `mf_bottle_40ml` | 94.2 mm | 36.1 × 19.8 mm | 18 mm miniature |
+| `batch3/manifest-1000ml.html` | `mf_bottle_1000ml` | 260 mm | 100 × 55 mm | 31 mm sleeve |
+
+The real size is derived, not guessed: the straight-on product photograph traces at 1352 px on a
+520 px body (2.60 : 1), and the 1 L gift box ships six to a 32.1 × 15.5 × 27.3 cm case — one box
+is 107 × 77.5 × 273 mm, which puts the bottle at 100 mm across and 260 mm tall. The 55.0 mm depth
+is then **solved** so the cavity of the 1.6 mm shell filled to the neck is exactly 1.000 L. The
+40 ml body scale is **solved the same way** — bisected until the cavity filled to the base of the
+neck is 0.040 L, which lands at 0.361 of the litre (36.1 × 19.8 mm, 94.2 mm tall). A cube-root
+ladder would be wrong here: the finish is held at absolute size, so the neck gives back none of
+the volume the body loses, and a cbrt body comes out ~12 % short.
+
+Manifest carries **no paper label** — the artwork is printed straight onto clear glass. So
+`label_slot` and `label_slot_back` carry TRANSPARENT plates (`label-mf-front.png`,
+`label-mf-back.png`), keyed out of the product photographs by `tools/manifest-labels.html`;
+the wordmark is reset to **Thuoc Ho Con Huou** in the same blackletter face. The cap is a tall
+ribbed sleeve wrapped in `cap-mf-wrap.png`. The narrow sides are plain glass — the vertical
+ribbing in the product shots is on the carton, not the bottle — and the contents are only 72 %
+opaque, so the back print reads faintly through the front the way it does in the photographs.
+
+```js
+import { manifest40ml, manifest1000ml, printsReady } from './models/manifest.js';
+
+const b = manifest1000ml(THREE);      // base at y = 0, printed front faces +z
+await printsReady(THREE, './models/');  // before GLB export
+```
 
 ## Lights
 

@@ -25,7 +25,10 @@ const SCENE_GLBS = [
   "potted-plant.glb", "wooden-crate.glb", "inspect-pedestal.glb",
   "cashier-counter.glb", "pos-terminal.glb", "shopping-basket.glb",
   "shipping-station.glb", "contact-board.glb", "desk-phone.glb",
-  "bottle-herbal.glb", "bottle-herbal-mini.glb",
+  "bottle-700ml.glb", "bottle-1000ml.glb", "bottle-200ml.glb", "bottle-350ml.glb",
+  "bottle-20ml.glb", "bottle-100ml.glb", "manifest-1000ml.glb", "manifest-40ml.glb",
+  "bottle-herbal-mini.glb", "coldbrew-1000ml.glb", "coldbrew-20ml.glb",
+  "orange-1000ml.glb", "orange-20ml.glb",
   "drinking-glass.glb", "jigger.glb", "pourer.glb", "shaker.glb", "flask.glb", "gift-box.glb",
 ];
 if (isWebGLAvailable()) SCENE_GLBS.forEach(preloadGlb);
@@ -73,7 +76,10 @@ const Shop3DPage = () => {
     fetchProducts();
   }, [webglOk]);
 
-  const bottles = useMemo(() => resolveProductInstances(products, FIXTURES, PRODUCT_SLOTS), [products]);
+  const bottles = useMemo(
+    () => (products.length ? resolveProductInstances(products, FIXTURES, PRODUCT_SLOTS) : []),
+    [products]
+  );
   const accessories = useMemo(() => resolveAccessoryPlacements(FIXTURES, ACCESSORY_PLACEMENTS), []);
 
   if (!webglOk) {

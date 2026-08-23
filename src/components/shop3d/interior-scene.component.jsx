@@ -51,7 +51,7 @@ const InteriorScene = ({ bottles, accessories = [] }) => {
 
       {/* Products resting on shelf/cabinet/podium surfaces */}
       {bottles.map((instance) => (
-        <ProductBottle key={instance.product._id} instance={instance} />
+        <ProductBottle key={`${instance.product._id}-${instance.depthIndex}`} instance={instance} />
       ))}
 
       {/* Decorative accessory props on the accessory fixtures */}

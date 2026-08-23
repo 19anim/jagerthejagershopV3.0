@@ -10,6 +10,16 @@ const slotToWorld = (fixture, slot) => {
   return [fx + dx, fy + fixture.surfaceY + dy, fz + dz];
 };
 
+// A slot renders a short row of bottles receding into the shelf (depth axis),
+// not just one, so a well-stocked product visibly looks fuller than a nearly
+// sold-out one. Capped at 4 so the row never pokes through the shelf back.
+const MAX_DEPTH_STACK = 4;
+const DEPTH_STACK_STEP = 0.08;
+
+// At least one bottle always renders (even at 0 stock) so out-of-stock
+// products still show their "Sold Out" bottle instead of vanishing.
+const stackCountForStock = (stock) => Math.max(1, Math.min(stock || 0, MAX_DEPTH_STACK));
+
 // Map catalog products onto fixture slots by their unique shop3dModel file name.
 // The GLB rendered is the product's own shop3dModel. Products without a model
 // are never matched; unmatched slots are warned and dropped.
@@ -20,26 +30,26 @@ export const resolveProductInstances = (products, fixtures, slots) => {
       .map((product) => [normalizeModel(product.shop3dModel), product])
   );
   const byId = new Map(fixtures.map((fixture) => [fixture.id, fixture]));
-  return slots
-    .map((slot) => {
-      const product = byModel.get(normalizeModel(slot.model));
-      const fixture = byId.get(slot.fixtureId);
-      if (!product) {
-        console.warn(`[shop3d] No product matched model "${slot.model}"`);
-        return null;
-      }
-      if (!fixture) {
-        console.warn(`[shop3d] No fixture matched id "${slot.fixtureId}"`);
-        return null;
-      }
-      return {
-        product,
-        glb: product.shop3dModel,
-        position: slotToWorld(fixture, slot.slot),
-        rotationY: slot.rotationY || 0,
-      };
-    })
-    .filter(Boolean);
+  return slots.flatMap((slot) => {
+    const product = byModel.get(normalizeModel(slot.model));
+    const fixture = byId.get(slot.fixtureId);
+    if (!product) {
+      console.warn(`[shop3d] No product matched model "${slot.model}"`);
+      return [];
+    }
+    if (!fixture) {
+      console.warn(`[shop3d] No fixture matched id "${slot.fixtureId}"`);
+      return [];
+    }
+    const [dx, dy, dz] = slot.slot;
+    return Array.from({ length: stackCountForStock(product.stock) }, (_, depthIndex) => ({
+      product,
+      glb: product.shop3dModel,
+      position: slotToWorld(fixture, [dx, dy, dz - depthIndex * DEPTH_STACK_STEP]),
+      rotationY: slot.rotationY || 0,
+      depthIndex,
+    }));
+  });
 };
 
 // Resolve decorative accessory props onto fixture surfaces (no catalog product).

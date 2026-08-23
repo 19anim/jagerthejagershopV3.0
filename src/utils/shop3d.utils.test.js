@@ -23,11 +23,29 @@ describe("resolveProductInstances", () => {
       { model: "jager-original-700.glb", fixtureId: "shelf", slot: [0.5, 0, 0] },
     ];
     const result = resolveProductInstances(products, fixtures, slots);
-    expect(result).toHaveLength(1);
+    // p1 has stock 3, so it stacks 3 bottles deep.
+    expect(result).toHaveLength(3);
     expect(result[0].product._id).toBe("p1");
     expect(result[0].glb).toBe("jager-original-700.glb");
     // x: 0 + 0.5, y: 0 + 0.9 + 0, z: -1.6 + 0
     expect(result[0].position).toEqual([0.5, 0.9, -1.6]);
+    warn.mockRestore();
+  });
+
+  it("stacks depth-index bottles behind the front slot, capped at 4, min 1 even out of stock", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const stocked = [{ ...products[0], stock: 10 }];
+    const outOfStock = [{ ...products[1], stock: 0 }];
+    const slots = [{ model: "jager-original-700.glb", fixtureId: "shelf", slot: [0, 0, 0] }];
+    const stackedResult = resolveProductInstances(stocked, fixtures, slots);
+    expect(stackedResult).toHaveLength(4);
+    stackedResult.forEach((instance, index) => {
+      expect(instance.position[2]).toBeCloseTo(-1.6 - index * 0.08);
+    });
+
+    const soldOutSlots = [{ model: "jager-original-20.glb", fixtureId: "shelf", slot: [0, 0, 0] }];
+    const soldOutResult = resolveProductInstances(outOfStock, fixtures, soldOutSlots);
+    expect(soldOutResult).toHaveLength(1);
     warn.mockRestore();
   });
 
@@ -52,7 +70,7 @@ describe("resolveProductInstances", () => {
 
   it("is unaffected by product name changes (regression guard)", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const renamed = [{ ...products[0], name: "Totally Different Name" }];
+    const renamed = [{ ...products[0], name: "Totally Different Name", stock: 1 }];
     const slots = [{ model: "jager-original-700.glb", fixtureId: "shelf", slot: [0, 0, 0] }];
     const result = resolveProductInstances(renamed, fixtures, slots);
     expect(result).toHaveLength(1);
