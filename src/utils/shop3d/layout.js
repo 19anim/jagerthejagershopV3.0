@@ -96,6 +96,7 @@ export const INTERIOR_COLLIDERS = [
   ...WALL_BAYS.map((b) => box(b.x0, b.z0, b.x1, b.z1)),
   ...GONDOLAS.map((g) => box(g.x - g.width / 2, g.z0 - 0.05, g.x + g.width / 2, g.z1 + 0.05)),
   box(COUNTER.x0, COUNTER.z0, COUNTER.x1, COUNTER.z1),
+  box(COUNTER.x1, COUNTER.z0, BACK_BAR.x0, COUNTER.z1), // staff space behind the counter
   box(BACK_BAR.x0, BACK_BAR.z0, BACK_BAR.x1, BACK_BAR.z1),
   box(CHILLER.x0, CHILLER.z0, CHILLER.x1, CHILLER.z1),
   box(TASTING_BAR.x0, TASTING_BAR.z0 - 0.1, TASTING_BAR.x1, TASTING_BAR.z1 + 0.35), // bar + stools
@@ -132,7 +133,7 @@ export const STREET_PROPS = {
     { x: 6.4, z: 6.45, color: "#d33a3a" },
     { x: 7.05, z: 6.6, color: "#2f63c4" },
   ],
-  chalkboard: { x: 0.9, z: 6.3, rotY: 0.3 },
+  chalkboard: { x: 0.0, z: 6.3, rotY: 0.3 },
 };
 export const OUTSIDE_COLLIDERS = [
   ...STREET_PROPS.lamps.map((l) => box(l.x - 0.15, l.z - 0.15, l.x + 0.15, l.z + 0.15)),
@@ -150,9 +151,9 @@ export const PEOPLE = [
   { id: "stocker", body: "male", hair: ["hair_buzzed"], outfit: "staff", role: "stocker", inside: true, path: [[-0.95, -3.1], [-0.95, 0.5]], endYaws: [Math.PI / 2, -Math.PI / 2], speed: 0.9, endPause: 5 },
   // Sits on the red stool (STREET_PROPS.stools[0]); the sitting clips put the seat 0.30 m behind the root.
   { id: "neighbour", body: "male", hair: ["hair_beard", "hair_parted"], outfit: "localA", role: "sitter", inside: false, spot: [6.4, SIDEWALK_Y, 6.75], yaw: 0 },
-  { id: "walkerA", body: "female", hair: ["hair_long"], outfit: "localB", role: "walker", inside: false, path: [[-22, 7.7], [22, 7.7]], speed: 1.15, endPause: 0 },
-  { id: "walkerB", body: "male", hair: ["hair_parted"], outfit: "localC", role: "walker", inside: false, path: [[21, 18.7], [-21, 18.7]], speed: 1.25, endPause: 0 },
-  { id: "walkerC", body: "female", hair: ["hair_buns"], outfit: "localD", role: "walker", inside: false, path: [[-18, 18.3], [-3, 18.3], [14, 18.3]], speed: 1.05, endPause: 3 },
+  { id: "walkerA", body: "female", hair: ["hair_long"], outfit: "localB", role: "walker", inside: false, path: [[-22, 7.25], [22, 7.25]], speed: 1.15, endPause: 0 },
+  { id: "walkerB", body: "male", hair: ["hair_parted"], outfit: "localC", role: "walker", inside: false, path: [[21, 19.6], [-21, 19.6]], speed: 1.25, endPause: 0 },
+  { id: "walkerC", body: "female", hair: ["hair_buns"], outfit: "localD", role: "walker", inside: false, path: [[-18, 19.0], [-3, 19.0], [14, 19.0]], speed: 1.05, endPause: 3 },
 ];
 
 // ---------- theme anchors ----------

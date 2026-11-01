@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   ROOM, DOOR, FLOOR_Y, SIDEWALK_Y, groundHeight, isInsideShop,
   SHELF_RUNS, INTERIOR_COLLIDERS, OUTSIDE_COLLIDERS, INSIDE_BOUNDS, OUTSIDE_BOUNDS,
-  START_POSE, INTERIOR_POSE, ENTER_PATH, EXIT_PATH, clearances, PEOPLE,
+  START_POSE, INTERIOR_POSE, ENTER_PATH, EXIT_PATH, clearances, PEOPLE, ANCHORS,
 } from "./layout";
 
 const overlaps = (a, b) =>
@@ -78,4 +78,25 @@ describe("layout", () => {
   it("gives every person a spot or a path", () => {
     for (const p of PEOPLE) expect(Boolean(p.spot) !== Boolean(p.path)).toBe(true);
   });
+  it("keeps outdoor theme anchors off street furniture", () => {
+    for (const [x, , z] of [...ANCHORS.doorSides, ANCHORS.sidewalkByDoor])
+      for (const c of OUTSIDE_COLLIDERS) expect(contains(inflate(c, 0.25), x, z)).toBe(false);
+  });
+
+  it("keeps walker lanes clear of parked props and the start pose", () => {
+    for (const p of PEOPLE.filter((q) => q.path)) {
+      const colliders = p.inside ? INTERIOR_COLLIDERS : OUTSIDE_COLLIDERS;
+      for (let i = 1; i < p.path.length; i++) {
+        const [a, b] = [p.path[i - 1], p.path[i]];
+        const steps = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 0.25);
+        for (let k = 0; k <= steps; k++) {
+          const x = a[0] + ((b[0] - a[0]) * k) / steps;
+          const z = a[1] + ((b[1] - a[1]) * k) / steps;
+          for (const c of colliders) expect(contains(inflate(c, 0.2), x, z)).toBe(false);
+          if (!p.inside) expect(Math.hypot(x - START_POSE.position[0], z - START_POSE.position[2])).toBeGreaterThan(0.35);
+        }
+      }
+    }
+  });
 });
+

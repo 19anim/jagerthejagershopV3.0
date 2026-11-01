@@ -49,11 +49,11 @@ The shop keeps today's footprint so the door, collision and interior numbers sta
 | Shop front wall face | z 5.6; door opening x 1.63 → 2.97 (centre 2.30); display window x −4.2 → −0.6, sill y 0.5, top y 2.65 |
 | Near sidewalk | z 5.6 → 9.0, top y 0.15 |
 | Kerb | z 9.0 → 9.18 |
-| Road | z 9.18 → 17.0, y 0 (lane line z 13.1, edge lines 9.6 / 16.6) |
-| Far sidewalk | z 17.0 → 20.4, top y 0.15 |
+| Road | z 9.18 → 16.82, y 0 (lane line z 13.0, edge lines 9.6 / 16.4) |
+| Far sidewalk | z 16.82 → 20.4 incl. its kerb stone (16.82 → 17.0), top y 0.15 |
 | Far facades | z 20.4, facing −z |
 | Neighbours (near side) | x −40 → −5.15 and 5.15 → 40, facades at z 5.6 |
-| Walkable block outside | x −24 → 24, z 5.9 → 20.0 (fog hides the ends) |
+| Walkable block outside | x −24 → 24, z 5.95 → 20.0 (fog hides the ends) |
 
 The sidewalk top (0.15) sits above the interior floor (0.06): the threshold
 gets a 0.09 m step tread inside the door frame so the two never meet in one plane.
