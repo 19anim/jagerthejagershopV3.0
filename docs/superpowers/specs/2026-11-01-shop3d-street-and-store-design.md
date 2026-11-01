@@ -46,7 +46,7 @@ The shop keeps today's footprint so the door, collision and interior numbers sta
 | Zone | Extent |
 | --- | --- |
 | Shop interior (clear) | x −4.75 → 4.75, z −5.5 → 5.5, floor y 0.06, ceiling 3.66 |
-| Shop front wall face | z 5.6; door opening x 1.63 → 2.97 (centre 2.30); display window x −3.39 → −1.71 |
+| Shop front wall face | z 5.6; door opening x 1.63 → 2.97 (centre 2.30); display window x −4.2 → −0.6, sill y 0.5, top y 2.65 |
 | Near sidewalk | z 5.6 → 9.0, top y 0.15 |
 | Kerb | z 9.0 → 9.18 |
 | Road | z 9.18 → 17.0, y 0 (lane line z 13.1, edge lines 9.6 / 16.6) |
@@ -98,7 +98,7 @@ points (re-exporting the new modules) so existing imports and tests keep working
 - **street/** — pure scenery; static meshes are merged per material
   (`BufferGeometryUtils.mergeGeometries`) at mount. Seeded random so the street is
   identical on every visit.
-- **shopfront/door.jsx** — the existing hinge door behaviour (rotation 0 → −1.6,
+- **shopfront/door.jsx** — the existing hinge door behaviour (rotation 0 → +1.6 (inward),
   hover hint, click → enter / exit), on a code-built door leaf.
 - **interior/** — `wall-bay` and `gondola` take a shelf-run description from
   `layout.js` and expose their shelf surfaces; the same data feeds collision boxes
@@ -181,7 +181,7 @@ Rules:
 - Wall bays: left wall full length, back wall (x −4.3 → 2.3); dark-wood uprights,
   shelves with a brass lip and a warm LED strip under each level, green plinth and
   crown with a brass rail.
-- Gondolas: two, double-sided, 1.6 m tall, x −2.2 and 0.3, z −3.6 → 1.0, green
+- Gondolas: two, double-sided, 1.8 m tall, x −2.2 and 0.3, z −3.6 → 1.0, green
   end caps.
 - Cashier: counter along the right side just inside the door (centre x 3.35,
   z 1.0 → 3.6), back-bar shelving on the right wall behind it, three green pendant
@@ -298,8 +298,9 @@ emissive where they glow (string lights are an instanced emissive mesh, not ligh
 3. Transparent materials: single-sided, `depthWrite: false`, never two
    transparent surfaces overlapping in the same view direction (glass rails, shop
    window glass, chiller doors).
-4. Shadows: `bias −0.0004`, `normalBias 0.02`; outside one directional light whose
-   shadow frustum (±14 m) follows the player; inside one shadow spot over the aisles.
+4. Shadows: `bias −0.0004`, `normalBias 0.02`; outside one directional light with a
+   fixed shadow frustum over the block and the shop (a following frustum shimmers);
+   inside one shadow spot over the aisles.
    Thin trims and bottles do not cast shadows (bottles receive only).
 5. Camera `near 0.08`, `far 160`.
 6. No runtime-fetched HDRs or external URLs; textures ship in `src/assets`.
@@ -325,8 +326,12 @@ emissive where they glow (string lights are an instanced emissive mesh, not ligh
   far facades without balcony detail.
 - Static street and interior geometry merged per material; bottles instanced;
   people ≤ 6 skinned meshes.
-- Budgets: < 250 draw calls, < 1.5 M triangles (high) / < 600 k (low); added
-  texture payload ≤ 3.5 MB; desktop 60 fps, mid-range phone ≥ 30 fps.
+- Budgets: ≤ 1800 bottles on high (≈ 4 M triangles), ≤ 450 on low (≈ 1 M); bottom
+  shelves hold cardboard cases; < 250 draw calls; added texture payload ≤ 3.5 MB;
+  desktop 60 fps, mid-range phone ≥ 30 fps.
+- High tier keeps the interior mounted while outside (the window shows the real
+  store); low tier mounts it on entry and shows a lit interior card behind the
+  window until then.
 - `SCENE_GLBS` preload list shrinks to the kept fixture GLBs, the product GLBs in
   use and the two people GLBs.
 
