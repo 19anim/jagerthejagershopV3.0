@@ -49,60 +49,75 @@ const eligibleProducts = (products, dims) => {
 export const buildShelfInstances = ({ products, runs, dims = BOTTLE_DIMS, maxDepth = 2, maxInstances = Infinity, eyeLevel = 1.3 }) => {
   const eligible = eligibleProducts(products, dims);
   if (!eligible.length) return [];
+  const dimsOf = (product) => dims[norm(product.shop3dModel)];
 
   // Fill eye-level shelves first so a small budget trims the floor and top shelves.
   const shelves = [];
   runs.forEach((r, runIndex) =>
     r.levels.forEach((y, levelIndex) => {
       if (r.skipLevels?.includes(levelIndex)) return;
-      shelves.push({ r, runIndex, levelIndex, y, clearance: r.clearances[levelIndex] });
+      const clearance = r.clearances[levelIndex];
+      const fits = eligible.filter((product) => {
+        const d = dimsOf(product);
+        return r.accepts.includes(sizeClass(d)) && d.h + HEAD_ROOM <= clearance;
+      });
+      if (fits.length) shelves.push({ r, runIndex, levelIndex, y, fits, cursor: SIDE_PAD, full: false });
     })
   );
   shelves.sort((a, b) => Math.abs(a.y - eyeLevel) - Math.abs(b.y - eyeLevel) || a.runIndex - b.runIndex || a.levelIndex - b.levelIndex);
 
   const out = [];
-  let rotate = 0; // vary which product starts each shelf so blocks don't line up in columns
-  for (const shelf of shelves) {
-    if (out.length >= maxInstances) break;
+  const blocks = new Map(); // blocks placed per product
+
+  // Puts one block of `product` at the shelf's cursor; false (and the shelf is
+  // marked full) when not even one facing fits.
+  const place = (shelf, product) => {
     const { r } = shelf;
-    const fits = eligible.filter((product) => {
-      const d = dims[norm(product.shop3dModel)];
-      return r.accepts.includes(sizeClass(d)) && d.h + HEAD_ROOM <= shelf.clearance;
-    });
-    if (!fits.length) continue;
-    const end = r.length - SIDE_PAD;
+    const d = dimsOf(product);
+    const pitch = d.w + FACING_GAP;
+    const facings = Math.min(Math.max(1, Math.floor(BLOCK_WIDTH / pitch)), Math.floor((r.length - SIDE_PAD - shelf.cursor) / pitch));
+    if (facings < 1) {
+      shelf.full = true;
+      return false;
+    }
+    const rowsFit = Math.max(1, Math.floor((r.depth - FRONT_INSET) / (d.d + ROW_GAP)));
+    const depth = Math.min(stackDepth(product.stock, maxDepth), rowsFit);
     const rotationY = Math.atan2(r.facing[0], r.facing[1]);
-    let cursor = SIDE_PAD;
-    let k = rotate++;
-    while (out.length < maxInstances) {
-      const product = fits[k % fits.length];
-      k += 1;
-      const model = norm(product.shop3dModel);
-      const d = dims[model];
-      const pitch = d.w + FACING_GAP;
-      const facings = Math.min(Math.max(1, Math.floor(BLOCK_WIDTH / pitch)), Math.floor((end - cursor) / pitch));
-      if (facings < 1) break;
-      const rowsFit = Math.max(1, Math.floor((r.depth - FRONT_INSET) / (d.d + ROW_GAP)));
-      const depth = Math.min(stackDepth(product.stock, maxDepth), rowsFit);
-      for (let f = 0; f < facings && out.length < maxInstances; f++) {
-        const along = cursor + pitch * (f + 0.5);
-        for (let row = 0; row < depth && out.length < maxInstances; row++) {
-          const inset = FRONT_INSET + d.d / 2 + row * (d.d + ROW_GAP);
-          out.push({
-            key: `${r.id}:${shelf.levelIndex}:${out.length}`,
-            product,
-            model,
-            runId: r.id,
-            levelIndex: shelf.levelIndex,
-            facing: f,
-            depthIndex: row,
-            position: [r.start[0] + r.dir[0] * along - r.facing[0] * inset, shelf.y, r.start[1] + r.dir[1] * along - r.facing[1] * inset],
-            rotationY,
-            height: d.h,
-          });
-        }
+    for (let f = 0; f < facings && out.length < maxInstances; f++) {
+      const along = shelf.cursor + pitch * (f + 0.5);
+      for (let row = 0; row < depth && out.length < maxInstances; row++) {
+        const inset = FRONT_INSET + d.d / 2 + row * (d.d + ROW_GAP);
+        out.push({
+          key: `${r.id}:${shelf.levelIndex}:${out.length}`,
+          product,
+          model: norm(product.shop3dModel),
+          runId: r.id,
+          levelIndex: shelf.levelIndex,
+          facing: f,
+          depthIndex: row,
+          position: [r.start[0] + r.dir[0] * along - r.facing[0] * inset, shelf.y, r.start[1] + r.dir[1] * along - r.facing[1] * inset],
+          rotationY,
+          height: d.h,
+        });
       }
-      cursor += facings * pitch + BLOCK_GAP;
+    }
+    blocks.set(product, (blocks.get(product) || 0) + 1);
+    shelf.cursor += facings * pitch + BLOCK_GAP;
+    return true;
+  };
+
+  // Pass 1, coverage: every product gets one block on the best (most eye-level)
+  // shelf that takes it, before the budget can run out.
+  for (const product of eligible) {
+    if (out.length >= maxInstances) break;
+    for (const shelf of shelves) if (!shelf.full && shelf.fits.includes(product) && place(shelf, product)) break;
+  }
+  // Pass 2, fill: each shelf in eye-level order; the next block goes to the
+  // fitting product with the fewest blocks so far.
+  for (const shelf of shelves) {
+    while (!shelf.full && out.length < maxInstances) {
+      const product = shelf.fits.reduce((best, p) => ((blocks.get(p) || 0) < (blocks.get(best) || 0) ? p : best));
+      if (!place(shelf, product)) break;
     }
   }
   return out;

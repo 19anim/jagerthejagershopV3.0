@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BOTTLE_DIMS, buildShelfInstances, groupInstances, sizeClass } from "./product-blocks";
+import { SHELF_RUNS } from "./layout";
 
 const run = (over = {}) => ({
   id: "r1", start: [0, 0], dir: [1, 0], facing: [0, 1], length: 2, levels: [1.0],
@@ -82,6 +83,19 @@ describe("buildShelfInstances", () => {
     const out = buildShelfInstances({ products: [p("a", "bottle-700ml.glb")], runs: [run()], maxDepth: 2 });
     expect(new Set(out.map((i) => i.key)).size).toBe(out.length);
     expect(out[0].height).toBe(BOTTLE_DIMS["bottle-700ml.glb"].h);
+  });
+
+  it("puts every product of a realistic catalog on the real shelves at both quality caps", () => {
+    const minis = ["bottle-20ml.glb", "bottle-100ml.glb", "orange-20ml.glb", "manifest-40ml.glb", "coldbrew-20ml.glb", "bottle-herbal-mini.glb"];
+    const stds = ["bottle-200ml.glb", "bottle-350ml.glb", "bottle-700ml.glb", "bottle-1000ml.glb", "orange-1000ml.glb", "manifest-1000ml.glb", "coldbrew-1000ml.glb"];
+    const catalog = [
+      ...minis.map((m, i) => p(`m${i}`, m)),
+      ...Array.from({ length: 14 }, (_, i) => p(`s${i}`, stds[i % stds.length])), // every std file shared by two products
+    ];
+    for (const caps of [{}, { maxDepth: 2, maxInstances: 1800 }, { maxDepth: 1, maxInstances: 450 }]) {
+      const shown = new Set(buildShelfInstances({ products: catalog, runs: SHELF_RUNS, ...caps }).map((i) => i.product._id));
+      expect([...catalog.map((c) => c._id)].filter((id) => !shown.has(id))).toEqual([]);
+    }
   });
 });
 
