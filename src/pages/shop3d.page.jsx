@@ -11,23 +11,11 @@ import { useLocale } from "../context/locale.context";
 import { apiUrl } from "../utils/api.utils";
 import { isWebGLAvailable } from "../utils/webgl.utils";
 import { preloadGlb } from "../components/shop3d/glb-model.component";
+import { BOTTLE_DIMS } from "../utils/shop3d/product-blocks";
 
 const SCENE_GLBS = [
-  "sidewalk-base.glb", "display-window.glb", "planter.glb",
-  "signboard.glb", "street-lamp.glb", "entrance-door.glb",
-  "wall-set.glb", "roof.glb", "floor-interior.glb", "doorway-frame.glb",
-  "liquor-shelf-bay.glb", "specials-podium.glb",
-  "accessory-stand.glb", "accessory-shelf.glb", "wine-cabinet.glb",
-  "ceiling-spotlight.glb",
-  "floor-rug.glb", "framed-art.glb", "neon-sign.glb", "oak-barrel.glb",
-  "potted-plant.glb", "wooden-crate.glb", "inspect-pedestal.glb",
-  "cashier-counter.glb", "pos-terminal.glb", "shopping-basket.glb",
-  "shipping-station.glb", "contact-board.glb", "desk-phone.glb",
-  "bottle-700ml.glb", "bottle-1000ml.glb", "bottle-200ml.glb", "bottle-350ml.glb",
-  "bottle-20ml.glb", "bottle-100ml.glb", "manifest-1000ml.glb", "manifest-40ml.glb",
-  "bottle-herbal-mini.glb", "coldbrew-1000ml.glb", "coldbrew-20ml.glb",
-  "orange-1000ml.glb", "orange-20ml.glb",
-  "drinking-glass.glb", "jigger.glb", "pourer.glb", "shaker.glb", "flask.glb", "gift-box.glb",
+  "pos-terminal.glb", "desk-phone.glb", "shopping-basket.glb", "gift-box.glb",
+  "drinking-glass.glb", "jigger.glb", "pourer.glb", "shaker.glb", "flask.glb",
 ];
 if (isWebGLAvailable()) SCENE_GLBS.forEach(preloadGlb);
 
@@ -65,6 +53,8 @@ const Shop3DPage = () => {
       try {
         const response = await axios.get(apiUrl("/api/products/getAllProducts"));
         setProducts(response.data);
+        new Set(response.data.map((p) => (p.shop3dModel || "").trim().toLowerCase()))
+          .forEach((model) => BOTTLE_DIMS[model] && preloadGlb(model));
       } catch (_error) {
         setProducts([]);
       } finally {

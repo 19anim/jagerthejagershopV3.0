@@ -29,9 +29,10 @@ const SceneCanvas = ({ products, phase, setPhase, moveRef }) => {
         shadows="soft"
         gl={{ antialias: true, powerPreference: "high-performance" }}
         camera={{ position: START_POSE.position, fov: 60, near: 0.08, far: 160 }}
-        onCreated={({ gl, camera }) => {
+        onCreated={({ gl, scene, camera }) => {
           gl.toneMapping = ACESFilmicToneMapping;
           camera.lookAt(...START_POSE.target);
+          if (import.meta.env.DEV) window.__shop3d = { gl, scene, camera };
         }}
       >
         <QualityContext.Provider value={quality}>
