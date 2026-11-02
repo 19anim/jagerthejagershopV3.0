@@ -192,5 +192,5 @@ export const ANCHORS = {
   shelfEnds: [[-2.2, FLOOR_Y, 1.3], [0.3, FLOOR_Y, 1.3]],
   sidewalkByDoor: [3.7, SIDEWALK_Y, 6.4],
   facadeBand: { x0: -5.0, x1: 5.0, y: 4.35, z: FRONT_FACE_Z + 0.14 },
-  skyMoon: [-38, 30, -70],
+  skyMoon: [70, 22, 12], // low over the far end of the street (+x), opposite the setting sun
 };

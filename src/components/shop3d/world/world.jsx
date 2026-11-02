@@ -10,6 +10,7 @@ import Interior from "./interior/interior";
 import ProductShelves from "./products/product-shelves";
 import Decor from "./interior/decor";
 import People from "./people/people";
+import ThemeLayer from "./themes/theme-layer";
 import { useQuality } from "./quality-context";
 import { CartContext } from "../../../context/cart.context";
 import { useLocale } from "../../../context/locale.context";
@@ -20,7 +21,7 @@ const stop = (event) => event.stopPropagation();
 
 // Everything in the 3D world below the atmosphere. Phases: outside → entering →
 // inside → exiting → outside.
-const World = ({ products, phase, setPhase }) => {
+const World = ({ products, phase, setPhase, theme }) => {
   const quality = useQuality();
   const interiorMounted = quality.interiorAlways || phase !== "outside";
   const { toggleIsCartOpen } = useContext(CartContext);
@@ -43,6 +44,7 @@ const World = ({ products, phase, setPhase }) => {
           <Decor />
         </Interior>
       )}
+      <ThemeLayer theme={theme} />
     </>
   );
 };

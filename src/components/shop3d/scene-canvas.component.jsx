@@ -15,7 +15,7 @@ import { ENTER_PATH, EXIT_PATH, INSIDE_BOUNDS, OUTSIDE_BOUNDS, START_POSE, groun
 
 // The 3D shop. You start on the far sidewalk and walk (same controls inside and
 // out); clicking the door dollies you in, clicking it again dollies you out.
-const SceneCanvas = ({ products, phase, setPhase, moveRef }) => {
+const SceneCanvas = ({ products, phase, setPhase, moveRef, theme }) => {
   const { isCartOpen } = useContext(CartContext);
   const [tier, setTier] = useState(() => detectTier(typeof window === "undefined" ? undefined : window));
   const quality = QUALITY[tier];
@@ -41,7 +41,7 @@ const SceneCanvas = ({ products, phase, setPhase, moveRef }) => {
             <Suspense fallback={null}>
               <MaterialsProvider>
                 <Atmosphere />
-                <World products={products} phase={phase} setPhase={setPhase} />
+                <World products={products} phase={phase} setPhase={setPhase} theme={theme} />
               </MaterialsProvider>
             </Suspense>
             <CameraDolly active={phase === "entering"} path={ENTER_PATH} onArrived={() => setPhase("inside")} />

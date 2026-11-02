@@ -10,6 +10,7 @@ import { CartContext } from "../context/cart.context";
 import { useLocale } from "../context/locale.context";
 import { apiUrl } from "../utils/api.utils";
 import { isWebGLAvailable } from "../utils/webgl.utils";
+import { useShop3dTheme } from "../hooks/useShop3dTheme.hook";
 import { useGLTF } from "@react-three/drei";
 import { preloadGlb } from "../components/shop3d/glb-model.component";
 import { PEOPLE_URLS } from "../components/shop3d/world/people/people-assets";
@@ -34,6 +35,7 @@ const Shop3DPage = () => {
   const [phase, setPhase] = useState("outside");
   const moveRef = useRef({ x: 0, y: 0 });
   const webglOk = useMemo(() => isWebGLAvailable(), []);
+  const theme = useShop3dTheme();
 
   // Fire the "added to basket" toast whenever total cart quantity grows. Tracking
   // the summed quantity (not array length) catches re-adds of an existing bottle,
@@ -88,7 +90,7 @@ const Shop3DPage = () => {
         onExit={() => setPhase("exiting")}
         moveRef={moveRef}
       />
-      <SceneCanvas products={products} phase={phase} setPhase={setPhase} moveRef={moveRef} />
+      <SceneCanvas products={products} phase={phase} setPhase={setPhase} moveRef={moveRef} theme={theme} />
       <Shop3DToast trigger={addedTick} />
       <Shop3DCartOverlay />
     </div>
