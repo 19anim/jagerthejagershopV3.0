@@ -10,28 +10,20 @@ import { CartContext } from "../context/cart.context";
 import { useLocale } from "../context/locale.context";
 import { apiUrl } from "../utils/api.utils";
 import { isWebGLAvailable } from "../utils/webgl.utils";
-import { resolveProductInstances, resolveAccessoryPlacements } from "../utils/shop3d.utils";
-import { FIXTURES, PRODUCT_SLOTS, ACCESSORY_PLACEMENTS } from "../utils/shop3d.config";
+import { useShop3dTheme } from "../hooks/useShop3dTheme.hook";
+import { useGLTF } from "@react-three/drei";
 import { preloadGlb } from "../components/shop3d/glb-model.component";
+import { PEOPLE_URLS } from "../components/shop3d/world/people/people-assets";
+import { BOTTLE_DIMS } from "../utils/shop3d/product-blocks";
 
 const SCENE_GLBS = [
-  "sidewalk-base.glb", "display-window.glb", "planter.glb",
-  "signboard.glb", "street-lamp.glb", "entrance-door.glb",
-  "wall-set.glb", "roof.glb", "floor-interior.glb", "doorway-frame.glb",
-  "liquor-shelf-bay.glb", "specials-podium.glb",
-  "accessory-stand.glb", "accessory-shelf.glb", "wine-cabinet.glb",
-  "ceiling-spotlight.glb",
-  "floor-rug.glb", "framed-art.glb", "neon-sign.glb", "oak-barrel.glb",
-  "potted-plant.glb", "wooden-crate.glb", "inspect-pedestal.glb",
-  "cashier-counter.glb", "pos-terminal.glb", "shopping-basket.glb",
-  "shipping-station.glb", "contact-board.glb", "desk-phone.glb",
-  "bottle-700ml.glb", "bottle-1000ml.glb", "bottle-200ml.glb", "bottle-350ml.glb",
-  "bottle-20ml.glb", "bottle-100ml.glb", "manifest-1000ml.glb", "manifest-40ml.glb",
-  "bottle-herbal-mini.glb", "coldbrew-1000ml.glb", "coldbrew-20ml.glb",
-  "orange-1000ml.glb", "orange-20ml.glb",
-  "drinking-glass.glb", "jigger.glb", "pourer.glb", "shaker.glb", "flask.glb", "gift-box.glb",
+  "pos-terminal.glb", "desk-phone.glb", "shopping-basket.glb", "gift-box.glb",
+  "drinking-glass.glb", "jigger.glb", "pourer.glb", "shaker.glb", "flask.glb",
 ];
-if (isWebGLAvailable()) SCENE_GLBS.forEach(preloadGlb);
+if (isWebGLAvailable()) {
+  SCENE_GLBS.forEach(preloadGlb);
+  Object.values(PEOPLE_URLS).forEach((url) => useGLTF.preload(url));
+}
 
 const Shop3DPage = () => {
   const { t, locale } = useLocale();
@@ -43,6 +35,7 @@ const Shop3DPage = () => {
   const [phase, setPhase] = useState("outside");
   const moveRef = useRef({ x: 0, y: 0 });
   const webglOk = useMemo(() => isWebGLAvailable(), []);
+  const theme = useShop3dTheme();
 
   // Fire the "added to basket" toast whenever total cart quantity grows. Tracking
   // the summed quantity (not array length) catches re-adds of an existing bottle,
@@ -67,6 +60,8 @@ const Shop3DPage = () => {
       try {
         const response = await axios.get(apiUrl("/api/products/getAllProducts"));
         setProducts(response.data);
+        new Set(response.data.map((p) => (p.shop3dModel || "").trim().toLowerCase()))
+          .forEach((model) => BOTTLE_DIMS[model] && preloadGlb(model));
       } catch (_error) {
         setProducts([]);
       } finally {
@@ -75,12 +70,6 @@ const Shop3DPage = () => {
     };
     fetchProducts();
   }, [webglOk]);
-
-  const bottles = useMemo(
-    () => (products.length ? resolveProductInstances(products, FIXTURES, PRODUCT_SLOTS) : []),
-    [products]
-  );
-  const accessories = useMemo(() => resolveAccessoryPlacements(FIXTURES, ACCESSORY_PLACEMENTS), []);
 
   if (!webglOk) {
     return (
@@ -101,13 +90,7 @@ const Shop3DPage = () => {
         onExit={() => setPhase("exiting")}
         moveRef={moveRef}
       />
-      <SceneCanvas
-        bottles={bottles}
-        accessories={accessories}
-        phase={phase}
-        setPhase={setPhase}
-        moveRef={moveRef}
-      />
+      <SceneCanvas products={products} phase={phase} setPhase={setPhase} moveRef={moveRef} theme={theme} />
       <Shop3DToast trigger={addedTick} />
       <Shop3DCartOverlay />
     </div>

@@ -5,6 +5,7 @@ import AssetFilters from "../components/admin-assets/AssetFilters.component";
 import AssetUploadPanel from "../components/admin-assets/AssetUploadPanel.component";
 import AssetLibrary from "../components/admin-assets/AssetLibrary.component";
 import AssetDetailPanel from "../components/admin-assets/AssetDetailPanel.component";
+import Shop3dThemeSelect from "../components/admin-shop3d-theme/shop3d-theme-select.component";
 
 const AdminAssetsPage = () => {
   const { t } = useLocale();
@@ -102,6 +103,8 @@ const AdminAssetsPage = () => {
         <p className="brand-kicker mb-2">{t("adminAssetsEyebrow")}</p>
         <h1 className="font-heading text-3xl font-bold uppercase text-cream">{t("adminAssets")}</h1>
       </div>
+
+      <Shop3dThemeSelect />
 
       {errorMessage && <p className="mb-4 text-red-300">{errorMessage}</p>}
 
