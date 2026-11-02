@@ -1,0 +1,30 @@
+worker.glb: third-party assets
+================================
+
+worker.glb is built from two packs by Quaternius (https://quaternius.com):
+
+- Universal Base Characters [Standard]
+  https://quaternius.itch.io/universal-base-characters
+  Used: the male base body (Superhero_Male_FullBody) with its eyes and eyebrows, and the hair meshes
+  Hair_Beard, Hair_SimpleParted and Hair_Buzzed (rigged to the head bone).
+
+- Universal Animation Library [Standard]
+  https://quaternius.itch.io/universal-animation-library
+  Used: the clips Idle_Loop, Idle_Talking_Loop, Walk_Loop, Jog_Fwd_Loop, Interact, PickUp_Table,
+  Sitting_Enter, Sitting_Idle_Loop, Sitting_Talking_Loop, Sitting_Exit and Dance_Loop, copied onto the
+  male skeleton.
+
+License
+-------
+Both packs are released under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication:
+https://creativecommons.org/publicdomain/zero/1.0/
+
+The author has dedicated the work to the public domain, waiving all copyright and related rights to the
+extent allowed by law. It may be copied, modified and distributed, including commercially, without asking
+permission. Credit is not required; it is given here with thanks.
+
+Changes made here: the meshes, clips and textures were merged into one file, the body was split into skin,
+suit and accent materials, the hair was rebound to the body's skeleton, and the file was compressed
+(meshopt geometry, WebP textures at 1024 px). The build script is client/scripts/workshop/build-worker-glb.mjs.
+
+worker-female.glb: built the same way from Superhero_Female_FullBody (Universal Base Characters, Quaternius, CC0) with the same Universal Animation Library clips, by scripts/build-people-glb.mjs.

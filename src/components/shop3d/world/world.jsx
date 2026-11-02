@@ -9,6 +9,7 @@ import RoomShell from "./interior/room-shell";
 import Interior from "./interior/interior";
 import ProductShelves from "./products/product-shelves";
 import Decor from "./interior/decor";
+import People from "./people/people";
 import { useQuality } from "./quality-context";
 import { CartContext } from "../../../context/cart.context";
 import { useLocale } from "../../../context/locale.context";
@@ -35,6 +36,7 @@ const World = ({ products, phase, setPhase }) => {
         <RoomShell />
       </group>
       <Door phase={phase} onEnter={() => setPhase("entering")} onExit={() => setPhase("exiting")} />
+      <People phase={phase} />
       {interiorMounted && (
         <Interior onCheckout={() => navigate(`/${locale}/cartCheckout`)} onOpenCart={toggleIsCartOpen}>
           <ProductShelves products={products} />

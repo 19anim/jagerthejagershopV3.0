@@ -208,7 +208,7 @@ const Atmosphere = () => {
       {(quality.tier === "high" ? TRACKS : TRACKS.slice(0, 2)).map((track) => (
         <TrackSpot key={track.p.join(":")} track={track} shadowSize={Math.min(1024, quality.shadowMapSize)} />
       ))}
-      <pointLight color="#ffc98a" intensity={6} distance={6} decay={2} position={[3.35, 2.5, 2.3]} />
+      <pointLight color="#ffc98a" intensity={4} distance={6} decay={2} position={[3.1, 2.1, 2.3]} />
       {quality.tier === "high" && <pointLight color="#ff7a30" intensity={3} distance={4} decay={2} position={[3.6, 2.9, -5.0]} />}
       {quality.bloom && <Bloom />}
     </>

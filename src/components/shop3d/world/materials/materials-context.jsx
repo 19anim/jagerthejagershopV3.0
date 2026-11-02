@@ -62,7 +62,7 @@ export const MaterialsProvider = ({ children }) => {
       plaster: std({ map: t.plasterDiff, color: "#efe7d6", roughness: 0.92 }),
       darkWood: std({ map: t.darkWoodDiff, color: "#7a5a48", roughness: 0.5 }),
       ceiling: std({ color: "#24302a", roughness: 0.85 }),
-      led: std({ color: "#000000", emissive: "#ffcf8a", emissiveIntensity: 3 }),
+      led: std({ color: "#000000", emissive: "#ffcf8a", emissiveIntensity: 1.6 }),
       coolLight: std({ color: "#000000", emissive: "#dff3ff", emissiveIntensity: 1.2 }),
       cardboard: std({ map: caseTexture(), roughness: 0.9 }),
       chillerGlass: glassy({ color: "#cfe3ea", opacity: 0.18, metalness: 0.1 }),

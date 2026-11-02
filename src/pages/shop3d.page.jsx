@@ -10,14 +10,19 @@ import { CartContext } from "../context/cart.context";
 import { useLocale } from "../context/locale.context";
 import { apiUrl } from "../utils/api.utils";
 import { isWebGLAvailable } from "../utils/webgl.utils";
+import { useGLTF } from "@react-three/drei";
 import { preloadGlb } from "../components/shop3d/glb-model.component";
+import { PEOPLE_URLS } from "../components/shop3d/world/people/people-assets";
 import { BOTTLE_DIMS } from "../utils/shop3d/product-blocks";
 
 const SCENE_GLBS = [
   "pos-terminal.glb", "desk-phone.glb", "shopping-basket.glb", "gift-box.glb",
   "drinking-glass.glb", "jigger.glb", "pourer.glb", "shaker.glb", "flask.glb",
 ];
-if (isWebGLAvailable()) SCENE_GLBS.forEach(preloadGlb);
+if (isWebGLAvailable()) {
+  SCENE_GLBS.forEach(preloadGlb);
+  Object.values(PEOPLE_URLS).forEach((url) => useGLTF.preload(url));
+}
 
 const Shop3DPage = () => {
   const { t, locale } = useLocale();
