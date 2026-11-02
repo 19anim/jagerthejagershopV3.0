@@ -123,14 +123,14 @@ const ProductShelves = ({ products }) => {
   const [selected, setSelected] = useState(null);
   useEffect(() => setSelected(null), [groups]);
   // Read contexts here (inside the R3F tree); <Html> renders a separate root without them.
-  const { addItemToCart } = useContext(CartContext);
+  const { addItemToCart, isCartOpen } = useContext(CartContext);
   const { t } = useLocale();
   return (
     <group onPointerMissed={() => setSelected(null)}>
       {groups.map((group) => (
         <ProductGroup key={group.key} group={group} onSelect={setSelected} />
       ))}
-      {selected && (
+      {selected && !isCartOpen && (
         <Html position={[selected.position[0], selected.position[1] + selected.height + 0.1, selected.position[2]]} zIndexRange={[100, 0]}>
           <BottlePanel product={selected.product} t={t} onAdd={(product) => addItemToCart(product, 1)} />
         </Html>

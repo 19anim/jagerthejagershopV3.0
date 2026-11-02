@@ -121,7 +121,8 @@ export const TRACKS = [
   { p: [-1.0, 3.5, -4.0], t: [-1.0, 1.2, -5.4] },
   { p: [-1.6, 3.5, 3.0], t: [-2.4, 0.8, 4.6] },
 ];
-const TrackSpot = ({ track, shadowSize }) => {
+// Only the high tier gives the interior its own shadow pass; phones keep the sun's.
+const TrackSpot = ({ track, shadowSize, shadows }) => {
   const ref = useRef();
   useEffect(() => {
     ref.current.target.position.fromArray(track.t);
@@ -137,7 +138,7 @@ const TrackSpot = ({ track, shadowSize }) => {
       penumbra={0.7}
       decay={2}
       position={track.p}
-      castShadow={Boolean(track.shadow)}
+      castShadow={shadows && Boolean(track.shadow)}
       shadow-mapSize={[shadowSize, shadowSize]}
       shadow-bias={-0.0004}
       shadow-normalBias={0.02}
@@ -206,7 +207,7 @@ const Atmosphere = () => {
       <pointLight color="#ffb866" intensity={6} distance={9} decay={2} position={[-1.5, 2.3, 6.4]} />
       {quality.lampLights && STREET_PROPS.lamps.filter((l) => l.light).map((l) => <LampSpot key={`${l.x}:${l.z}`} lamp={l} />)}
       {(quality.tier === "high" ? TRACKS : TRACKS.slice(0, 2)).map((track) => (
-        <TrackSpot key={track.p.join(":")} track={track} shadowSize={Math.min(1024, quality.shadowMapSize)} />
+        <TrackSpot key={track.p.join(":")} track={track} shadowSize={Math.min(1024, quality.shadowMapSize)} shadows={quality.tier === "high"} />
       ))}
       <pointLight color="#ffc98a" intensity={4} distance={6} decay={2} position={[3.1, 2.1, 2.3]} />
       {quality.tier === "high" && <pointLight color="#ff7a30" intensity={3} distance={4} decay={2} position={[3.6, 2.9, -5.0]} />}
