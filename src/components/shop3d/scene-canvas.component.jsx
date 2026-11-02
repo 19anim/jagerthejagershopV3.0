@@ -1,5 +1,5 @@
-import { Suspense, useContext, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Suspense, useContext, useEffect, useState } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
 import { Loader, PerformanceMonitor } from "@react-three/drei";
 import { ACESFilmicToneMapping } from "three";
 import WalkControls from "./walk-controls.component";
@@ -12,6 +12,16 @@ import Atmosphere from "./world/atmosphere";
 import CameraDolly from "./world/camera-dolly";
 import World from "./world/world";
 import { ENTER_PATH, EXIT_PATH, INSIDE_BOUNDS, OUTSIDE_BOUNDS, START_POSE, groundHeight } from "../../utils/shop3d/layout";
+
+// Portrait phones see a narrow slice at 60°; widen the view so the shopfront fits.
+const ResponsiveFov = () => {
+  const { camera, size } = useThree();
+  useEffect(() => {
+    camera.fov = size.width < size.height ? 78 : 60;
+    camera.updateProjectionMatrix();
+  }, [camera, size.width, size.height]);
+  return null;
+};
 
 // The 3D shop. You start on the far sidewalk and walk (same controls inside and
 // out); clicking the door dollies you in, clicking it again dollies you out.
@@ -36,6 +46,7 @@ const SceneCanvas = ({ products, phase, setPhase, moveRef, theme }) => {
         }}
       >
         <QualityContext.Provider value={quality}>
+          <ResponsiveFov />
           <PerformanceMonitor bounds={() => [28, 50]} flipflops={1} onDecline={() => setTier("low")} />
           <CollisionProvider>
             <Suspense fallback={null}>

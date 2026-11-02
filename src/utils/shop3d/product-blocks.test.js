@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { BOTTLE_DIMS, buildShelfInstances, groupInstances, sizeClass } from "./product-blocks";
+import { BOTTLE_DIMS, buildShelfInstances, emptyShelfCases, groupInstances, sizeClass } from "./product-blocks";
 import { SHELF_RUNS } from "./layout";
 
 const run = (over = {}) => ({
@@ -107,3 +107,29 @@ describe("groupInstances", () => {
     groups.forEach((g) => g.instances.forEach((i) => expect(i.product).toBe(g.product)));
   });
 });
+
+describe("emptyShelfCases", () => {
+  const r = run({ levels: [0.2, 0.62, 1.04], clearances: [0.39, 0.39, 0.39], skipLevels: [0] });
+
+  it("fills only the shelves that got no bottles, never skipped levels", () => {
+    const bottles = buildShelfInstances({ products: [p("a", "bottle-700ml.glb")], runs: [r], maxDepth: 1, maxInstances: 3 });
+    expect(new Set(bottles.map((i) => i.levelIndex))).toEqual(new Set([2]));
+    const cases = emptyShelfCases([r], bottles);
+    expect(cases.length).toBeGreaterThan(0);
+    expect(cases.every((c) => Math.abs(c.position[1] - (0.62 + 0.131)) < 1e-9)).toBe(true);
+  });
+
+  it("keeps cases inside the run, set back toward the fixture", () => {
+    for (const c of emptyShelfCases([r], [])) {
+      expect(c.position[0] - 0.17).toBeGreaterThanOrEqual(0);
+      expect(c.position[0] + 0.17).toBeLessThanOrEqual(2);
+      expect(c.position[2]).toBeLessThan(0);
+      expect(c.rotationY).toBeCloseTo(0);
+    }
+  });
+
+  it("skips shelves too low for a case", () => {
+    expect(emptyShelfCases([run({ clearances: [0.2] })], [])).toHaveLength(0);
+  });
+});
+

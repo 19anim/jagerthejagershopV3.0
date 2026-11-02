@@ -4,11 +4,12 @@ import { BoxGeometry, Matrix4, MeshBasicMaterial, Quaternion, TextureLoader, Vec
 import BottlePanel from "./bottle-panel";
 import { extractBottleParts, hasLabelSlot } from "./bottle-parts";
 import { useQuality } from "../quality-context";
+import { useMats } from "../materials/materials-context";
 import { CartContext } from "../../../../context/cart.context";
 import { useLocale } from "../../../../context/locale.context";
 import { getGlbUrl } from "../../../../utils/shop3d.assets";
 import { getLabelTextureUrl } from "../../../../utils/shop3d.utils";
-import { BOTTLE_DIMS, buildShelfInstances, groupInstances } from "../../../../utils/shop3d/product-blocks";
+import { BOTTLE_DIMS, CASE_SIZE, buildShelfInstances, emptyShelfCases, groupInstances } from "../../../../utils/shop3d/product-blocks";
 import { SHELF_RUNS } from "../../../../utils/shop3d/layout";
 
 const UP = new Vector3(0, 1, 0);
@@ -113,13 +114,32 @@ const ProductGroup = ({ group, onSelect }) => {
   );
 };
 
+const CASE_GEOMETRY = new BoxGeometry(...CASE_SIZE);
+
+// Cardboard cases on every shelf the bottle budget did not reach (one draw call).
+const ShelfCases = ({ cases }) => {
+  const mats = useMats();
+  const ref = useRef();
+  useLayoutEffect(() => {
+    const m = ref.current;
+    if (!m) return;
+    cases.forEach((c, i) => m.setMatrixAt(i, new Matrix4().compose(new Vector3(...c.position), new Quaternion().setFromAxisAngle(UP, c.rotationY), ONE)));
+    m.instanceMatrix.needsUpdate = true;
+    m.computeBoundingSphere();
+  }, [cases]);
+  if (!cases.length) return null;
+  return <instancedMesh key={cases.length} ref={ref} args={[CASE_GEOMETRY, mats.cardboard, cases.length]} receiveShadow />;
+};
+
 // Every real product, repeated in blocks across the shelves. One panel at a time.
 const ProductShelves = ({ products }) => {
   const quality = useQuality();
-  const groups = useMemo(
-    () => groupInstances(buildShelfInstances({ products, runs: SHELF_RUNS, maxDepth: quality.maxDepth, maxInstances: quality.maxInstances })),
+  const instances = useMemo(
+    () => buildShelfInstances({ products, runs: SHELF_RUNS, maxDepth: quality.maxDepth, maxInstances: quality.maxInstances }),
     [products, quality]
   );
+  const groups = useMemo(() => groupInstances(instances), [instances]);
+  const cases = useMemo(() => (products.length ? emptyShelfCases(SHELF_RUNS, instances) : []), [products.length, instances]);
   const [selected, setSelected] = useState(null);
   useEffect(() => setSelected(null), [groups]);
   // Read contexts here (inside the R3F tree); <Html> renders a separate root without them.
@@ -130,6 +150,7 @@ const ProductShelves = ({ products }) => {
       {groups.map((group) => (
         <ProductGroup key={group.key} group={group} onSelect={setSelected} />
       ))}
+      <ShelfCases cases={cases} />
       {selected && !isCartOpen && (
         <Html position={[selected.position[0], selected.position[1] + selected.height + 0.1, selected.position[2]]} zIndexRange={[100, 0]}>
           <BottlePanel product={selected.product} t={t} onAdd={(product) => addItemToCart(product, 1)} />

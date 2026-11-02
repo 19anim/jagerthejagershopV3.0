@@ -123,6 +123,30 @@ export const buildShelfInstances = ({ products, runs, dims = BOTTLE_DIMS, maxDep
   return out;
 };
 
+// Cardboard cases (0.34 × 0.26 × 0.3 m) for every shelf that got no bottles, so a
+// small bottle budget (phones) still leaves the shop looking stocked.
+export const CASE_SIZE = [0.34, 0.26, 0.3];
+const CASE_PITCH = 0.38;
+export const emptyShelfCases = (runs, instances) => {
+  const filled = new Set(instances.map((i) => `${i.runId}:${i.levelIndex}`));
+  const out = [];
+  for (const r of runs) {
+    const rotationY = Math.atan2(r.facing[0], r.facing[1]);
+    r.levels.forEach((y, levelIndex) => {
+      if (r.skipLevels?.includes(levelIndex) || filled.has(`${r.id}:${levelIndex}`)) return;
+      if (r.clearances[levelIndex] < CASE_SIZE[1] + HEAD_ROOM || r.depth < CASE_SIZE[2]) return;
+      const inset = FRONT_INSET + CASE_SIZE[2] / 2;
+      for (let along = SIDE_PAD + CASE_SIZE[0] / 2; along + CASE_SIZE[0] / 2 <= r.length - SIDE_PAD; along += CASE_PITCH) {
+        out.push({
+          position: [r.start[0] + r.dir[0] * along - r.facing[0] * inset, y + CASE_SIZE[1] / 2 + 0.001, r.start[1] + r.dir[1] * along - r.facing[1] * inset],
+          rotationY,
+        });
+      }
+    });
+  }
+  return out;
+};
+
 export const groupInstances = (instances) => {
   const groups = new Map();
   for (const instance of instances) {

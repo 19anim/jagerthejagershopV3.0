@@ -195,7 +195,8 @@ const Atmosphere = () => {
     if (hemi.current) {
       hemi.current.color.copy(SKY_OUT).lerp(SKY_IN, v);
       hemi.current.groundColor.copy(GROUND_OUT).lerp(GROUND_IN, v);
-      hemi.current.intensity = 0.35 + 0.05 * v;
+      // The low tier has fewer interior lamps, so its fill light comes up more indoors.
+      hemi.current.intensity = 0.35 + (quality.tier === "low" ? 0.3 : 0.05) * v;
     }
   });
 
