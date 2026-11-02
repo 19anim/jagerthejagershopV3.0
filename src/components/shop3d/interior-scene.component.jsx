@@ -19,8 +19,6 @@ const InteriorScene = ({ bottles, accessories = [] }) => {
           9.5×11 enclosure and z-fight, so it is intentionally omitted).
           floor-interior drops onto the origin; its top (walking surface) is y=0.06.
           Ceiling underside is y=3.66, so the spotlight hangs just below it. */}
-      <GlbModel fileName="floor-interior.glb" position={[0, 0, 0]} />
-      <GlbModel fileName="ceiling-spotlight.glb" position={[0, 3.66, 0]} />
 
       {/* Shelves, wine cabinet and accessory stands, driven by placement config
           so products can be slotted onto their measured surfaces. */}
