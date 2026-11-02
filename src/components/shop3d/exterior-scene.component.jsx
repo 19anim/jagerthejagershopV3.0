@@ -77,7 +77,6 @@ const ExteriorScene = ({ onEnter, onExit, inside = false }) => {
           enlarged 06 Building-envelope set. floor-interior is 0.06 m thick (walking
           surface y = 0.06). Interior clear 9.5 × 11.0 × 3.6 m; shopfront faces +z
           with the front wall face at z ≈ 5.6. */}
-      <GlbModel fileName="sidewalk-base.glb" position={[0, 0, 6.9]} />
       {/* wall-set is the complete enclosing building; sits on the floor at y = 0.06.
           Outer 9.90 × 11.40, H 3.80, t 0.20. Openings (README): door x 1.63→2.97
           (centre 2.30), window x −3.39→−1.71 (centre −2.55, sill 0). */}
@@ -91,8 +90,6 @@ const ExteriorScene = ({ onEnter, onExit, inside = false }) => {
       <GlbModel fileName="display-window.glb" position={[-2.55, 0.06, 5.60]} />
       {/* Sign on the fascia above the openings. */}
       <GlbModel fileName="signboard.glb" position={[0, 3.5, 5.72]} onReady={attachLogo("signboard.glb")} />
-      <GlbModel fileName="planter.glb" position={[4.4, 0, 6.2]} />
-      <GlbModel fileName="street-lamp.glb" position={[-4.9, 0, 6.4]} onReady={attachLogo("street-lamp.glb")} />
       {/* The door's pivot is its HINGE AXIS (local x = 0, leaf extends +x). Per
           the contract, the group origin = doorway_frame x − 0.50 (= 1.80), y + 0.03
           threshold tread top (= 0.09), at the front wall face (z 5.60); it swings

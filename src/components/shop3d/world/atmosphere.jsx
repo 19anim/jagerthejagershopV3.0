@@ -84,7 +84,7 @@ const LampSpot = ({ lamp }) => {
     light.target.position.set(lamp.x, 0, lamp.z + lamp.dir * 2.6);
     light.target.updateMatrixWorld();
   }, [lamp]);
-  return <spotLight ref={ref} color="#ffcf8f" intensity={420} distance={26} angle={1.0} penumbra={0.6} decay={2} position={[lamp.x, 7.55, lamp.z + lamp.dir * 1.9]} />;
+  return <spotLight ref={ref} color="#ffcf8f" intensity={240} distance={26} angle={1.0} penumbra={0.6} decay={2} position={[lamp.x, 7.55, lamp.z + lamp.dir * 1.9]} />;
 };
 
 const SUN_TARGET = new Vector3(0, 4, 7.5);
@@ -203,7 +203,7 @@ const Atmosphere = () => {
       <Sky />
       <hemisphereLight ref={hemi} args={[SKY_OUT, GROUND_OUT, 0.35]} />
       <Sun size={quality.shadowMapSize} />
-      <pointLight color="#ffb866" intensity={14} distance={9} decay={2} position={[-1.5, 2.3, 6.4]} />
+      <pointLight color="#ffb866" intensity={6} distance={9} decay={2} position={[-1.5, 2.3, 6.4]} />
       {quality.lampLights && STREET_PROPS.lamps.filter((l) => l.light).map((l) => <LampSpot key={`${l.x}:${l.z}`} lamp={l} />)}
       {(quality.tier === "high" ? TRACKS : TRACKS.slice(0, 2)).map((track) => (
         <TrackSpot key={track.p.join(":")} track={track} shadowSize={Math.min(1024, quality.shadowMapSize)} />

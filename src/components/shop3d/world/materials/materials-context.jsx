@@ -26,7 +26,7 @@ export const MaterialsProvider = ({ children }) => {
     const roomCards = roomCardAtlasTexture();
     const m = {
       // street
-      asphalt: std({ map: t.asphaltDiff, normalMap: t.asphaltNor, roughness: 0.93, color: "#b5b5b5" }),
+      asphalt: std({ map: t.asphaltDiff, normalMap: t.asphaltNor, roughness: 0.93, color: "#6a6a6e" }),
       paver: std({ map: t.paverDiff, normalMap: t.paverNor, roughness: 0.86 }),
       kerb: std({ map: t.plasterDiff, color: "#9d9a92", roughness: 0.9 }),
       roadPaint: std({ color: "#e9e4d4", roughness: 0.7, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
@@ -47,8 +47,8 @@ export const MaterialsProvider = ({ children }) => {
       pole: std({ color: "#4d5257", metalness: 0.6, roughness: 0.45 }),
       tyre: std({ color: "#151515", roughness: 0.9 }),
       lampHead: std({ color: "#000000", emissive: "#ffd9a0", emissiveIntensity: 4 }),
-      signAtlas: std({ map: signAtlas, emissive: "#ffffff", emissiveMap: signAtlas, emissiveIntensity: 0.9, roughness: 0.4 }),
-      roomCards: std({ color: "#000000", emissive: "#ffffff", emissiveMap: roomCards, emissiveIntensity: 1.0, roughness: 0.2 }),
+      signAtlas: std({ map: signAtlas, emissive: "#ffffff", emissiveMap: signAtlas, emissiveIntensity: 0.6, roughness: 0.4 }),
+      roomCards: std({ color: "#000000", emissive: "#ffffff", emissiveMap: roomCards, emissiveIntensity: 0.6, roughness: 0.2 }),
       // brand
       green: std({ color: "#1e3027", roughness: 0.55 }),
       greenMid: std({ color: "#31533e", roughness: 0.55 }),

@@ -127,7 +127,7 @@ export const STREET_PROPS = {
     { x: 7.2, z: 8.2, rot: 1.2, color: "#2a5ea8" },
     { x: 8.1, z: 8.15, rot: 1.25, color: "#1c1c1c" },
     { x: -15, z: 17.9, rot: -1.9, color: "#d8d4c8" },
-    { x: 0.2, z: 17.9, rot: -1.8, color: "#a8262a" }, // kept clear of START_POSE (x 2.3)
+    { x: -4.5, z: 17.9, rot: -1.8, color: "#a8262a" }, // kept clear of START_POSE (x 2.3)
   ],
   stools: [
     { x: 6.4, z: 6.45, color: "#d33a3a" },
