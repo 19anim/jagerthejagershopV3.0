@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   ROOM, DOOR, FLOOR_Y, SIDEWALK_Y, groundHeight, isInsideShop,
   SHELF_RUNS, INTERIOR_COLLIDERS, OUTSIDE_COLLIDERS, INSIDE_BOUNDS, OUTSIDE_BOUNDS,
-  START_POSE, INTERIOR_POSE, ENTER_PATH, EXIT_PATH, clearances, PEOPLE, ANCHORS,
+  START_POSE, INTERIOR_POSE, ENTER_PATH, EXIT_PATH, clearances, PEOPLE, ANCHORS, DECOR,
 } from "./layout";
 
 const overlaps = (a, b) =>
@@ -98,5 +98,10 @@ describe("layout", () => {
       }
     }
   });
+  it("keeps floor-standing decor inside the room", () => {
+    for (const d of [DECOR.chalkboardInside, ...DECOR.plants]) {
+      expect(d.x - d.r).toBeGreaterThan(ROOM.minX);
+      expect(d.x + d.r).toBeLessThan(ROOM.maxX);
+    }
+  });
 });
-

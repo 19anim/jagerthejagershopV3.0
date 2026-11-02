@@ -8,6 +8,7 @@ import Door from "./shopfront/door";
 import RoomShell from "./interior/room-shell";
 import Interior from "./interior/interior";
 import ProductShelves from "./products/product-shelves";
+import Decor from "./interior/decor";
 import { useQuality } from "./quality-context";
 import { CartContext } from "../../../context/cart.context";
 import { useLocale } from "../../../context/locale.context";
@@ -37,6 +38,7 @@ const World = ({ products, phase, setPhase }) => {
       {interiorMounted && (
         <Interior onCheckout={() => navigate(`/${locale}/cartCheckout`)} onOpenCart={toggleIsCartOpen}>
           <ProductShelves products={products} />
+          <Decor />
         </Interior>
       )}
     </>

@@ -163,7 +163,7 @@ export const posterTexture = (variant = 0) =>
     g.stroke();
     g.fillStyle = ink;
     g.textAlign = "center";
-    g.font = "700 34px Georgia, serif";
+    g.font = "700 27px Georgia, serif";
     g.fillText(["JÄGERMEISTER", "56 HERBS", "ICE COLD"][variant % 3], w / 2, 285);
     g.font = "400 20px Georgia, serif";
     g.fillText(["SINCE 1934", "WOLFENBÜTTEL", "-18°C"][variant % 3], w / 2, 318);

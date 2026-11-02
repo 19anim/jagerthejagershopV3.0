@@ -73,6 +73,24 @@ export const TASTING_BAR = { x0: 2.8, x1: 4.4, z0: -5.0, z1: -4.45, top: 1.06 };
 export const PROMO_BARREL = { x: -2.6, z: 4.7, radius: 0.4, height: 0.95 };
 export const CRATES = { x: -1.45, z: 4.85, w: 0.6, d: 0.45 };
 
+export const DECOR = {
+  antler: [-1.0, 3.3, ROOM.minZ],
+  neon: [3.55, 2.95, ROOM.minZ],
+  posters: [
+    { position: [-0.1, 1.75, ROOM.maxZ], rotY: Math.PI, variant: 0 },
+    { position: [0.8, 1.75, ROOM.maxZ], rotY: Math.PI, variant: 1 },
+    { position: [ROOM.maxX, 1.75, 0.1], rotY: -Math.PI / 2, variant: 2 },
+  ],
+  chalkboardInside: { x: 0.55, z: 4.65, rotY: -0.35, r: 0.35 },
+  plants: [
+    { x: 4.35, z: -0.85, s: 1, r: 0.3 },
+    { x: 2.55, z: -5.25, s: 0.85, r: 0.22 },
+  ],
+  mat: [2.3, 4.95],
+  fan: [0.3, 2.2],
+  clock: [2.3, 3.05, ROOM.maxZ],
+};
+
 const run = (id, start, dir, facing, length, levels, clear, depth, accepts, skipLevels = []) => ({
   id, start, dir, facing, length, levels, clearances: clear, depth, accepts, skipLevels,
 });
@@ -102,6 +120,8 @@ export const INTERIOR_COLLIDERS = [
   box(TASTING_BAR.x0, TASTING_BAR.z0 - 0.1, TASTING_BAR.x1, TASTING_BAR.z1 + 0.35), // bar + stools
   box(PROMO_BARREL.x - PROMO_BARREL.radius, PROMO_BARREL.z - PROMO_BARREL.radius, PROMO_BARREL.x + PROMO_BARREL.radius, PROMO_BARREL.z + PROMO_BARREL.radius),
   box(CRATES.x - CRATES.w / 2, CRATES.z - CRATES.d / 2, CRATES.x + CRATES.w / 2, CRATES.z + CRATES.d / 2),
+  box(DECOR.chalkboardInside.x - DECOR.chalkboardInside.r, DECOR.chalkboardInside.z - DECOR.chalkboardInside.r, DECOR.chalkboardInside.x + DECOR.chalkboardInside.r, DECOR.chalkboardInside.z + DECOR.chalkboardInside.r),
+  ...DECOR.plants.map((p) => box(p.x - p.r, p.z - p.r, p.x + p.r, p.z + p.r)),
 ];
 
 // ---------- street furniture ----------
