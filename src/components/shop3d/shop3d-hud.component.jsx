@@ -48,7 +48,7 @@ const Shop3DHud = ({ phase = "outside", onExit, moveRef }) => {
       </div>
 
       <div className="flex items-end justify-between gap-4">
-        {inside ? <TouchJoystick moveRef={moveRef} /> : <span />}
+        {inside || phase === "outside" ? <TouchJoystick moveRef={moveRef} /> : <span />}
         <p className="mx-auto rounded bg-black/40 px-3 py-1 text-center text-[11px] font-bold uppercase tracking-widest text-cream">
           {helpText}
         </p>

@@ -10,8 +10,6 @@ import { CartContext } from "../context/cart.context";
 import { useLocale } from "../context/locale.context";
 import { apiUrl } from "../utils/api.utils";
 import { isWebGLAvailable } from "../utils/webgl.utils";
-import { resolveProductInstances, resolveAccessoryPlacements } from "../utils/shop3d.utils";
-import { FIXTURES, PRODUCT_SLOTS, ACCESSORY_PLACEMENTS } from "../utils/shop3d.config";
 import { preloadGlb } from "../components/shop3d/glb-model.component";
 
 const SCENE_GLBS = [
@@ -76,12 +74,6 @@ const Shop3DPage = () => {
     fetchProducts();
   }, [webglOk]);
 
-  const bottles = useMemo(
-    () => (products.length ? resolveProductInstances(products, FIXTURES, PRODUCT_SLOTS) : []),
-    [products]
-  );
-  const accessories = useMemo(() => resolveAccessoryPlacements(FIXTURES, ACCESSORY_PLACEMENTS), []);
-
   if (!webglOk) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4 p-8 text-center text-cream">
@@ -101,13 +93,7 @@ const Shop3DPage = () => {
         onExit={() => setPhase("exiting")}
         moveRef={moveRef}
       />
-      <SceneCanvas
-        bottles={bottles}
-        accessories={accessories}
-        phase={phase}
-        setPhase={setPhase}
-        moveRef={moveRef}
-      />
+      <SceneCanvas products={products} phase={phase} setPhase={setPhase} moveRef={moveRef} />
       <Shop3DToast trigger={addedTick} />
       <Shop3DCartOverlay />
     </div>

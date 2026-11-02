@@ -2,18 +2,17 @@ import { useEffect, useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Euler, Vector3 } from "three";
 import { useCollision } from "../../context/collision.context";
+import { EYE_OFFSET, FLOOR_Y, INSIDE_BOUNDS } from "../../utils/shop3d/layout";
 
 // First-person "walk through the shop" controller. Replaces OrbitControls while
 // the camera is inside the building: WASD/arrow keys translate along the floor,
 // pointer-drag looks around, the camera is pinned to eye height and clamped
 // inside the wall shell so you can never walk through a wall or see the street.
 //
-// Bounds derive from the enlarged 06 Building-envelope README: clear interior
-// 9.5 × 11.0 m on the 0.06 m floor, inner wall faces at x ≈ ±4.75, back z ≈ −5.5,
-// front wall face at z ≈ 5.6. We keep ~0.7 m clearance off each inner face so the
-// near clip never punches through geometry.
-export const EYE_HEIGHT = 1.6;
-export const WALK_BOUNDS = { minX: -4.05, maxX: 4.05, minZ: -4.8, maxZ: 5.0 };
+// Walkable bounds (inside the shop and on the street outside) come from
+// utils/shop3d/layout.js; the caller passes the set for the current phase.
+export const EYE_HEIGHT = FLOOR_Y + EYE_OFFSET;
+export const WALK_BOUNDS = INSIDE_BOUNDS;
 
 const WALK_SPEED = 2.6; // metres / second
 const LOOK_SENSITIVITY = 0.0026; // radians / pixel
@@ -41,7 +40,7 @@ const blocked = (x, z, boxes) => {
 // `moveRef` is an optional shared { current: { x, y } } written by the on-screen
 // touch joystick (x = strafe −1..1, y = forward −1..1); keyboard input is added
 // on top so both schemes work together.
-const WalkControls = ({ enabled, moveRef }) => {
+const WalkControls = ({ enabled, moveRef, bounds = WALK_BOUNDS, groundAt }) => {
   const { camera, gl } = useThree();
   const collision = useCollision();
   const yaw = useRef(0);
@@ -154,10 +153,12 @@ const WalkControls = ({ enabled, moveRef }) => {
       }
     }
 
-    // Pin eye height and keep the camera inside the walls.
-    camera.position.y = EYE_HEIGHT;
-    camera.position.x = Math.max(WALK_BOUNDS.minX, Math.min(WALK_BOUNDS.maxX, camera.position.x));
-    camera.position.z = Math.max(WALK_BOUNDS.minZ, Math.min(WALK_BOUNDS.maxZ, camera.position.z));
+    // Keep inside the walkable area, then ease the eye toward the ground under
+    // you (sidewalk 0.15, road 0, shop floor 0.06) so kerbs read as a step.
+    camera.position.x = Math.max(bounds.minX, Math.min(bounds.maxX, camera.position.x));
+    camera.position.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, camera.position.z));
+    const ground = groundAt ? groundAt(camera.position.x, camera.position.z) : FLOOR_Y;
+    camera.position.y += (ground + EYE_OFFSET - camera.position.y) * Math.min(1, delta * 10);
   });
 
   return null;
