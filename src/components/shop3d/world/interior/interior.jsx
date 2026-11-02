@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Fixtures from "./fixtures";
 import KitGlbs from "./kit-glbs";
 import StaticColliders from "../static-colliders";
@@ -13,7 +14,9 @@ const Interior = ({ onCheckout, onOpenCart, children }) => (
     <group onPointerOver={stop} onClick={stop}>
       <Fixtures />
     </group>
-    <KitGlbs onCheckout={onCheckout} onOpenCart={onOpenCart} />
+    <Suspense fallback={null}>
+      <KitGlbs onCheckout={onCheckout} onOpenCart={onOpenCart} />
+    </Suspense>
     <StaticColliders boxes={INTERIOR_COLLIDERS} />
     {children}
   </group>

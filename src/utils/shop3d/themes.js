@@ -49,6 +49,6 @@ export const resolveTheme = (setting, now = new Date(), override) => {
   if (override === "none") return null;
   if (THEMES.includes(override)) return override;
   if (THEMES.includes(setting)) return setting;
-  if (setting === "none") return null;
-  return themeByDate(now);
+  if (setting === undefined || setting === null || setting === "auto") return themeByDate(now);
+  return null; // "none", or a value this build does not know
 };

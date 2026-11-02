@@ -29,6 +29,13 @@ const SceneCanvas = ({ products, phase, setPhase, moveRef, theme }) => {
   const { isCartOpen } = useContext(CartContext);
   const [tier, setTier] = useState(() => detectTier(typeof window === "undefined" ? undefined : window));
   const quality = QUALITY[tier];
+  // Start judging the frame rate only after the first-load hitches (shader compiles,
+  // texture uploads), so a fast desktop is not downgraded for the whole visit.
+  const [monitor, setMonitor] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setMonitor(true), 6000);
+    return () => clearTimeout(timer);
+  }, []);
   const inside = phase === "inside";
   const outside = phase === "outside";
 
@@ -47,7 +54,7 @@ const SceneCanvas = ({ products, phase, setPhase, moveRef, theme }) => {
       >
         <QualityContext.Provider value={quality}>
           <ResponsiveFov />
-          <PerformanceMonitor bounds={() => [28, 50]} flipflops={1} onDecline={() => setTier("low")} />
+          {monitor && <PerformanceMonitor bounds={() => [28, 50]} flipflops={1} onDecline={() => setTier("low")} />}
           <CollisionProvider>
             <Suspense fallback={null}>
               <MaterialsProvider>

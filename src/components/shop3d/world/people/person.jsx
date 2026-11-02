@@ -25,7 +25,7 @@ const Person = forwardRef(({ body, hair = [], outfit, position, yaw = 0 }, ref) 
     copy.traverse((o) => {
       if (HAIRS.includes(o.name)) o.visible = hair.includes(o.name);
       if (!o.isMesh) return;
-      o.castShadow = true;
+      o.castShadow = o.name === "body"; // eyes, brows and hair add little to the shadow
       o.receiveShadow = true;
       o.frustumCulled = false; // skinned bounds do not follow the animation
       const name = o.material?.name;

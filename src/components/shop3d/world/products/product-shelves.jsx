@@ -99,6 +99,7 @@ const ProductGroup = ({ group, onSelect }) => {
       <instancedMesh
         ref={pick}
         args={[pickGeometry, PICK, base.length]}
+        visible={false} // never drawn; three's Raycaster ignores visibility, so picking still works
         onPointerMove={(event) => {
           event.stopPropagation();
           hover(event.instanceId);

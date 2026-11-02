@@ -115,8 +115,12 @@ const WallClock = () => {
   const mats = useMats();
   const hour = useRef();
   const minute = useRef();
+  const lastSecond = useRef(-1);
   useFrame(() => {
-    const now = new Date(Date.now() + 7 * 3600000);
+    const second = Math.floor(Date.now() / 1000);
+    if (second === lastSecond.current) return; // hands only need to move once a second
+    lastSecond.current = second;
+    const now = new Date(second * 1000 + 7 * 3600000);
     const m = now.getUTCMinutes() + now.getUTCSeconds() / 60;
     const h = (now.getUTCHours() % 12) + m / 60;
     if (minute.current) minute.current.rotation.z = -(m / 60) * Math.PI * 2;

@@ -86,8 +86,9 @@ utils/shop3d/
   people-paths.js  walker paths + pause rule (pure)
 ```
 
-`src/utils/shop3d.config.js` and `shop3d.utils.js` stay as the public entry
-points (re-exporting the new modules) so existing imports and tests keep working.
+`src/utils/shop3d.utils.js` keeps its existing exports (and tests). The old
+`src/utils/shop3d.config.js` (fixture/slot tables for the retired GLB layout) is
+removed: nothing imports it any more and `layout.js` replaces it.
 
 ### Units and their contracts
 
@@ -324,14 +325,18 @@ emissive where they glow (string lights are an instanced emissive mesh, not ligh
 - High: DPR ≤ 2, shadow map 2048, bloom, lamp spot lights, bottle depth ≤ 4.
 - Low: DPR ≤ 1.25, shadow map 1024, no bloom, emissive-only lamps, bottle depth 1,
   far facades without balcony detail.
-- Static street and interior geometry merged per material; bottles instanced;
-  people ≤ 6 skinned meshes.
+- Static street and interior geometry merged per material (kit GLBs too); bottles
+  instanced; one shadow-casting skinned mesh per person (the body).
 - Budgets: ≤ 1800 bottles on high (≈ 4 M triangles), ≤ 450 on low (≈ 1 M); bottom
-  shelves hold cardboard cases; < 250 draw calls; added texture payload ≤ 3.5 MB;
-  desktop 60 fps, mid-range phone ≥ 30 fps.
+  shelves, and any shelf the bottle budget does not reach, hold cardboard cases;
+  draw calls < 350 on high (measured 332 outside / 249 inside, incl. two shadow
+  passes and bloom) and < 250 on low (measured 159 / 221); added texture payload
+  ≤ 3.5 MB (2.3 MB); desktop 60 fps, mid-range phone ≥ 30 fps.
 - High tier keeps the interior mounted while outside (the window shows the real
-  store); low tier mounts it on entry and shows a lit interior card behind the
-  window until then.
+  store); low tier builds it on first entry, then only hides it while you are
+  outside (no rebuild per door trip), and shows a lit interior card behind the
+  window while it is hidden. People on each side of the door are handled the same
+  way. Only the high tier gives the interior its own shadow-casting spot light.
 - `SCENE_GLBS` preload list shrinks to the kept fixture GLBs, the product GLBs in
   use and the two people GLBs.
 

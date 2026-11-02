@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Street from "./street/street";
 import Shophouses from "./street/shophouses";
@@ -23,7 +23,14 @@ const stop = (event) => event.stopPropagation();
 // inside → exiting → outside.
 const World = ({ products, phase, setPhase, theme }) => {
   const quality = useQuality();
-  const interiorMounted = quality.interiorAlways || phase !== "outside";
+  // The interior shows while you are in (or, on the high tier, always). Once built it
+  // stays mounted and is only hidden, so phones don't rebuild (and re-upload) it on
+  // every trip through the door.
+  const interiorShown = quality.interiorAlways || phase !== "outside";
+  const [interiorBuilt, setInteriorBuilt] = useState(interiorShown);
+  useEffect(() => {
+    if (interiorShown) setInteriorBuilt(true);
+  }, [interiorShown]);
   const { toggleIsCartOpen } = useContext(CartContext);
   const { locale } = useLocale();
   const navigate = useNavigate();
@@ -33,16 +40,21 @@ const World = ({ products, phase, setPhase, theme }) => {
       <Shophouses />
       <StreetProps />
       <group onPointerOver={stop} onClick={stop}>
-        <ShopBuilding showInteriorCard={!interiorMounted} />
+        <ShopBuilding showInteriorCard={!interiorShown} />
         <RoomShell />
       </group>
       <Door phase={phase} onEnter={() => setPhase("entering")} onExit={() => setPhase("exiting")} />
       <People phase={phase} />
-      {interiorMounted && (
-        <Interior onCheckout={() => navigate(`/${locale}/cartCheckout`)} onOpenCart={toggleIsCartOpen}>
-          <ProductShelves products={products} />
-          <Decor />
-        </Interior>
+      {interiorBuilt && (
+        <group visible={interiorShown}>
+          <Interior onCheckout={() => navigate(`/${locale}/cartCheckout`)} onOpenCart={toggleIsCartOpen}>
+            {/* Own boundary: product GLBs arriving later must not blank the whole scene. */}
+            <Suspense fallback={null}>
+              <ProductShelves products={products} />
+            </Suspense>
+            <Decor />
+          </Interior>
+        </group>
       )}
       <ThemeLayer theme={theme} />
     </>

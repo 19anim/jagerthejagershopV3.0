@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useShop3dTheme } from "./useShop3dTheme.hook";
 import { settingsApi } from "../services/settings.api";
@@ -8,7 +8,10 @@ vi.mock("../services/settings.api", () => ({ settingsApi: { getShop3dTheme: vi.f
 
 const june = new Date("2026-06-01T12:00:00+07:00");
 const december = new Date("2026-12-10T12:00:00+07:00");
-const wrap = (entry = "/vi/shop3d") => ({ children }) => <MemoryRouter initialEntries={[entry]}>{children}</MemoryRouter>;
+const wrap = (entry = "/vi/shop3d") => {
+  const Wrapper = ({ children }) => <MemoryRouter initialEntries={[entry]}>{children}</MemoryRouter>;
+  return Wrapper;
+};
 
 describe("useShop3dTheme", () => {
   beforeEach(() => { vi.mocked(settingsApi.getShop3dTheme).mockReset(); });
@@ -23,6 +26,7 @@ describe("useShop3dTheme", () => {
     vi.mocked(settingsApi.getShop3dTheme).mockImplementation(() => Promise.reject(new Error("404")));
     const { result } = renderHook(() => useShop3dTheme(december), { wrapper: wrap() });
     await waitFor(() => expect(settingsApi.getShop3dTheme).toHaveBeenCalled());
+    await act(async () => {}); // let the rejection settle
     expect(result.current).toBe("christmas");
   });
 

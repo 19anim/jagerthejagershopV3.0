@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../../context/locale.context";
 import { settingsApi } from "../../services/settings.api";
 import { THEME_SETTINGS } from "../../utils/shop3d/themes";
@@ -8,15 +8,17 @@ const Shop3dThemeSelect = () => {
   const { t } = useLocale();
   const [value, setValue] = useState("auto");
   const [status, setStatus] = useState("");
+  const touched = useRef(false); // a slow initial load must not overwrite the admin's choice
 
   useEffect(() => {
     settingsApi
       .getShop3dTheme()
-      .then((data) => setValue(data?.shop3dTheme || "auto"))
+      .then((data) => !touched.current && setValue(data?.shop3dTheme || "auto"))
       .catch(() => {});
   }, []);
 
   const handleChange = async (event) => {
+    touched.current = true;
     const next = event.target.value;
     const previous = value;
     setValue(next);

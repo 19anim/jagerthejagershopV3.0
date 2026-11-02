@@ -1,4 +1,4 @@
-import { Component, Suspense, useRef } from "react";
+import { Component, Suspense, useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import Person from "./person";
 import { useQuality } from "../quality-context";
@@ -104,22 +104,32 @@ class PersonBoundary extends Component {
 
 const ROLES = { cashier: Cashier, stocker: Walker, walker: Walker, sitter: Sitter };
 
-// Ambient people. They never block you (no colliders). On the low tier only
-// the people on your side of the door are mounted.
+// Ambient people. They never block you (no colliders). On the low tier only the
+// people on your side of the door are shown; each side is built the first time it
+// is needed and afterwards only hidden, so nothing is re-created per door trip.
 const People = ({ phase }) => {
   const quality = useQuality();
-  const showInside = quality.peopleAlways || phase !== "outside";
-  const showOutside = quality.peopleAlways || phase !== "inside";
-  return PEOPLE.filter((spec) => (spec.inside ? showInside : showOutside)).map((spec) => {
-    const Role = ROLES[spec.role];
-    return (
-      <PersonBoundary key={spec.id}>
-        <Suspense fallback={null}>
-          <Role spec={spec} />
-        </Suspense>
-      </PersonBoundary>
-    );
-  });
+  const show = { inside: quality.peopleAlways || phase !== "outside", outside: quality.peopleAlways || phase !== "inside" };
+  const [built, setBuilt] = useState(show);
+  useEffect(() => {
+    setBuilt((b) => (b.inside >= show.inside && b.outside >= show.outside ? b : { inside: b.inside || show.inside, outside: b.outside || show.outside }));
+  }, [show.inside, show.outside]);
+  return ["inside", "outside"].map((side) =>
+    built[side] ? (
+      <group key={side} visible={show[side]}>
+        {PEOPLE.filter((spec) => spec.inside === (side === "inside")).map((spec) => {
+          const Role = ROLES[spec.role];
+          return (
+            <PersonBoundary key={spec.id}>
+              <Suspense fallback={null}>
+                <Role spec={spec} />
+              </Suspense>
+            </PersonBoundary>
+          );
+        })}
+      </group>
+    ) : null
+  );
 };
 
 export default People;

@@ -43,10 +43,12 @@ describe("resolveTheme", () => {
   it("returns null for none", () => {
     expect(resolveTheme("none", vn("2026-12-10"))).toBe(null);
   });
-  it("falls back to the date for auto, missing or unknown values", () => {
+  it("falls back to the date for auto or a missing value", () => {
     expect(resolveTheme("auto", vn("2026-12-10"))).toBe("christmas");
     expect(resolveTheme(undefined, vn("2026-12-10"))).toBe("christmas");
-    expect(resolveTheme("bogus", vn("2026-12-10"))).toBe("christmas");
+  });
+  it("shows no theme for a value it does not know", () => {
+    expect(resolveTheme("bogus", vn("2026-12-10"))).toBe(null);
   });
   it("lets a ?theme= override win", () => {
     expect(resolveTheme("none", now, "halloween")).toBe("halloween");
