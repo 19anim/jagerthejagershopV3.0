@@ -2218,7 +2218,7 @@ Create `.claude/launch.json` (in the repo root):
 }
 ```
 
-The dev env reads `VITE_BASE_API_URL` from `.env.development` (`http://localhost:3000`). If the local backend is not running, the product list is empty; for visual checks you can run `npm run dev` with `VITE_BASE_API_URL=https://jagerthejagershopv3-0-be-h2mb.onrender.com` (the production API allows `http://localhost:5173` via CORS; read-only GETs only).
+The dev env reads `VITE_BASE_API_URL` from `.env.development` (`http://localhost:3000`). If the local backend is not running, the product list is empty; for visual checks you can run `npm run dev` with `VITE_BASE_API_URL=https://jagerthejagershopv3-0-be-9as3.onrender.com` (the production API allows `http://localhost:5173` via CORS; read-only GETs only).
 
 - [ ] **Step 8: Verify in the browser**
 
@@ -3684,7 +3684,7 @@ In `src/utils/shop3d.config.js` delete `FIXTURES`, `PRODUCT_SLOTS`, `ACCESSORY_P
 
 - [ ] **Step 6: Verify in the browser (with real products)**
 
-Run the dev server against an API that has products (local backend, or `VITE_BASE_API_URL=https://jagerthejagershopv3-0-be-h2mb.onrender.com npm run dev` — read-only). Inside the shop:
+Run the dev server against an API that has products (local backend, or `VITE_BASE_API_URL=https://jagerthejagershopv3-0-be-9as3.onrender.com npm run dev` — read-only). Inside the shop:
 - every wall bay, gondola face, the back-bar, chiller (minis), counter tray (minis) and promo barrel is stocked in product blocks; the two 700 ml products both appear; 1000 ml bottles only on shelves where they fit;
 - hover grows the bottle 5 % and shows a pointer; a click opens the panel above that bottle (name, price, stock, Add to cart); a drag does not open it; clicking empty space closes it;
 - Add to cart → toast → HUD count grows → cart overlay lists it; POS → checkout route;
